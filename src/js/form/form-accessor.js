@@ -30,12 +30,12 @@ export default class FormAccessor extends Component {
 		// console.log(key, this.formGroup);
 		const control = this.formGroup.get(key);
 		// const control = group.controls[key]; // FORM[key];
-		control.valueChanges$.pipe(
+		control.value$.pipe(
 			takeUntil(this.unsubscribe$)
 		).subscribe(value => {
 			console.log('Accessor.control.valueChanges$', value);
 		});
-		control.statusChanges$.pipe(
+		control.status$.pipe(
 			takeUntil(this.unsubscribe$)
 		).subscribe(status => {
 			const pre = this.getPre(node);

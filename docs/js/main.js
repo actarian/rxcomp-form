@@ -62,30 +62,30 @@
 
     var _proto = FormAbstract.prototype;
 
-    _proto.initSubjects = function initSubjects() {
-      this.value$ = new rxjs.BehaviorSubject(null);
-      this.status$ = new rxjs.BehaviorSubject(this);
-      this.childrenValue$ = new rxjs.Subject();
-      this.childrenStatus$ = new rxjs.Subject();
+    _proto.initSubjects_ = function initSubjects_() {
+      this.valueSubject = new rxjs.BehaviorSubject(null);
+      this.valueChildren = new rxjs.Subject();
+      this.statusSubject = new rxjs.BehaviorSubject(this);
+      this.statusChildren = new rxjs.Subject();
     };
 
-    _proto.initObservables = function initObservables() {
+    _proto.initObservables_ = function initObservables_() {
       var _this = this;
 
-      this.valueChanges$ = rxjs.merge(this.value$, this.childrenValue$).pipe(operators.distinctUntilChanged(), operators.skip(1), operators.tap(function (value) {
+      this.value$ = rxjs.merge(this.valueSubject, this.valueChildren).pipe(operators.distinctUntilChanged(), operators.skip(1), operators.tap(function (value) {
         _this.dirty_ = true;
 
         if (value === _this.value) {
-          _this.status$.next(_this);
+          _this.statusSubject.next(_this);
         }
       }), operators.shareReplay(1));
-      this.statusChanges$ = rxjs.merge(this.status$, this.childrenStatus$).pipe( // auditTime(1),
+      this.status$ = rxjs.merge(this.statusSubject, this.statusChildren).pipe( // auditTime(1),
       operators.tap(function (status) {
-        _this.reduceValidators();
+        _this.reduceValidators_();
       }), operators.shareReplay(1));
     };
 
-    _proto.reduceValidators = function reduceValidators() {
+    _proto.reduceValidators_ = function reduceValidators_() {
       return [];
     };
 
@@ -149,7 +149,7 @@
       },
       set: function set(touched) {
         this.touched_ = touched;
-        this.status$.next(this);
+        this.statusSubject.next(this);
       }
     }, {
       key: "untouched",
@@ -163,7 +163,7 @@
       },
       set: function set(value) {
         this.value_ = value;
-        this.value$.next(value);
+        this.valueSubject.next(value);
       }
     }]);
 
@@ -185,63 +185,70 @@
       _this = _FormAbstract.call(this, validators) || this;
       _this.value_ = value;
 
-      _this.initSubjects();
+      _this.initSubjects_();
 
-      _this.initObservables();
+      _this.initObservables_();
 
-      _this.status$.next(_assertThisInitialized(_this));
+      _this.statusSubject.next(_assertThisInitialized(_this));
 
       return _this;
     }
 
     var _proto = FormControl.prototype;
 
-    _proto.reduceValidators = function reduceValidators() {
+    _proto.reduceValidators_ = function reduceValidators_() {
       return this.validate(this.value);
     };
 
     return FormControl;
   }(FormAbstract);
 
-  var FormGroup =
+  var FormAbstractCollection =
   /*#__PURE__*/
   function (_FormAbstract) {
-    _inheritsLoose(FormGroup, _FormAbstract);
+    _inheritsLoose(FormAbstractCollection, _FormAbstract);
 
-    function FormGroup(controls, validators) {
+    function FormAbstractCollection(controls, validators) {
       var _this;
 
-      if (controls === void 0) {
-        controls = {};
-      }
-
       _this = _FormAbstract.call(this, validators) || this;
-      _this.controls = _this.asControls(controls);
+      _this.controls = controls;
 
-      _this.initSubjects();
+      _this.initControls_(controls);
 
-      _this.initObservables(); // this.status$.next(this);
+      _this.initSubjects_();
+
+      _this.initObservables_(); // this.statusSubject.next(this);
 
 
       return _this;
     }
 
-    var _proto = FormGroup.prototype;
+    var _proto = FormAbstractCollection.prototype;
 
-    _proto.initSubjects = function initSubjects() {
+    _proto.initControl_ = function initControl_(control) {
+      return control instanceof FormAbstract ? control : new FormControl(control, this.validators);
+    };
+
+    _proto.initControls_ = function initControls_(controls) {
       var _this2 = this;
 
-      this.value$ = new rxjs.BehaviorSubject(null);
-      this.status$ = new rxjs.BehaviorSubject(this); // VALUE
+      this.forEach_(function (control, key) {
+        _this2.set(_this2.initControl_(control), key);
+      });
+      return controls;
+    };
 
-      var childrenValue$ = this.reduce_(function (observables, control) {
-        // console.log(observables, control);
-        observables.push(control.value$);
-        return observables;
-      }, []); // console.log('childrenValue$', childrenValue$);
+    _proto.initSubjects_ = function initSubjects_() {
+      var _this3 = this;
 
-      this.childrenValue$ = rxjs.combineLatest(childrenValue$).pipe(operators.map(function (latest) {
-        return _this2.value;
+      this.valueSubject = new rxjs.BehaviorSubject(null);
+      var valueChildren = this.reduce_(function (result, control) {
+        result.push(control.valueSubject);
+        return result;
+      }, []);
+      this.valueChildren = rxjs.combineLatest(valueChildren).pipe(operators.map(function (latest) {
+        return _this3.value;
       }), // distinctUntilChanged((a, b) => JSON.stringify(a) === JSON.stringify(b)),
       // this.dirty_ = this.any_('dirty_', true);
 
@@ -255,18 +262,16 @@
       }),
       tap(value => {
       	this.dirty_ = true;
-      	this.status$.next(this);
+      	this.statusSubject.next(this);
       }),
       */
-      operators.shareReplay(1)); // STATUS
-
-      var childrenStatus$ = this.reduce_(function (observables, control) {
-        // console.log(observables, control);
-        observables.push(control.statusChanges$);
-        return observables;
-      }, []); // console.log('childrenStatus$', childrenStatus$);
-
-      this.childrenStatus$ = rxjs.combineLatest(childrenStatus$).pipe(
+      operators.shareReplay(1));
+      this.statusSubject = new rxjs.BehaviorSubject(this);
+      var statusChildren = this.reduce_(function (result, control) {
+        result.push(control.status$);
+        return result;
+      }, []);
+      this.statusChildren = rxjs.combineLatest(statusChildren).pipe(
       /*
       tap(controls => {
       	this.dirty_ = this.any_('dirty_', true);
@@ -287,8 +292,8 @@
         }).filter(function (x) {
           return x !== null;
         });
-        errors = this.reduce_(function (errors, control) {
-          return errors.concat(control.errors);
+        errors = this.reduce_(function (result, control) {
+          return result.concat(control.errors);
         }, errors);
         this.status = this.errors.length === 0 ? FormStatus.Valid : FormStatus.Invalid;
       }
@@ -296,47 +301,30 @@
       return this.errors;
     };
 
-    _proto.asControl = function asControl(control) {
-      return control instanceof FormAbstract ? control : new FormControl(control, this.validators);
-    };
-
-    _proto.asControls = function asControls(controls) {
-      var _this3 = this;
-
-      if (controls === void 0) {
-        controls = {};
-      }
-
-      Object.keys(controls).forEach(function (key) {
-        controls[key] = _this3.asControl(controls[key]);
-      });
-      return controls;
-    };
-
     _proto.forEach_ = function forEach_(callback) {
       var _this4 = this;
 
-      Object.keys(this.controls).forEach(function (k) {
-        return callback(_this4.controls[k], k);
+      Object.keys(this.controls).forEach(function (key) {
+        return callback(_this4.controls[key], key);
       });
     };
 
-    _proto.reduce_ = function reduce_(callback, value) {
+    _proto.reduce_ = function reduce_(callback, result) {
       this.forEach_(function (control, key) {
-        value = callback(value, control, key);
+        result = callback(result, control, key);
       });
-      return value;
+      return result;
     };
 
     _proto.all_ = function all_(key, value) {
-      return this.reduce_(function (value, control) {
-        return value && control[key] === value;
+      return this.reduce_(function (result, control) {
+        return result && control[key] === value;
       }, true);
     };
 
     _proto.any_ = function any_(key, value) {
-      return this.reduce_(function (value, control) {
-        return value || control[key] === value;
+      return this.reduce_(function (result, control) {
+        return result || control[key] === value;
       }, false);
     };
 
@@ -344,11 +332,15 @@
       return this.controls[key];
     };
 
-    _createClass(FormGroup, [{
+    _proto.set = function set(control, key) {
+      this.controls[key] = control;
+    };
+
+    _createClass(FormAbstractCollection, [{
       key: "touched",
       get: function get() {
-        return this.reduce_(function (value, control) {
-          return value && control.touched;
+        return this.reduce_(function (result, control) {
+          return result && control.touched;
         }, true);
       },
       set: function set(touched) {
@@ -356,21 +348,55 @@
         this.forEach_(function (control) {
           control.touched = touched;
         });
-        this.status$.next(this);
+        this.statusSubject.next(this);
       }
     }, {
       key: "value",
       get: function get() {
-        return this.reduce_(function (value, control, key) {
-          value[key] = control.value;
-          return value;
+        return this.reduce_(function (result, control, key) {
+          result[key] = control.value;
+          return result;
         }, {});
       },
       set: function set(value) {}
     }]);
 
-    return FormGroup;
+    return FormAbstractCollection;
   }(FormAbstract);
+
+  var FormGroup =
+  /*#__PURE__*/
+  function (_FormAbstractCollecti) {
+    _inheritsLoose(FormGroup, _FormAbstractCollecti);
+
+    function FormGroup(controls, validators) {
+      if (controls === void 0) {
+        controls = {};
+      }
+
+      return _FormAbstractCollecti.call(this, controls, validators) || this;
+    }
+
+    var _proto = FormGroup.prototype;
+
+    _proto.forEach_ = function forEach_(callback) {
+      var _this = this;
+
+      Object.keys(this.controls).forEach(function (key) {
+        return callback(_this.controls[key], key);
+      });
+    };
+
+    _proto.get = function get(key) {
+      return this.controls[key];
+    };
+
+    _proto.set = function set(control, key) {
+      this.controls[key] = control;
+    };
+
+    return FormGroup;
+  }(FormAbstractCollection);
 
   function RequiredValidator(value) {
     // return (value == null || value.length === 0) ? { required: true } : null;
@@ -393,11 +419,11 @@
         firstName: 'Jhon',
         lastName: 'Appleseed'
       }, [RequiredValidator]);
-      group.valueChanges$.subscribe(function (values) {
-        console.log('AppComponent.group.valueChanges$', values);
+      group.value$.subscribe(function (values) {
+        console.log('AppComponent.group.value$', values);
       });
-      group.statusChanges$.subscribe(function () {
-        // console.log('AppComponent.group.statusChanges$');
+      group.status$.subscribe(function () {
+        // console.log('AppComponent.group.status$');
         console.log('AppComponent.group.valid', group.valid);
       });
     };
@@ -447,10 +473,10 @@
 
       var control = this.formGroup.get(key); // const control = group.controls[key]; // FORM[key];
 
-      control.valueChanges$.pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (value) {
+      control.value$.pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (value) {
         console.log('Accessor.control.valueChanges$', value);
       });
-      control.statusChanges$.pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (status) {
+      control.status$.pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (status) {
         var pre = _this.getPre(node);
 
         pre.textContent = '';

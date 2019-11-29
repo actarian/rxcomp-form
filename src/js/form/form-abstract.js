@@ -9,35 +9,35 @@ export default class FormAbstract {
 		this.errors = [];
 	}
 
-	initSubjects() {
-		this.value$ = new BehaviorSubject(null);
-		this.status$ = new BehaviorSubject(this);
-		this.childrenValue$ = new Subject();
-		this.childrenStatus$ = new Subject();
+	initSubjects_() {
+		this.valueSubject = new BehaviorSubject(null);
+		this.valueChildren = new Subject();
+		this.statusSubject = new BehaviorSubject(this);
+		this.statusChildren = new Subject();
 	}
 
-	initObservables() {
-		this.valueChanges$ = merge(this.value$, this.childrenValue$).pipe(
+	initObservables_() {
+		this.value$ = merge(this.valueSubject, this.valueChildren).pipe(
 			distinctUntilChanged(),
 			skip(1),
 			tap(value => {
 				this.dirty_ = true;
 				if (value === this.value) {
-					this.status$.next(this);
+					this.statusSubject.next(this);
 				}
 			}),
 			shareReplay(1)
 		);
-		this.statusChanges$ = merge(this.status$, this.childrenStatus$).pipe(
+		this.status$ = merge(this.statusSubject, this.statusChildren).pipe(
 			// auditTime(1),
 			tap(status => {
-				this.reduceValidators();
+				this.reduceValidators_();
 			}),
 			shareReplay(1)
 		);
 	}
 
-	reduceValidators() {
+	reduceValidators_() {
 		return [];
 	}
 
@@ -66,14 +66,14 @@ export default class FormAbstract {
 
 	set touched(touched) {
 		this.touched_ = touched;
-		this.status$.next(this);
+		this.statusSubject.next(this);
 	}
 
 	get value() { return this.value_; }
 
 	set value(value) {
 		this.value_ = value;
-		this.value$.next(value);
+		this.valueSubject.next(value);
 	}
 
 }

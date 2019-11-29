@@ -5,15 +5,18 @@ import { RequiredValidator } from './form/form-validators';
 export default class AppComponent extends Component {
 
 	onInit() {
+
 		const group = this.group = new FormGroup({
 			firstName: 'Jhon',
 			lastName: 'Appleseed',
 		}, [RequiredValidator]);
-		group.valueChanges$.subscribe(values => {
-			console.log('AppComponent.group.valueChanges$', values);
+
+		group.value$.subscribe(values => {
+			console.log('AppComponent.group.value$', values);
 		});
-		group.statusChanges$.subscribe(() => {
-			// console.log('AppComponent.group.statusChanges$');
+
+		group.status$.subscribe(() => {
+			// console.log('AppComponent.group.status$');
 			console.log('AppComponent.group.valid', group.valid);
 		});
 	}
