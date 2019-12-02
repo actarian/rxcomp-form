@@ -261,7 +261,7 @@ button,
 ::placeholder {
   font-family: "Open Sans", sans-serif; }
 
-.page--todomvc {
+.page--test {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -271,10 +271,10 @@ button,
   -webkit-box-pack: center;
       -ms-flex-pack: center;
           justify-content: center; }
-  .page--todomvc main {
+  .page--test main {
     width: 100%;
     padding: 0; }
-  .page--todomvc .header {
+  .page--test .header {
     -webkit-box-flex: 0;
         -ms-flex: 0 0 75px;
             flex: 0 0 75px;
@@ -285,39 +285,39 @@ button,
         -ms-flex-align: center;
             align-items: center;
     padding: 20px; }
-    .page--todomvc .header .brand {
+    .page--test .header .brand {
       font-size: 13px;
       font-weight: 900;
       -webkit-box-flex: 1;
           -ms-flex: 1 1 auto;
               flex: 1 1 auto; }
-    .page--todomvc .header .btn--twitter,
-    .page--todomvc .header .btn--github {
+    .page--test .header .btn--twitter,
+    .page--test .header .btn--github {
       font-size: 20px;
       margin-left: 10px; }
-      .page--todomvc .header .btn--twitter i,
-      .page--todomvc .header .btn--github i {
+      .page--test .header .btn--twitter i,
+      .page--test .header .btn--github i {
         color: #212121;
         -webkit-transition: ease-in-out color 300ms;
         transition: ease-in-out color 300ms; }
-      .page--todomvc .header .btn--twitter:hover i,
-      .page--todomvc .header .btn--github:hover i {
+      .page--test .header .btn--twitter:hover i,
+      .page--test .header .btn--github:hover i {
         color: #003adc; }
-  .page--todomvc .group--form {
+  .page--test .group--form {
     -webkit-box-flex: 0;
         -ms-flex: 0 0 60px;
             flex: 0 0 60px;
     -webkit-box-shadow: 0 10px 20px -5px rgba(0, 0, 0, 0.2);
             box-shadow: 0 10px 20px -5px rgba(0, 0, 0, 0.2);
     z-index: 2; }
-  .page--todomvc .list {
+  .page--test .list {
     -webkit-box-flex: 1;
         -ms-flex: 1 1 auto;
             flex: 1 1 auto;
     margin: 0;
     padding: 0;
     list-style: none; }
-  .page--todomvc .list__item {
+  .page--test .list__item {
     --accent: $foreground;
     display: -webkit-box;
     display: -ms-flexbox;
@@ -328,14 +328,14 @@ button,
     min-height: 120px;
     margin: 0;
     padding: 20px; }
-    .page--todomvc .list__item .title {
+    .page--test .list__item .title {
       position: relative;
       margin-top: 10px;
       font-size: 28px;
       font-weight: 800;
       line-height: 1;
       text-align: left; }
-      .page--todomvc .list__item .title:after {
+      .page--test .list__item .title:after {
         content: '';
         background-color: black;
         background-color: var(--accent);
@@ -350,9 +350,9 @@ button,
         z-index: 1;
         -webkit-transition: ease-in-out 300ms width;
         transition: ease-in-out 300ms width; }
-    .page--todomvc .list__item.done .title:after {
+    .page--test .list__item.done .title:after {
       width: 170px; }
-    .page--todomvc .list__item .date {
+    .page--test .list__item .date {
       font-size: 10px;
       font-weight: 800;
       line-height: 1;
@@ -360,25 +360,25 @@ button,
       white-space: nowrap;
       text-transform: uppercase;
       text-indent: 1px; }
-  .page--todomvc .btn--toggle {
+  .page--test .btn--toggle {
     -webkit-box-flex: 1;
         -ms-flex: 1 1 auto;
             flex: 1 1 auto; }
-  .page--todomvc .btn--remove > i {
+  .page--test .btn--remove > i {
     font-size: 11px;
     height: 11px;
     line-height: 1; }
-  .page--todomvc .btn--add {
+  .page--test .btn--add {
     color: #212121; }
-    .page--todomvc .btn--add > i {
+    .page--test .btn--add > i {
       font-size: 12px; }
-    .page--todomvc .btn--add.disabled {
+    .page--test .btn--add.disabled {
       pointer-events: none;
       color: rgba(33, 33, 33, 0.2); }
   @media (min-width: 768px) {
-    .page--todomvc {
+    .page--test {
       background: #e0e0e0; }
-      .page--todomvc main {
+      .page--test main {
         display: -webkit-box;
         display: -ms-flexbox;
         display: flex;
@@ -392,19 +392,19 @@ button,
         -webkit-box-shadow: 0 10px 20px -5px rgba(0, 0, 0, 0.2);
                 box-shadow: 0 10px 20px -5px rgba(0, 0, 0, 0.2);
         background: white; }
-      .page--todomvc .list {
+      .page--test .list {
         -webkit-box-flex: 1;
             -ms-flex: 1 1 auto;
                 flex: 1 1 auto;
         overflow-y: auto; } }
   @media (max-width: 767.98px) {
-    .page--todomvc {
+    .page--test {
       background: white; }
-      .page--todomvc main {
+      .page--test main {
         min-height: 100vh; }
-      .page--todomvc .list {
+      .page--test .list {
         overflow-y: auto; }
-      .page--todomvc .footer {
+      .page--test .footer {
         padding: 25px 0; } }
 
 @media (max-width: 767.98px) {

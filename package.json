@@ -1,12 +1,12 @@
 {
 	"author": "Luca Zampetti <lzampetti@gmail.com>",
-	"name": "todomvc",
-	"description": "todomvc",
-	"version": "1.0.0-alpha.5",
+	"name": "rxcomp-form",
+	"description": "rxcomp-form",
+	"version": "1.0.0-alpha.6",
 	"license": "MIT",
 	"repository": {
 		"type": "git",
-		"url": "git://github.com/actarian/todomvc.git"
+		"url": "git://github.com/actarian/rxcomp-form.git"
 	},
 	"scripts": {
 		"start": "gulp"
@@ -22,7 +22,7 @@
 	},
 	"dependencies": {
 		"rxjs": "~6.5.3",
-		"rxcomp": "1.0.0-alpha.5"
+		"rxcomp": "1.0.0-alpha.6"
 	},
 	"devDependencies": {
 		"@babel/core": "~7.6.4",

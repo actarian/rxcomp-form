@@ -1,13 +1,14 @@
-import { Component, Module } from 'rxcomp';
+import { Component, getContext } from 'rxcomp';
 import { takeUntil } from 'rxjs/operators';
 
 const AccessorProps = ['untouched', 'touched', 'pristine', 'dirty', 'pending', 'enabled', 'disabled', 'valid', 'invalid'];
 
+// recall Directive
 export default class FormAccessor extends Component {
 
 	onInit() {
 		// context
-		const context = Module.getContext(this);
+		const context = getContext(this);
 		const node = context.node;
 		this.node = node;
 		// log(node.getAttributeNode('formControl').value);
@@ -23,7 +24,7 @@ export default class FormAccessor extends Component {
 
 	onChanges(changes) {
 		// console.log('FormAccessor.onChanges', changes);
-		const context = Module.getContext(this);
+		const context = getContext(this);
 		const node = context.node;
 		// const key = node.getAttributeNode('formControl').value;
 		const key = node.getAttributeNode('[name]').value;
@@ -55,13 +56,13 @@ export default class FormAccessor extends Component {
 	}
 
 	writeValue(value) {
-		const context = Module.getContext(this);
+		const context = getContext(this);
 		const node = context.node;
 		node.setAttribute('value', value == null ? '' : value);
 	}
 
 	setDisabledState(disabled) {
-		const context = Module.getContext(this);
+		const context = getContext(this);
 		const node = context.node;
 		node.setAttribute('disabled', disabled);
 	}
@@ -76,7 +77,7 @@ export default class FormAccessor extends Component {
 	}
 
 	onChange(event) {
-		const context = Module.getContext(this);
+		const context = getContext(this);
 		const node = context.node;
 		// const key = node.getAttributeNode('formControl').value;
 		const key = node.getAttributeNode('[name]').value;
@@ -92,7 +93,7 @@ export default class FormAccessor extends Component {
 
 	onBlur(event) {
 		// log(event.type);
-		const context = Module.getContext(this);
+		const context = getContext(this);
 		const node = context.node;
 		// const key = node.getAttributeNode('formControl').value;
 		const key = node.getAttributeNode('[name]').value;

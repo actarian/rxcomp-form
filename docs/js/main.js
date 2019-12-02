@@ -1,14 +1,14 @@
 /**
- * @license todomvc v1.0.0-alpha.5
+ * @license rxcomp-form v1.0.0-alpha.6
  * (c) 2019 Luca Zampetti <lzampetti@gmail.com>
  * License: MIT
  */
 
 (function (global, factory) {
-  typeof exports === 'object' && typeof module !== 'undefined' ? factory(require('rxcomp'), require('rxjs'), require('rxjs/operators')) :
-  typeof define === 'function' && define.amd ? define('main', ['rxcomp', 'rxjs', 'rxjs/operators'], factory) :
-  (global = global || self, factory(global.rxcomp, global.rxjs, global.rxjs.operators));
-}(this, (function (rxcomp, rxjs, operators) { 'use strict';
+  typeof exports === 'object' && typeof module !== 'undefined' ? factory(require('rxcomp'), require('rxjs/operators'), require('rxjs')) :
+  typeof define === 'function' && define.amd ? define('main', ['rxcomp', 'rxjs/operators', 'rxjs'], factory) :
+  (global = global || self, factory(global.rxcomp, global.rxjs.operators, global.rxjs));
+}(this, (function (rxcomp, operators, rxjs) { 'use strict';
 
   function _defineProperties(target, props) {
     for (var i = 0; i < props.length; i++) {
@@ -39,6 +39,141 @@
 
     return self;
   }
+
+  var AccessorProps = ['untouched', 'touched', 'pristine', 'dirty', 'pending', 'enabled', 'disabled', 'valid', 'invalid']; // recall Directive
+
+  var FormAccessor =
+  /*#__PURE__*/
+  function (_Component) {
+    _inheritsLoose(FormAccessor, _Component);
+
+    function FormAccessor() {
+      return _Component.apply(this, arguments) || this;
+    }
+
+    var _proto = FormAccessor.prototype;
+
+    _proto.onInit = function onInit() {
+      // context
+      var context = rxcomp.getContext(this);
+      var node = context.node;
+      this.node = node; // log(node.getAttributeNode('formControl').value);
+      // log('name', node.name);
+
+      this.onChange = this.onChange.bind(this);
+      this.onBlur = this.onBlur.bind(this); // this.onFocus = this.onFocus.bind(this);
+
+      node.addEventListener('input', this.onChange);
+      node.addEventListener('change', this.onChange);
+      node.addEventListener('blur', this.onBlur); // node.addEventListener('focus', this.onFocus);
+    };
+
+    _proto.onChanges = function onChanges(changes) {
+      var _this = this;
+
+      // console.log('FormAccessor.onChanges', changes);
+      var context = rxcomp.getContext(this);
+      var node = context.node; // const key = node.getAttributeNode('formControl').value;
+
+      var key = node.getAttributeNode('[name]').value; // console.log(key, this.formGroup);
+
+      var control = this.formGroup.get(key); // const control = group.controls[key]; // FORM[key];
+
+      control.value$.pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (value) {
+        console.log('Accessor.control.valueChanges$', value);
+      });
+      control.status$.pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (status) {
+        var pre = _this.getPre(node);
+
+        pre.textContent = '';
+        AccessorProps.forEach(function (x) {
+          if (control[x]) {
+            node.classList.add(x);
+            pre.textContent += x + ', ';
+          } else {
+            node.classList.remove(x);
+          }
+        });
+        control.errors.forEach(function (x) {
+          return pre.textContent += "invalid-" + x + ", ";
+        });
+      });
+      this.writeValue(control.value); // node.value = 'test';
+    };
+
+    _proto.writeValue = function writeValue(value) {
+      var context = rxcomp.getContext(this);
+      var node = context.node;
+      node.setAttribute('value', value == null ? '' : value);
+    };
+
+    _proto.setDisabledState = function setDisabledState(disabled) {
+      var context = rxcomp.getContext(this);
+      var node = context.node;
+      node.setAttribute('disabled', disabled);
+    };
+
+    _proto.getPre = function getPre(node) {
+      var pre = node.previousSibling;
+
+      if (!pre || pre.nodeType !== 3) {
+        pre = document.createTextNode('');
+        node.parentNode.insertBefore(pre, node);
+      }
+
+      return pre;
+    };
+
+    _proto.onChange = function onChange(event) {
+      var context = rxcomp.getContext(this);
+      var node = context.node; // const key = node.getAttributeNode('formControl').value;
+
+      var key = node.getAttributeNode('[name]').value;
+      var control = this.formGroup.get(key); // const control = group.controls[key]; // FORM[key];
+      // event.currentTarget;
+      // log(event.type, node.name, node.value, node.checked);
+      // log('control', key, control.value);
+
+      control.value = node.value;
+    };
+
+    _proto.onFocus = function onFocus(event) {};
+
+    _proto.onBlur = function onBlur(event) {
+      // log(event.type);
+      var context = rxcomp.getContext(this);
+      var node = context.node; // const key = node.getAttributeNode('formControl').value;
+
+      var key = node.getAttributeNode('[name]').value;
+      var control = this.formGroup.get(key); // const control = group.controls[key]; // FORM[key];
+
+      control.touched = true;
+    };
+
+    return FormAccessor;
+  }(rxcomp.Component);
+  FormAccessor.meta = {
+    selector: 'input,textarea,select',
+    inputs: ['formGroup']
+  };
+
+  var FormModule =
+  /*#__PURE__*/
+  function (_Module) {
+    _inheritsLoose(FormModule, _Module);
+
+    function FormModule() {
+      return _Module.apply(this, arguments) || this;
+    }
+
+    return FormModule;
+  }(rxcomp.Module);
+  var factories = [FormAccessor];
+  var pipes = [];
+  FormModule.meta = {
+    declarations: [].concat(factories, pipes),
+    exports: [].concat(factories, pipes)
+  };
 
   var FormStatus = {
     Valid: 'valid',
@@ -434,127 +569,23 @@
     selector: '[app-component]'
   };
 
-  var AccessorProps = ['untouched', 'touched', 'pristine', 'dirty', 'pending', 'enabled', 'disabled', 'valid', 'invalid'];
-
-  var FormAccessor =
+  var AppModule =
   /*#__PURE__*/
-  function (_Component) {
-    _inheritsLoose(FormAccessor, _Component);
+  function (_Module) {
+    _inheritsLoose(AppModule, _Module);
 
-    function FormAccessor() {
-      return _Component.apply(this, arguments) || this;
+    function AppModule() {
+      return _Module.apply(this, arguments) || this;
     }
 
-    var _proto = FormAccessor.prototype;
-
-    _proto.onInit = function onInit() {
-      // context
-      var context = rxcomp.Module.getContext(this);
-      var node = context.node;
-      this.node = node; // log(node.getAttributeNode('formControl').value);
-      // log('name', node.name);
-
-      this.onChange = this.onChange.bind(this);
-      this.onBlur = this.onBlur.bind(this); // this.onFocus = this.onFocus.bind(this);
-
-      node.addEventListener('input', this.onChange);
-      node.addEventListener('change', this.onChange);
-      node.addEventListener('blur', this.onBlur); // node.addEventListener('focus', this.onFocus);
-    };
-
-    _proto.onChanges = function onChanges(changes) {
-      var _this = this;
-
-      // console.log('FormAccessor.onChanges', changes);
-      var context = rxcomp.Module.getContext(this);
-      var node = context.node; // const key = node.getAttributeNode('formControl').value;
-
-      var key = node.getAttributeNode('[name]').value; // console.log(key, this.formGroup);
-
-      var control = this.formGroup.get(key); // const control = group.controls[key]; // FORM[key];
-
-      control.value$.pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (value) {
-        console.log('Accessor.control.valueChanges$', value);
-      });
-      control.status$.pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (status) {
-        var pre = _this.getPre(node);
-
-        pre.textContent = '';
-        AccessorProps.forEach(function (x) {
-          if (control[x]) {
-            node.classList.add(x);
-            pre.textContent += x + ', ';
-          } else {
-            node.classList.remove(x);
-          }
-        });
-        control.errors.forEach(function (x) {
-          return pre.textContent += "invalid-" + x + ", ";
-        });
-      });
-      this.writeValue(control.value); // node.value = 'test';
-    };
-
-    _proto.writeValue = function writeValue(value) {
-      var context = rxcomp.Module.getContext(this);
-      var node = context.node;
-      node.setAttribute('value', value == null ? '' : value);
-    };
-
-    _proto.setDisabledState = function setDisabledState(disabled) {
-      var context = rxcomp.Module.getContext(this);
-      var node = context.node;
-      node.setAttribute('disabled', disabled);
-    };
-
-    _proto.getPre = function getPre(node) {
-      var pre = node.previousSibling;
-
-      if (!pre || pre.nodeType !== 3) {
-        pre = document.createTextNode('');
-        node.parentNode.insertBefore(pre, node);
-      }
-
-      return pre;
-    };
-
-    _proto.onChange = function onChange(event) {
-      var context = rxcomp.Module.getContext(this);
-      var node = context.node; // const key = node.getAttributeNode('formControl').value;
-
-      var key = node.getAttributeNode('[name]').value;
-      var control = this.formGroup.get(key); // const control = group.controls[key]; // FORM[key];
-      // event.currentTarget;
-      // log(event.type, node.name, node.value, node.checked);
-      // log('control', key, control.value);
-
-      control.value = node.value;
-    };
-
-    _proto.onFocus = function onFocus(event) {};
-
-    _proto.onBlur = function onBlur(event) {
-      // log(event.type);
-      var context = rxcomp.Module.getContext(this);
-      var node = context.node; // const key = node.getAttributeNode('formControl').value;
-
-      var key = node.getAttributeNode('[name]').value;
-      var control = this.formGroup.get(key); // const control = group.controls[key]; // FORM[key];
-
-      control.touched = true;
-    };
-
-    return FormAccessor;
-  }(rxcomp.Component);
-  FormAccessor.meta = {
-    selector: 'input,textarea,select',
-    inputs: ['formGroup']
+    return AppModule;
+  }(rxcomp.Module);
+  AppModule.meta = {
+    imports: [rxcomp.CoreModule, FormModule],
+    declarations: [],
+    bootstrap: AppComponent
   };
 
-  rxcomp.Module.use({
-    factories: [rxcomp.ClassDirective, rxcomp.EventDirective, rxcomp.ForStructure, rxcomp.IfStructure, rxcomp.InnerHtmlDirective, rxcomp.StyleDirective, FormAccessor],
-    pipes: [rxcomp.JsonPipe],
-    bootstrap: AppComponent
-  });
+  rxcomp.Browser.bootstrap(AppModule);
 
 })));

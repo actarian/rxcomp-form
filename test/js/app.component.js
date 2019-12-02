@@ -1,11 +1,9 @@
 import { Component } from 'rxcomp';
-import FormGroup from './form/form-group';
-import { RequiredValidator } from './form/form-validators';
+import { FormGroup, RequiredValidator } from '../../src/rxcomp-form';
 
 export default class AppComponent extends Component {
 
 	onInit() {
-
 		const group = this.group = new FormGroup({
 			firstName: 'Jhon',
 			lastName: 'Appleseed',
