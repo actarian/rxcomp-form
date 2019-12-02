@@ -224,7 +224,8 @@ button,
   background: none;
   border: none;
   outline: none;
-  color: #212121; }
+  color: #212121;
+  border-bottom: 5px solid transparent; }
   .control--text::-webkit-input-placeholder {
     font-size: 28px;
     font-weight: 800;
@@ -245,6 +246,16 @@ button,
     font-size: 28px;
     font-weight: 800;
     color: rgba(33, 33, 33, 0.2); }
+  .control--text.pristine {
+    color: black; }
+  .control--text.dirty {
+    color: plum; }
+  .control--text.touched {
+    color: gray; }
+  .control--text.valid {
+    border-bottom-color: green; }
+  .control--text.invalid {
+    border-bottom-color: red; }
 
 ::-webkit-input-placeholder {
   font-family: "Open Sans", sans-serif; }

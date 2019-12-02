@@ -1,15 +1,16 @@
-import { Component, getContext } from 'rxcomp';
+import { Directive, getContext } from 'rxcomp';
 import { takeUntil } from 'rxjs/operators';
+import { FormAttributes } from './form-status';
 
-const AccessorProps = ['untouched', 'touched', 'pristine', 'dirty', 'pending', 'enabled', 'disabled', 'valid', 'invalid'];
+export default class FormAccessor extends Directive {
 
-// recall Directive
-export default class FormAccessor extends Component {
+	getFormRef(parentFormRef) {
+		// console.log('formControlName', this.formControlName, 'formControl', this.formControl, 'parentFormRef', parentFormRef);
+		return this.formControlName ? parentFormRef.get(this.formControlName) : this.formControl;
+	}
 
 	onInit() {
-		// context
-		const context = getContext(this);
-		const node = context.node;
+		const { node } = getContext(this);
 		this.node = node;
 		// log(node.getAttributeNode('formControl').value);
 		// log('name', node.name);
@@ -24,47 +25,61 @@ export default class FormAccessor extends Component {
 
 	onChanges(changes) {
 		// console.log('FormAccessor.onChanges', changes);
-		const context = getContext(this);
-		const node = context.node;
-		// const key = node.getAttributeNode('formControl').value;
-		const key = node.getAttributeNode('[name]').value;
-		// console.log(key, this.formGroup);
-		const control = this.formGroup.get(key);
-		// const control = group.controls[key]; // FORM[key];
-		control.value$.pipe(
+		const { node } = getContext(this);
+		// const key = node.getAttributeNode('[name]').value;
+		const formRef = this.getFormRef(changes.formRef);
+		// changes.formRef = formRef;
+		this.formRef = formRef;
+		// console.log('FormAccessor.formRef', formRef, 'changes', changes);
+		formRef.value$.pipe(
 			takeUntil(this.unsubscribe$)
 		).subscribe(value => {
-			console.log('Accessor.control.valueChanges$', value);
+			// console.log('Accessor.formRef.valueChanges$', value);
 		});
-		control.status$.pipe(
+		formRef.status$.pipe(
 			takeUntil(this.unsubscribe$)
 		).subscribe(status => {
+			/*
 			const pre = this.getPre(node);
 			pre.textContent = '';
-			AccessorProps.forEach(x => {
-				if (control[x]) {
+			*/
+			FormAttributes.forEach(x => {
+				if (formRef[x]) {
 					node.classList.add(x);
-					pre.textContent += x + ', ';
+					// pre.textContent += x + ', ';
 				} else {
 					node.classList.remove(x);
 				}
 			});
-			control.errors.forEach(x => pre.textContent += `invalid-${x}, `);
+			// formRef.errors.forEach(x => pre.textContent += `invalid-${x}, `);
 		});
-		this.writeValue(control.value);
+		this.writeValue(formRef.value);
 		// node.value = 'test';
 	}
 
 	writeValue(value) {
-		const context = getContext(this);
-		const node = context.node;
+		const { node } = getContext(this);
 		node.setAttribute('value', value == null ? '' : value);
 	}
 
 	setDisabledState(disabled) {
-		const context = getContext(this);
-		const node = context.node;
+		const { node } = getContext(this);
 		node.setAttribute('disabled', disabled);
+	}
+
+	onChange(event) {
+		const { node } = getContext(this);
+		// log(event.type);
+		// log('formRef', this.formRef);
+		this.formRef.value = node.value;
+	}
+
+	onFocus(event) {}
+
+	onBlur(event) {
+		// log(event.type);
+		// log('formRef', this.formRef);
+		this.formRef.touched = true;
 	}
 
 	getPre(node) {
@@ -76,34 +91,9 @@ export default class FormAccessor extends Component {
 		return pre;
 	}
 
-	onChange(event) {
-		const context = getContext(this);
-		const node = context.node;
-		// const key = node.getAttributeNode('formControl').value;
-		const key = node.getAttributeNode('[name]').value;
-		const control = this.formGroup.get(key);
-		// const control = group.controls[key]; // FORM[key];
-		// event.currentTarget;
-		// log(event.type, node.name, node.value, node.checked);
-		// log('control', key, control.value);
-		control.value = node.value;
-	}
-
-	onFocus(event) {}
-
-	onBlur(event) {
-		// log(event.type);
-		const context = getContext(this);
-		const node = context.node;
-		// const key = node.getAttributeNode('formControl').value;
-		const key = node.getAttributeNode('[name]').value;
-		const control = this.formGroup.get(key);
-		// const control = group.controls[key]; // FORM[key];
-		control.touched = true;
-	}
 }
 
 FormAccessor.meta = {
 	selector: 'input,textarea,select',
-	inputs: ['formGroup'],
+	inputs: ['formControl', 'formControlName'],
 };

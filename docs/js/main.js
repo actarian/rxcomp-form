@@ -40,23 +40,74 @@
     return self;
   }
 
-  var AccessorProps = ['untouched', 'touched', 'pristine', 'dirty', 'pending', 'enabled', 'disabled', 'valid', 'invalid']; // recall Directive
+  var FormStatus = {
+    Valid: 'valid',
+    Invalid: 'invalid',
+    Pending: 'pending',
+    Disabled: 'disabled'
+  };
+  var FormAttributes = ['untouched', 'touched', 'pristine', 'dirty', 'pending', 'enabled', 'disabled', 'valid', 'invalid'];
+
+  var ControlGroupDirective =
+  /*#__PURE__*/
+  function (_Directive) {
+    _inheritsLoose(ControlGroupDirective, _Directive);
+
+    function ControlGroupDirective() {
+      return _Directive.apply(this, arguments) || this;
+    }
+
+    var _proto = ControlGroupDirective.prototype;
+
+    _proto.getFormRef = function getFormRef(parentFormRef) {
+      // console.log('controlGroupName', this.controlGroupName, 'controlGroup', this.controlGroup, 'parentFormRef', parentFormRef);
+      return this.controlGroupName ? parentFormRef.get(this.controlGroupName) : this.controlGroup;
+    };
+
+    _proto.onChanges = function onChanges(changes) {
+      var _getContext = rxcomp.getContext(this),
+          node = _getContext.node;
+
+      var formRef = this.getFormRef(changes.formRef);
+      this.formRef = formRef;
+      formRef.status$.pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (status) {
+        FormAttributes.forEach(function (x) {
+          if (formRef[x]) {
+            node.classList.add(x);
+          } else {
+            node.classList.remove(x);
+          }
+        });
+      });
+    };
+
+    return ControlGroupDirective;
+  }(rxcomp.Directive);
+  ControlGroupDirective.meta = {
+    selector: '[[controlGroup]],[[controlGroupName]],[controlGroupName]',
+    inputs: ['controlGroup', 'controlGroupName']
+  };
 
   var FormAccessor =
   /*#__PURE__*/
-  function (_Component) {
-    _inheritsLoose(FormAccessor, _Component);
+  function (_Directive) {
+    _inheritsLoose(FormAccessor, _Directive);
 
     function FormAccessor() {
-      return _Component.apply(this, arguments) || this;
+      return _Directive.apply(this, arguments) || this;
     }
 
     var _proto = FormAccessor.prototype;
 
+    _proto.getFormRef = function getFormRef(parentFormRef) {
+      // console.log('formControlName', this.formControlName, 'formControl', this.formControl, 'parentFormRef', parentFormRef);
+      return this.formControlName ? parentFormRef.get(this.formControlName) : this.formControl;
+    };
+
     _proto.onInit = function onInit() {
-      // context
-      var context = rxcomp.getContext(this);
-      var node = context.node;
+      var _getContext = rxcomp.getContext(this),
+          node = _getContext.node;
+
       this.node = node; // log(node.getAttributeNode('formControl').value);
       // log('name', node.name);
 
@@ -69,48 +120,62 @@
     };
 
     _proto.onChanges = function onChanges(changes) {
-      var _this = this;
-
       // console.log('FormAccessor.onChanges', changes);
-      var context = rxcomp.getContext(this);
-      var node = context.node; // const key = node.getAttributeNode('formControl').value;
+      var _getContext2 = rxcomp.getContext(this),
+          node = _getContext2.node; // const key = node.getAttributeNode('[name]').value;
 
-      var key = node.getAttributeNode('[name]').value; // console.log(key, this.formGroup);
 
-      var control = this.formGroup.get(key); // const control = group.controls[key]; // FORM[key];
+      var formRef = this.getFormRef(changes.formRef); // changes.formRef = formRef;
 
-      control.value$.pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (value) {
-        console.log('Accessor.control.valueChanges$', value);
+      this.formRef = formRef; // console.log('FormAccessor.formRef', formRef, 'changes', changes);
+
+      formRef.value$.pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (value) {// console.log('Accessor.formRef.valueChanges$', value);
       });
-      control.status$.pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (status) {
-        var pre = _this.getPre(node);
-
+      formRef.status$.pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (status) {
+        /*
+        const pre = this.getPre(node);
         pre.textContent = '';
-        AccessorProps.forEach(function (x) {
-          if (control[x]) {
-            node.classList.add(x);
-            pre.textContent += x + ', ';
+        */
+        FormAttributes.forEach(function (x) {
+          if (formRef[x]) {
+            node.classList.add(x); // pre.textContent += x + ', ';
           } else {
             node.classList.remove(x);
           }
-        });
-        control.errors.forEach(function (x) {
-          return pre.textContent += "invalid-" + x + ", ";
-        });
+        }); // formRef.errors.forEach(x => pre.textContent += `invalid-${x}, `);
       });
-      this.writeValue(control.value); // node.value = 'test';
+      this.writeValue(formRef.value); // node.value = 'test';
     };
 
     _proto.writeValue = function writeValue(value) {
-      var context = rxcomp.getContext(this);
-      var node = context.node;
+      var _getContext3 = rxcomp.getContext(this),
+          node = _getContext3.node;
+
       node.setAttribute('value', value == null ? '' : value);
     };
 
     _proto.setDisabledState = function setDisabledState(disabled) {
-      var context = rxcomp.getContext(this);
-      var node = context.node;
+      var _getContext4 = rxcomp.getContext(this),
+          node = _getContext4.node;
+
       node.setAttribute('disabled', disabled);
+    };
+
+    _proto.onChange = function onChange(event) {
+      var _getContext5 = rxcomp.getContext(this),
+          node = _getContext5.node; // log(event.type);
+      // log('formRef', this.formRef);
+
+
+      this.formRef.value = node.value;
+    };
+
+    _proto.onFocus = function onFocus(event) {};
+
+    _proto.onBlur = function onBlur(event) {
+      // log(event.type);
+      // log('formRef', this.formRef);
+      this.formRef.touched = true;
     };
 
     _proto.getPre = function getPre(node) {
@@ -124,37 +189,84 @@
       return pre;
     };
 
-    _proto.onChange = function onChange(event) {
-      var context = rxcomp.getContext(this);
-      var node = context.node; // const key = node.getAttributeNode('formControl').value;
-
-      var key = node.getAttributeNode('[name]').value;
-      var control = this.formGroup.get(key); // const control = group.controls[key]; // FORM[key];
-      // event.currentTarget;
-      // log(event.type, node.name, node.value, node.checked);
-      // log('control', key, control.value);
-
-      control.value = node.value;
-    };
-
-    _proto.onFocus = function onFocus(event) {};
-
-    _proto.onBlur = function onBlur(event) {
-      // log(event.type);
-      var context = rxcomp.getContext(this);
-      var node = context.node; // const key = node.getAttributeNode('formControl').value;
-
-      var key = node.getAttributeNode('[name]').value;
-      var control = this.formGroup.get(key); // const control = group.controls[key]; // FORM[key];
-
-      control.touched = true;
-    };
-
     return FormAccessor;
-  }(rxcomp.Component);
+  }(rxcomp.Directive);
   FormAccessor.meta = {
     selector: 'input,textarea,select',
-    inputs: ['formGroup']
+    inputs: ['formControl', 'formControlName']
+  };
+
+  var FormGroupAccessor =
+  /*#__PURE__*/
+  function (_Component) {
+    _inheritsLoose(FormGroupAccessor, _Component);
+
+    function FormGroupAccessor() {
+      return _Component.apply(this, arguments) || this;
+    }
+
+    var _proto = FormGroupAccessor.prototype;
+
+    _proto.getFormRef = function getFormRef(parentFormRef) {
+      // console.log('formGroupName', this.formGroupName, 'formGroup', this.formGroup, 'parentFormRef', parentFormRef);
+      return this.formGroupName ? parentFormRef.get(this.formGroupName) : this.formGroup;
+    };
+
+    _proto.onChanges = function onChanges(changes) {
+      var formRef = this.getFormRef(changes.formRef); // changes.formRef = formRef;
+
+      this.formRef = formRef; // console.log('FormGroupAccessor.formRef', formRef);
+    };
+
+    return FormGroupAccessor;
+  }(rxcomp.Component);
+  FormGroupAccessor.meta = {
+    selector: '[[formGroup]],[[formGroupName]],[formGroupName]',
+    inputs: ['formGroup', 'formGroupName']
+  };
+
+  var EVENTS = ['submit'];
+
+  var SubmitDirective =
+  /*#__PURE__*/
+  function (_Directive) {
+    _inheritsLoose(SubmitDirective, _Directive);
+
+    function SubmitDirective() {
+      return _Directive.apply(this, arguments) || this;
+    }
+
+    var _proto = SubmitDirective.prototype;
+
+    _proto.onInit = function onInit() {
+      var _getContext = rxcomp.getContext(this),
+          module = _getContext.module,
+          node = _getContext.node,
+          selector = _getContext.selector,
+          parentInstance = _getContext.parentInstance;
+
+      var event = this.event = selector.replace(/\[|\]|\(|\)/g, '');
+      var event$ = this.event$ = rxjs.fromEvent(node, event).pipe(operators.tap(function (event) {
+        event.preventDefault(); // console.log('event');
+      }), operators.shareReplay(1));
+      var expression = node.getAttribute("(" + event + ")");
+
+      if (expression) {
+        var outputFunction = module.makeFunction(expression, ['$event']);
+        event$.pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (event) {
+          module.resolve(outputFunction, parentInstance, event);
+        });
+      } else {
+        parentInstance[event + "$"] = event$;
+      } // console.log('parentInstance', parentInstance);
+      // console.log('EventDirective.onInit', 'selector', selector, 'event', event);
+
+    };
+
+    return SubmitDirective;
+  }(rxcomp.Directive);
+  SubmitDirective.meta = {
+    selector: "[(" + EVENTS.join(')],[(') + ")]"
   };
 
   var FormModule =
@@ -168,18 +280,11 @@
 
     return FormModule;
   }(rxcomp.Module);
-  var factories = [FormAccessor];
+  var factories = [FormAccessor, FormGroupAccessor, ControlGroupDirective, SubmitDirective];
   var pipes = [];
   FormModule.meta = {
     declarations: [].concat(factories, pipes),
     exports: [].concat(factories, pipes)
-  };
-
-  var FormStatus = {
-    Valid: 'valid',
-    Invalid: 'invalid',
-    Pending: 'pending',
-    Disabled: 'disabled'
   };
 
   var FormAbstract =
@@ -550,17 +655,23 @@
     var _proto = AppComponent.prototype;
 
     _proto.onInit = function onInit() {
-      var group = this.group = new FormGroup({
+      var form = this.form = new FormGroup({
         firstName: 'Jhon',
         lastName: 'Appleseed'
       }, [RequiredValidator]);
-      group.value$.subscribe(function (values) {
-        console.log('AppComponent.group.value$', values);
+      form.value$.subscribe(function (values) {// console.log('AppComponent.form.value$', values);
       });
-      group.status$.subscribe(function () {
-        // console.log('AppComponent.group.status$');
-        console.log('AppComponent.group.valid', group.valid);
+      form.status$.subscribe(function () {// console.log('AppComponent.form.status$');
+        // console.log('AppComponent.form.valid', form.valid);
       });
+    };
+
+    _proto.onValidate = function onValidate() {
+      // console.log('AppComponent.onValidate', this.form.valid);
+      return this.form.valid;
+    };
+
+    _proto.onSubmit = function onSubmit() {// console.log('AppComponent.onSubmit', this.form.value);
     };
 
     return AppComponent;
@@ -582,8 +693,69 @@
   }(rxcomp.Module);
   AppModule.meta = {
     imports: [rxcomp.CoreModule, FormModule],
-    declarations: [],
+    // declarations: [],
     bootstrap: AppComponent
+  };
+
+  rxcomp.Module.prototype.makeInputs = function (meta, instance) {
+    var _this = this;
+
+    var inputs = {};
+
+    if (meta.inputs) {
+      meta.inputs.forEach(function (key, i) {
+        var input = _this.makeInput(instance, key);
+
+        if (input) {
+          inputs[key] = input;
+        }
+      });
+    }
+
+    return inputs;
+  }; // fixing
+
+
+  rxcomp.Module.prototype.makeInput = function (instance, key) {
+    var _getContext = rxcomp.getContext(instance),
+        node = _getContext.node;
+
+    var input,
+        expression = null;
+
+    if (node.hasAttribute(key)) {
+      expression = "'" + node.getAttribute(key) + "'";
+    } else if (node.hasAttribute("[" + key + "]")) {
+      expression = node.getAttribute("[" + key + "]");
+    }
+
+    if (expression !== null) {
+      input = this.makeFunction(expression);
+    }
+
+    return input;
+  }; // fixing
+
+
+  rxcomp.Module.prototype.getInstance = function (node) {
+    if (node === document) {
+      return window;
+    }
+
+    var context = rxcomp.getContextByNode(node); // !!!
+
+    if (context) {
+      return context.instance;
+    }
+  }; // fixing
+
+
+  rxcomp.Module.prototype.getParentInstance = function (node) {
+    var _this2 = this;
+
+    return rxcomp.Module.traverseUp(node, function (node) {
+      return _this2.getInstance(node);
+    });
   };
 
   rxcomp.Browser.bootstrap(AppModule);

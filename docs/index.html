@@ -24,12 +24,17 @@
 				<i class="icon--github"></i>
 			</a>
 		</div>
-		<form>
+		<!-- (submit) parentInstance should be app-component -->
+		<form [formGroup]="form" (submit)="onValidate() && onSubmit()" name="form" role="form" novalidate autocomplete="off">
+			<!-- <div class="group--form" [controlGroup]="formRef.get('firstName')"> -->
 			<div class="group--form">
-				<input type="text" class="control--text" [formGroup]="group" [name]="firstName" placeholder="firstName" />
+				<input type="text" class="control--text" [formControl]="formRef.get('firstName')" placeholder="firstName" />
+			</div>
+			<div class="group--form" controlGroupName="lastName">
+				<input type="text" class="control--text" formControlName="lastName" placeholder="lastName" />
 			</div>
 			<div class="group--form">
-				<input type="text" class="control--text" [formGroup]="group" [name]="lastName" placeholder="lastName" />
+				<button type="submit" class="btn--submit">Send</button>
 			</div>
 		</form>
 	</main>

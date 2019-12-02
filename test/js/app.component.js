@@ -4,19 +4,28 @@ import { FormGroup, RequiredValidator } from '../../src/rxcomp-form';
 export default class AppComponent extends Component {
 
 	onInit() {
-		const group = this.group = new FormGroup({
+		const form = this.form = new FormGroup({
 			firstName: 'Jhon',
 			lastName: 'Appleseed',
 		}, [RequiredValidator]);
 
-		group.value$.subscribe(values => {
-			console.log('AppComponent.group.value$', values);
+		form.value$.subscribe(values => {
+			// console.log('AppComponent.form.value$', values);
 		});
 
-		group.status$.subscribe(() => {
-			// console.log('AppComponent.group.status$');
-			console.log('AppComponent.group.valid', group.valid);
+		form.status$.subscribe(() => {
+			// console.log('AppComponent.form.status$');
+			// console.log('AppComponent.form.valid', form.valid);
 		});
+	}
+
+	onValidate() {
+		// console.log('AppComponent.onValidate', this.form.valid);
+		return this.form.valid;
+	}
+
+	onSubmit() {
+		// console.log('AppComponent.onSubmit', this.form.value);
 	}
 
 }

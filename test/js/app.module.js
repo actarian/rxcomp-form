@@ -9,7 +9,6 @@ AppModule.meta = {
 		CoreModule,
 		FormModule
 	],
-	declarations: [
-	],
+	// declarations: [],
 	bootstrap: AppComponent,
 };

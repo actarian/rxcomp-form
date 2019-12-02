@@ -19,6 +19,29 @@
 		font-weight: 800;
 		color: rgba($foreground, 0.2);
 	}
+
+	&.pristine {
+		color: black;
+	}
+
+	&.dirty {
+		color: plum;
+	}
+
+	&.touched {
+		color: gray;
+	}
+
+	border-bottom: 5px solid transparent;
+
+	&.valid {
+		border-bottom-color: green;
+	}
+
+	&.invalid {
+		border-bottom-color: red;
+	}
+
 }
 
 ::placeholder {
