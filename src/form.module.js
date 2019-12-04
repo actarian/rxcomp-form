@@ -1,14 +1,14 @@
 import { Module } from 'rxcomp';
-import ControlGroupDirective from './form/control-group.directive';
-import FormAccessor from './form/form-accessor';
-import FormGroupAccessor from './form/form-group-accessor';
+import FormControlGroupComponent from './form/form-control-group.component';
+import FormControlDirective from './form/form-control.directive';
+import FormGroupComponent from './form/form-group.component';
 import SubmitDirective from './form/submit.directive';
 
 export default class FormModule extends Module {}
 const factories = [
-	FormAccessor,
-	FormGroupAccessor,
-	ControlGroupDirective,
+	FormControlDirective,
+	FormGroupComponent,
+	FormControlGroupComponent,
 	SubmitDirective,
 ];
 const pipes = [

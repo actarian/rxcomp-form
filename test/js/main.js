@@ -1,6 +1,7 @@
-import { Browser, getContext, getContextByNode, Module } from 'rxcomp';
+import { Browser } from 'rxcomp';
 import AppModule from './app.module';
 
+/*
 // fixing
 Module.prototype.makeInputs = function(meta, instance) {
 	const inputs = {};
@@ -47,5 +48,6 @@ Module.prototype.getParentInstance = function(node) {
 		return this.getInstance(node);
 	});
 };
+*/
 
 Browser.bootstrap(AppModule);

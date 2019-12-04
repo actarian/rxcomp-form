@@ -10,10 +10,6 @@ export default class FormControl extends FormAbstract {
 		this.statusSubject.next(this);
 	}
 
-	reduceValidators_() {
-		return this.validate(this.value);
-	}
-
 }
 
 export function formControl(value, validators) {

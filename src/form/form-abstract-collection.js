@@ -1,5 +1,5 @@
-import { BehaviorSubject, combineLatest } from 'rxjs';
-import { map, shareReplay } from 'rxjs/operators';
+import { BehaviorSubject, combineLatest, merge } from 'rxjs';
+import { distinctUntilChanged, map, shareReplay, skip, tap } from 'rxjs/operators';
 import FormAbstract from './form-abstract';
 import FormControl from './form-control';
 import FormStatus from './form-status';
@@ -29,26 +29,11 @@ export default class FormAbstractCollection extends FormAbstract {
 	initSubjects_() {
 		this.valueSubject = new BehaviorSubject(null);
 		const valueChildren = this.reduce_((result, control) => {
-			result.push(control.valueSubject);
+			result.push(control.value$);
 			return result;
 		}, []);
 		this.valueChildren = combineLatest(valueChildren).pipe(
 			map(latest => this.value),
-			// distinctUntilChanged((a, b) => JSON.stringify(a) === JSON.stringify(b)),
-			// this.dirty_ = this.any_('dirty_', true);
-			/*
-			map(merged => {
-				const values = {};
-				Object.keys(this.controls).forEach((key, i) => {
-					values[key] = merged[i] || null;
-				});
-				return values;
-			}),
-			tap(value => {
-				this.dirty_ = true;
-				this.statusSubject.next(this);
-			}),
-			*/
 			shareReplay(1)
 		);
 		this.statusSubject = new BehaviorSubject(this);
@@ -57,11 +42,27 @@ export default class FormAbstractCollection extends FormAbstract {
 			return result;
 		}, []);
 		this.statusChildren = combineLatest(statusChildren).pipe(
-			/*
-			tap(controls => {
-				this.dirty_ = this.any_('dirty_', true);
+			shareReplay(1)
+		);
+	}
+
+	initObservables_() {
+		this.value$ = merge(this.valueSubject, this.valueChildren).pipe(
+			distinctUntilChanged(),
+			skip(1),
+			tap(value => {
+				this.dirty_ = true;
+				// if (value === this.value) {
+				this.statusSubject.next(this);
+				// }
 			}),
-			*/
+			shareReplay(1)
+		);
+		this.status$ = merge(this.statusSubject, this.statusChildren).pipe(
+			// auditTime(1),
+			tap(status => {
+				this.reduceValidators_();
+			}),
 			shareReplay(1)
 		);
 	}
@@ -74,7 +75,7 @@ export default class FormAbstractCollection extends FormAbstract {
 			// this.errors = Object.assign({}, ...this.validators.map(x => x(value)));
 			// this.status = Object.keys(this.errors).length === 0 ? FormStatus.Valid : FormStatus.Invalid;
 			let errors = this.validators.map(x => x(value)).filter(x => x !== null);
-			errors = this.reduce_((result, control) => {
+			this.errors = this.reduce_((result, control) => {
 				return result.concat(control.errors);
 			}, errors);
 			this.status = this.errors.length === 0 ? FormStatus.Valid : FormStatus.Invalid;
@@ -105,19 +106,15 @@ export default class FormAbstractCollection extends FormAbstract {
 		}, false);
 	}
 
-	get(key) {
-		return this.controls[key];
-	}
-
-	set(control, key) {
-		this.controls[key] = control;
-	}
-
-	get touched() {
-		return this.reduce_((result, control) => {
-			return result && control.touched;
-		}, true);
-	}
+	get valid() { return this.all_('valid', true); }
+	get invalid() { return this.any_('invalid', true); }
+	get pending() { return this.any_('pending', true); }
+	get disabled() { return this.all_('disabled', true); }
+	get enabled() { return this.any_('enabled', true); }
+	get dirty() { return this.any_('dirty', true); }
+	get pristine() { return this.all_('pristine', true); }
+	get touched() { return this.all_('touched', true); }
+	get untouched() { return this.any_('untouched', true); }
 
 	set touched(touched) {
 		// this.touched_ = touched;
@@ -135,5 +132,44 @@ export default class FormAbstractCollection extends FormAbstract {
 	}
 
 	set value(value) {}
+
+	reset() {
+		this.forEach_(control => control.reset());
+	}
+
+	patch(value) {
+		this.forEach_((control, key) => control.patch(value[key]));
+	}
+
+	get(key) {
+		return this.controls[key];
+	}
+
+	set(control, key) {
+		if (this.controls[key]) {
+			// unsubscribe;
+		}
+		delete(this.controls[key]);
+		if (control) {
+			this.controls[key] = control;
+		}
+		// subscribe
+	}
+
+	add(control, key) {
+		if (control) {
+			// unsubscribe;
+			this.controls[key] = control;
+			// subscribe
+		}
+	}
+
+	remove(key) {
+		if (this.controls[key]) {
+			// unsubscribe;
+		}
+		delete(this.controls[key]);
+		// subscribe
+	}
 
 }

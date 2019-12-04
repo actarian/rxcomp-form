@@ -1,6 +1,56 @@
 .group--form {
 	display: flex;
-	padding: 10px 20px;
+	align-items: center;
+	padding: 20px 20px;
+	border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+}
+
+.group--form--fixed {
+	position: fixed;
+	justify-content: center;
+	bottom: 15px;
+	left: 15px;
+	width: calc(100vw - 30px);
+	padding: 10px 15px;
+	font-size: 14px;
+	text-align: center;
+	background: rgba(255, 255, 255, 0.8);
+
+	@include media-breakpoint-down(xs) {
+		display: none;
+	}
+}
+
+.icon--remove {
+	font-size: 10px;
+	margin: 13px 10px 7px 0;
+	pointer-events: none;
+	opacity: 0.3;
+	cursor: pointer;
+
+	.enabled.dirty>&,
+	&.active {
+		pointer-events: all;
+		opacity: 1;
+	}
+}
+
+.icon--check {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	min-width: 25px;
+	min-height: 25px;
+	border-radius: 15px;
+	font-size: 12px;
+	background: #b8e1b8;
+	color: green;
+	opacity: 0;
+	transition: opacity ease-in-out 350ms;
+}
+
+input.valid+.icon--check {
+	opacity: 1;
 }
 
 .control--text {
@@ -13,6 +63,8 @@
 	border: none;
 	outline: none;
 	color: $foreground;
+	border-bottom: 5px solid transparent;
+	margin-top: 5px;
 
 	&::placeholder {
 		font-size: 28px;
@@ -32,16 +84,41 @@
 		color: gray;
 	}
 
-	border-bottom: 5px solid transparent;
-
 	&.valid {
 		border-bottom-color: green;
 	}
 
-	&.invalid {
+	&.invalid:not(.pristine) {
 		border-bottom-color: red;
 	}
 
+}
+
+.btn--submit {
+	display: block;
+	width: 100%;
+	padding: 10px;
+	font-size: 18px;
+	font-weight: 500;
+	text-transform: uppercase;
+	margin: 5px 0;
+	border-radius: 5px;
+	background: #4CAF50;
+	color: white;
+	transition: all ease-in-out 350ms;
+
+	&:hover,
+	&:active,
+	&:focus {
+		background: rgb(51, 142, 54);
+		color: white;
+	}
+
+	.invalid & {
+		background: rgb(125, 125, 125);
+		color: white;
+		opacity: 0.5;
+	}
 }
 
 ::placeholder {

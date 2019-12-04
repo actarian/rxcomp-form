@@ -9,8 +9,8 @@
 	<meta name="Content-Language" content="it" />
 	<meta name="robots" content="noindex,nofollow" />
 	<title>RxComp Form</title>
-	<link rel="stylesheet" href="css/main.min.css" />
 	<link href="https://fonts.googleapis.com/css?family=Open+Sans:800&display=swap" rel="stylesheet">
+	<link rel="stylesheet" href="css/main.min.css" />
 </head>
 
 <body class="page--test">
@@ -26,21 +26,33 @@
 		</div>
 		<!-- (submit) parentInstance should be app-component -->
 		<form [formGroup]="form" (submit)="onValidate() && onSubmit()" name="form" role="form" novalidate autocomplete="off">
-			<!-- <div class="group--form" [controlGroup]="formRef.get('firstName')"> -->
+			<!-- <div class="group--form" [controlGroup]="form.get('firstName')"> -->
 			<div class="group--form">
-				<input type="text" class="control--text" [formControl]="formRef.get('firstName')" placeholder="firstName" />
+				<i class="icon--remove" [class]="{ active: form.get('firstName').dirty }" (click)="form.get('firstName').reset()"></i>
+				<input type="text" class="control--text" [formControl]="form.get('firstName')" placeholder="firstName" />
+				<i class="icon--check"></i>
 			</div>
-			<div class="group--form" controlGroupName="lastName">
-				<input type="text" class="control--text" formControlName="lastName" placeholder="lastName" />
+			<div class="group--form" [controlGroupName]="'lastName'">
+				<i class="icon--remove" (click)="control.reset()"></i>
+				<input type="text" class="control--text" [formControl]="control" placeholder="lastName" />
+				<i class="icon--check"></i>
+			</div>
+			<div class="group--form" [controlGroup]="form.get('email')">
+				<i class="icon--remove" (click)="control.reset()"></i>
+				<input type="email" class="control--text" [formControl]="control" placeholder="email" pattern="[A-Za-z]{3}" title="Three letter country code" />
+				<i class="icon--check"></i>
 			</div>
 			<div class="group--form">
 				<button type="submit" class="btn--submit">Send</button>
+			</div>
+			<div class="group--form group--form--fixed">
+				<code [innerHTML]="form.value | json"></code>
 			</div>
 		</form>
 	</main>
 	<script src="https://polyfill.io/v3/polyfill.min.js?features=es5%2CArray.prototype.find%2CObject.assign"></script>
 	<script src="https://unpkg.com/@reactivex/rxjs@6.5.3/dist/global/rxjs.umd.min.js"></script>
-	<script src="https://unpkg.com/rxcomp@1.0.0-alpha.6/dist/rxcomp.min.js"></script>
+	<script src="https://unpkg.com/rxcomp@1.0.0-alpha.7/dist/rxcomp.min.js"></script>
 	<script src="js/main.min.js"></script>
 </body>
 

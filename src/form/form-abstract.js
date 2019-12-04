@@ -21,16 +21,18 @@ export default class FormAbstract {
 			distinctUntilChanged(),
 			skip(1),
 			tap(value => {
+				// console.log('FormAbstract', value);
 				this.dirty_ = true;
-				if (value === this.value) {
-					this.statusSubject.next(this);
-				}
+				// if (value === this.value) {
+				this.statusSubject.next(this);
+				// }
 			}),
 			shareReplay(1)
 		);
 		this.status$ = merge(this.statusSubject, this.statusChildren).pipe(
 			// auditTime(1),
 			tap(status => {
+				// console.log(status);
 				this.reduceValidators_();
 			}),
 			shareReplay(1)
@@ -38,7 +40,7 @@ export default class FormAbstract {
 	}
 
 	reduceValidators_() {
-		return [];
+		return this.validate(this.value);
 	}
 
 	validate(value) {
@@ -72,8 +74,22 @@ export default class FormAbstract {
 	get value() { return this.value_; }
 
 	set value(value) {
+		// console.log('set value', value);
 		this.value_ = value;
 		this.valueSubject.next(value);
+	}
+
+	reset() {
+		this.value_ = null;
+		this.dirty_ = false;
+		this.touched_ = false;
+		this.statusSubject.next(this);
+	}
+
+	patch(value) {
+		this.value_ = value;
+		this.dirty_ = true;
+		this.statusSubject.next(this);
 	}
 
 }

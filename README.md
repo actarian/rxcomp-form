@@ -50,7 +50,7 @@ ___
 For CDN, you can use unpkg
 
 ```html
-<script src="https://unpkg.com/rxcomp-form@1.0.0-alpha.6/dist/rxcomp-form.min.js"></script>
+<script src="https://unpkg.com/rxcomp-form@1.0.0-alpha.7/dist/rxcomp-form.min.js"></script>
 ```
 
 The global namespace for RxCompForm is `rxcomp-form`
@@ -213,6 +213,6 @@ Changelog [here](https://github.com/actarian/rxcomp-form/blob/master/CHANGELOG.m
 
 ---
 
-### 1.0.0-alpha.6
+### 1.0.0-alpha.7
 
 * Initial release of RxComp library
