@@ -26,22 +26,35 @@
 		</div>
 		<!-- (submit) parentInstance should be app-component -->
 		<form [formGroup]="form" (submit)="onValidate() && onSubmit()" name="form" role="form" novalidate autocomplete="off">
-			<!-- <div class="group--form" [controlGroup]="form.get('firstName')"> -->
-			<div class="group--form">
-				<i class="icon--remove" [class]="{ active: form.get('firstName').dirty }" (click)="form.get('firstName').reset()"></i>
-				<input type="text" class="control--text" [formControl]="form.get('firstName')" placeholder="firstName" />
-				<i class="icon--check"></i>
-			</div>
-			<div class="group--form" [controlGroupName]="'lastName'">
-				<i class="icon--remove" (click)="control.reset()"></i>
-				<input type="text" class="control--text" [formControl]="control" placeholder="lastName" />
-				<i class="icon--check"></i>
-			</div>
-			<div class="group--form" [controlGroup]="form.get('email')">
-				<i class="icon--remove" (click)="control.reset()"></i>
-				<input type="email" class="control--text" [formControl]="control" placeholder="email" pattern="[A-Za-z]{3}" title="Three letter country code" />
-				<i class="icon--check"></i>
-			</div>
+			<fieldset>
+				<!-- <div class="group--form" [controlGroup]="form.get('firstName')"> -->
+				<div class="group--form">
+					<i class="icon--remove" [class]="{ active: form.get('firstName').dirty }" (click)="form.get('firstName').reset()"></i>
+					<input type="text" class="control--text" [formControl]="form.get('firstName')" placeholder="firstName" />
+					<i class="icon--check"></i>
+				</div>
+				<div class="group--form" [controlGroupName]="'lastName'">
+					<i class="icon--remove" (click)="control.reset()"></i>
+					<input type="text" class="control--text" [formControl]="control" placeholder="lastName" />
+					<i class="icon--check"></i>
+				</div>
+				<div class="group--form" [controlGroup]="form.get('email')">
+					<i class="icon--remove" (click)="control.reset()"></i>
+					<input type="email" class="control--text" [formControl]="control" placeholder="email" pattern="[A-Za-z]{3}" title="Three letter country code" />
+					<i class="icon--check"></i>
+				</div>
+				<div class="group--form" [controlGroup]="form.get('country')">
+					<select class="control--select" [formControl]="control">
+						<option value="-1">select</option>
+						<option value="0">1</option>
+						<option value="1">2</option>
+					</select>
+				</div>
+				<div class="group--form" *for="let item of form.get('items').controls">
+					<i class="icon--remove" (click)="form.get('items').remove(item)"></i>
+					<input type="text" class="control--text" [formControl]="item" placeholder="item" />
+				</div>
+			</fieldset>
 			<div class="group--form">
 				<button type="submit" class="btn--submit">Send</button>
 			</div>

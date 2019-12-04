@@ -235,28 +235,7 @@
           node.classList.remove(x);
         }
       });
-    }
-    /*
-    getFormRef(parentFormRef) {
-    	// console.log('FormGroupComponent', (this.formGroupName ? `formGroupName ${this.formGroupName}` : `formGroup ${this.formGroup}`, `parentFormRef ${parentFormRef}`));
-    	return this.formGroupName ? parentFormRef.get(this.formGroupName) : this.formGroup;
-    }
-    	onChanges(changes) {
-    	const formRef = this.getFormRef(changes.formRef);
-    	// changes.formRef = formRef;
-    	this.formRef = formRef;
-    	// console.log('FormGroupComponent.formRef', formRef);
-    	const { node } = getContext(this);
-    	FormAttributes.forEach(x => {
-    		if (this.formRef[x]) {
-    			node.classList.add(x);
-    		} else {
-    			node.classList.remove(x);
-    		}
-    	});
-    }
-    */
-    ;
+    };
 
     _createClass(FormGroupComponent, [{
       key: "form",
@@ -735,6 +714,50 @@
     return FormAbstractCollection;
   }(FormAbstract);
 
+  var FormArray =
+  /*#__PURE__*/
+  function (_FormAbstractCollecti) {
+    _inheritsLoose(FormArray, _FormAbstractCollecti);
+
+    function FormArray(controls, validators) {
+      if (controls === void 0) {
+        controls = [];
+      }
+
+      return _FormAbstractCollecti.call(this, controls, validators) || this;
+    }
+
+    var _proto = FormArray.prototype;
+
+    _proto.forEach_ = function forEach_(callback) {
+      this.controls.forEach(function (control, key) {
+        return callback(control, key);
+      });
+    };
+
+    /*
+    get(key) {
+    	return this.controls[key];
+    }
+    */
+    _proto.set = function set(control, key) {
+      this.controls.length = Math.max(this.controls.length, key);
+      this.controls[key] = control;
+    };
+
+    _createClass(FormArray, [{
+      key: "value",
+      get: function get() {
+        return this.reduce_(function (result, control, key) {
+          result[key] = control.value;
+          return result;
+        }, []);
+      }
+    }]);
+
+    return FormArray;
+  }(FormAbstractCollection);
+
   var FormGroup =
   /*#__PURE__*/
   function (_FormAbstractCollecti) {
@@ -808,8 +831,10 @@
         // 'Jhon',
         lastName: null,
         // 'Appleseed',
-        email: null // 'jhonappleseed@gmail.com',
-
+        email: null,
+        // 'jhonappleseed@gmail.com',
+        country: 1,
+        items: new FormArray([null, null, null])
       }, [RequiredValidator]);
       form.value$.subscribe(function (values) {// console.log('AppComponent.form.value', values);
       });

@@ -1,5 +1,5 @@
 import { Component } from 'rxcomp';
-import { FormGroup, RequiredValidator } from '../../src/rxcomp-form';
+import { FormArray, FormGroup, RequiredValidator } from '../../src/rxcomp-form';
 
 export default class AppComponent extends Component {
 
@@ -8,6 +8,8 @@ export default class AppComponent extends Component {
 			firstName: null, // 'Jhon',
 			lastName: null, // 'Appleseed',
 			email: null, // 'jhonappleseed@gmail.com',
+			country: 1,
+			items: new FormArray([null, null, null]),
 		}, [RequiredValidator]);
 
 		form.value$.subscribe(values => {

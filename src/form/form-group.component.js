@@ -28,28 +28,6 @@ export default class FormGroupComponent extends Component {
 		});
 	}
 
-	/*
-	getFormRef(parentFormRef) {
-		// console.log('FormGroupComponent', (this.formGroupName ? `formGroupName ${this.formGroupName}` : `formGroup ${this.formGroup}`, `parentFormRef ${parentFormRef}`));
-		return this.formGroupName ? parentFormRef.get(this.formGroupName) : this.formGroup;
-	}
-
-	onChanges(changes) {
-		const formRef = this.getFormRef(changes.formRef);
-		// changes.formRef = formRef;
-		this.formRef = formRef;
-		// console.log('FormGroupComponent.formRef', formRef);
-		const { node } = getContext(this);
-		FormAttributes.forEach(x => {
-			if (this.formRef[x]) {
-				node.classList.add(x);
-			} else {
-				node.classList.remove(x);
-			}
-		});
-	}
-	*/
-
 }
 
 FormGroupComponent.meta = {

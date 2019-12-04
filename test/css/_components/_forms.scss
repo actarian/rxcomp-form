@@ -1,7 +1,7 @@
 .group--form {
 	display: flex;
 	align-items: center;
-	padding: 20px 20px;
+	padding: 15px 20px;
 	border-bottom: 1px solid rgba(0, 0, 0, 0.2);
 }
 
@@ -57,17 +57,17 @@ input.valid+.icon--check {
 	width: 100%;
 	margin: 0;
 	padding: 0 20px 0 0;
-	font-size: 28px;
+	font-size: 23px;
 	font-weight: 800;
 	background: none;
 	border: none;
 	outline: none;
 	color: $foreground;
-	border-bottom: 5px solid transparent;
+	border-bottom: 4px solid transparent;
 	margin-top: 5px;
 
 	&::placeholder {
-		font-size: 28px;
+		font-size: 23px;
 		font-weight: 800;
 		color: rgba($foreground, 0.2);
 	}
@@ -90,6 +90,44 @@ input.valid+.icon--check {
 
 	&.invalid:not(.pristine) {
 		border-bottom-color: red;
+	}
+
+}
+
+.control--select {
+	width: 100%;
+	margin: 0;
+	border-radius: 0;
+	padding: 5px 10px 5px 15px;
+	font-size: 23px;
+	font-weight: 900;
+	color: $foreground;
+	border: 4px solid $foreground;
+
+	&::placeholder {
+		font-size: 23px;
+		font-weight: 800;
+		color: rgba($foreground, 0.2);
+	}
+
+	&.pristine {
+		color: black;
+	}
+
+	&.dirty {
+		color: plum;
+	}
+
+	&.touched {
+		color: gray;
+	}
+
+	&.valid {
+		border-color: green;
+	}
+
+	&.invalid:not(.pristine) {
+		border-color: red;
 	}
 
 }

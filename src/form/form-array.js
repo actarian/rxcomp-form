@@ -10,9 +10,18 @@ export default class FormArray extends FormAbstractCollection {
 		this.controls.forEach((control, key) => callback(control, key));
 	}
 
+	get value() {
+		return this.reduce_((result, control, key) => {
+			result[key] = control.value;
+			return result;
+		}, []);
+	}
+
+	/*
 	get(key) {
 		return this.controls[key];
 	}
+	*/
 
 	set(control, key) {
 		this.controls.length = Math.max(this.controls.length, key);

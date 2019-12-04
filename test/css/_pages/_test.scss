@@ -38,6 +38,23 @@
 		}
 	}
 
+	form {
+		flex: 1 1 calc(100% - 75px);
+		display: flex;
+		flex-direction: column;
+		height: calc(100% - 75px);
+	}
+
+	fieldset {
+		flex: 1 1 calc(100% - 270px);
+		display: block;
+		margin: 0;
+		padding: 0;
+		border: none;
+		overflow-x: hidden;
+		overflow-y: auto;
+	}
+
 	.list {
 		flex: 1 1 auto;
 		margin: 0;
