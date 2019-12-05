@@ -1,5 +1,5 @@
 /**
- * @license rxcomp-form v1.0.0-alpha.7
+ * @license rxcomp-form v1.0.0-alpha.8
  * (c) 2019 Luca Zampetti <lzampetti@gmail.com>
  * License: MIT
  */
@@ -393,12 +393,14 @@
       this.value_ = null;
       this.dirty_ = false;
       this.touched_ = false;
+      this.submitted_ = false;
       this.statusSubject.next(this);
     };
 
     _proto.patch = function patch(value) {
       this.value_ = value;
       this.dirty_ = true;
+      this.submitted_ = false;
       this.statusSubject.next(this);
     };
 
@@ -874,7 +876,7 @@
     _proto.onSubmit = function onSubmit() {
       if (this.form.valid) {
         console.log('AppComponent.onSubmit', this.form.value);
-        this.form.submitted = true;
+        this.form.submitted = true; // this.form.reset();
       }
     };
 

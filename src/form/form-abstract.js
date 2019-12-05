@@ -101,12 +101,14 @@ export default class FormAbstract {
 		this.value_ = null;
 		this.dirty_ = false;
 		this.touched_ = false;
+		this.submitted_ = false;
 		this.statusSubject.next(this);
 	}
 
 	patch(value) {
 		this.value_ = value;
 		this.dirty_ = true;
+		this.submitted_ = false;
 		this.statusSubject.next(this);
 	}
 

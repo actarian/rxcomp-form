@@ -29,6 +29,7 @@ export default class AppComponent extends Component {
 		if (this.form.valid) {
 			console.log('AppComponent.onSubmit', this.form.value);
 			this.form.submitted = true;
+			// this.form.reset();
 		}
 	}
 
