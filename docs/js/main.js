@@ -41,12 +41,12 @@
   }
 
   var FormStatus = {
+    Pending: 'pending',
     Valid: 'valid',
     Invalid: 'invalid',
-    Pending: 'pending',
     Disabled: 'disabled'
   };
-  var FormAttributes = ['untouched', 'touched', 'pristine', 'dirty', 'pending', 'enabled', 'disabled', 'valid', 'invalid'];
+  var FormAttributes = ['untouched', 'touched', 'pristine', 'dirty', 'pending', 'enabled', 'disabled', 'valid', 'invalid', 'submitted'];
 
   var FormControlGroupComponent =
   /*#__PURE__*/
@@ -333,6 +333,7 @@
         validators = [];
       }
 
+      this.status = FormStatus.Pending;
       this.validators = validators; // this.errors = {};
 
       this.errors = [];
@@ -350,17 +351,18 @@
     _proto.initObservables_ = function initObservables_() {
       var _this = this;
 
-      this.value$ = rxjs.merge(this.valueSubject, this.valueChildren).pipe(operators.distinctUntilChanged(), operators.skip(1), operators.tap(function (value) {
-        // console.log('FormAbstract', value);
-        _this.dirty_ = true; // if (value === this.value) {
+      this.value$ = rxjs.merge(this.valueSubject, this.valueChildren).pipe(operators.distinctUntilChanged(), operators.skip(1), operators.tap(function (any) {
+        _this.submitted_ = false;
+        _this.dirty_ = true;
 
-        _this.statusSubject.next(_this); // }
-
+        _this.statusSubject.next(_this);
       }), operators.shareReplay(1));
       this.status$ = rxjs.merge(this.statusSubject, this.statusChildren).pipe( // auditTime(1),
-      operators.tap(function (status) {
-        // console.log(status);
+      operators.tap(function (any) {
         _this.reduceValidators_();
+      }), operators.shareReplay(1));
+      this.changes$ = rxjs.merge(this.value$, this.status$).pipe(operators.map(function (any) {
+        return _this.value;
       }), operators.shareReplay(1));
     };
 
@@ -369,7 +371,7 @@
     };
 
     _proto.validate = function validate(value) {
-      if (this.status === FormStatus.Disabled) {
+      if (this.status === FormStatus.Disabled || this.submitted_) {
         // this.errors = {};
         this.errors = [];
       } else {
@@ -387,6 +389,7 @@
     };
 
     _proto.reset = function reset() {
+      this.status = FormStatus.Pending;
       this.value_ = null;
       this.dirty_ = false;
       this.touched_ = false;
@@ -400,6 +403,11 @@
     };
 
     _createClass(FormAbstract, [{
+      key: "pending",
+      get: function get() {
+        return this.status === FormStatus.Pending;
+      }
+    }, {
       key: "valid",
       get: function get() {
         return this.status === FormStatus.Valid;
@@ -410,19 +418,32 @@
         return this.status === FormStatus.Invalid;
       }
     }, {
-      key: "pending",
-      get: function get() {
-        return this.status === FormStatus.Pending;
-      }
-    }, {
       key: "disabled",
       get: function get() {
         return this.status === FormStatus.Disabled;
+      },
+      set: function set(disabled) {
+        if (disabled) {
+          this.status = FormStatus.Disabled;
+        } else {
+          this.reduceValidators_();
+        }
+
+        this.statusSubject.next(this);
       }
     }, {
       key: "enabled",
       get: function get() {
         return this.status !== FormStatus.Disabled;
+      }
+    }, {
+      key: "submitted",
+      get: function get() {
+        return this.submitted_;
+      },
+      set: function set(submitted) {
+        this.submitted_ = submitted;
+        this.statusSubject.next(this);
       }
     }, {
       key: "dirty",
@@ -527,36 +548,53 @@
     };
 
     _proto.initSubjects_ = function initSubjects_() {
-      var _this3 = this;
-
-      this.valueSubject = new rxjs.BehaviorSubject(null);
-      var valueChildren = this.reduce_(function (result, control) {
-        result.push(control.value$);
+      /*
+      this.valueSubject = new BehaviorSubject(null);
+      const valueChildren = this.reduce_((result, control) => {
+      	result.push(control.value$);
+      	return result;
+      }, []);
+      this.valueChildren = combineLatest(valueChildren).pipe(
+      	map(latest => this.value),
+      	shareReplay(1)
+      );
+      this.statusSubject = new BehaviorSubject(this);
+      const statusChildren = this.reduce_((result, control) => {
+      	result.push(control.status$);
+      	return result;
+      }, []);
+      this.statusChildren = combineLatest(statusChildren).pipe(
+      	shareReplay(1)
+      );
+      */
+      var changesChildren = this.reduce_(function (result, control) {
+        result.push(control.changes$);
         return result;
       }, []);
-      this.valueChildren = rxjs.combineLatest(valueChildren).pipe(operators.map(function (latest) {
-        return _this3.value;
-      }), operators.shareReplay(1));
-      this.statusSubject = new rxjs.BehaviorSubject(this);
-      var statusChildren = this.reduce_(function (result, control) {
-        result.push(control.status$);
-        return result;
-      }, []);
-      this.statusChildren = rxjs.combineLatest(statusChildren).pipe(operators.shareReplay(1));
+      this.changesChildren = rxjs.combineLatest(changesChildren).pipe(operators.shareReplay(1));
     };
 
     _proto.initObservables_ = function initObservables_() {
-      var _this4 = this;
+      var _this3 = this;
 
-      this.value$ = rxjs.merge(this.valueSubject, this.valueChildren).pipe(operators.distinctUntilChanged(), operators.skip(1), operators.tap(function (value) {
-        _this4.dirty_ = true; // if (value === this.value) {
-
-        _this4.statusSubject.next(_this4); // }
-
-      }), operators.shareReplay(1));
-      this.status$ = rxjs.merge(this.statusSubject, this.statusChildren).pipe( // auditTime(1),
-      operators.tap(function (status) {
-        _this4.reduceValidators_();
+      /*
+      this.value$ = merge(this.valueSubject, this.valueChildren).pipe(
+      	distinctUntilChanged(),
+      	skip(1),
+      	tap(any => {
+      		this.statusSubject.next(this);
+      	}),
+      	shareReplay(1)
+      );
+      this.status$ = merge(this.statusSubject, this.statusChildren).pipe(
+      	tap(any => {
+      		this.reduceValidators_();
+      	}),
+      	shareReplay(1)
+      );
+      */
+      this.changes$ = this.changesChildren.pipe(operators.map(function (any) {
+        return _this3.value;
       }), operators.shareReplay(1));
     };
 
@@ -582,10 +620,10 @@
     };
 
     _proto.forEach_ = function forEach_(callback) {
-      var _this5 = this;
+      var _this4 = this;
 
       Object.keys(this.controls).forEach(function (key) {
-        return callback(_this5.controls[key], key);
+        return callback(_this4.controls[key], key);
       });
     };
 
@@ -667,11 +705,26 @@
       key: "disabled",
       get: function get() {
         return this.all_('disabled', true);
+      },
+      set: function set(disabled) {
+        this.forEach_(function (control) {
+          control.disabled = disabled;
+        });
       }
     }, {
       key: "enabled",
       get: function get() {
         return this.any_('enabled', true);
+      }
+    }, {
+      key: "submitted",
+      get: function get() {
+        return this.all_('submitted', true);
+      },
+      set: function set(submitted) {
+        this.forEach_(function (control) {
+          control.submitted = submitted;
+        });
       }
     }, {
       key: "dirty",
@@ -689,11 +742,9 @@
         return this.all_('touched', true);
       },
       set: function set(touched) {
-        // this.touched_ = touched;
         this.forEach_(function (control) {
           control.touched = touched;
         });
-        this.statusSubject.next(this);
       }
     }, {
       key: "untouched",
@@ -708,7 +759,11 @@
           return result;
         }, {});
       },
-      set: function set(value) {}
+      set: function set(value) {
+        this.forEach_(function (control, key) {
+          control.value = value[key];
+        });
+      }
     }]);
 
     return FormAbstractCollection;
@@ -770,39 +825,6 @@
 
       return _FormAbstractCollecti.call(this, controls, validators) || this;
     }
-    /*
-    forEach_(callback) {
-    	Object.keys(this.controls).forEach(key => callback(this.controls[key], key));
-    }
-    	get(key) {
-    	return this.controls[key];
-    }
-    	set(control, key) {
-    	if (this.controls[key]) {
-    		// unsubscribe;
-    	}
-    	delete(this.controls[key]);
-    	if (control) {
-    		this.controls[key] = control;
-    	}
-    	// subscribe
-    }
-    	add(control, key) {
-    	if (control) {
-    		// unsubscribe;
-    		this.controls[key] = control;
-    		// subscribe
-    	}
-    }
-    	remove(key) {
-    	if (this.controls[key]) {
-    		// unsubscribe;
-    	}
-    	delete(this.controls[key]);
-    	// subscribe
-    }
-    */
-
 
     return FormGroup;
   }(FormAbstractCollection);
@@ -833,14 +855,12 @@
         // 'Appleseed',
         email: null,
         // 'jhonappleseed@gmail.com',
-        country: 1,
-        items: new FormArray([null, null, null])
+        country: null,
+        items: new FormArray([null, null, null], [RequiredValidator])
       }, [RequiredValidator]);
-      form.value$.subscribe(function (values) {// console.log('AppComponent.form.value', values);
-      });
-      form.status$.subscribe(function () {
-        // console.log('AppComponent.form.status$', form.valid);
-        // console.log('AppComponent.form.valid', form.valid);
+      form.changes$.subscribe(function (changes) {
+        console.log('AppComponent.form.changes$', changes, form.valid);
+
         _this.pushChanges();
       });
       this.form = form;
@@ -852,7 +872,10 @@
     };
 
     _proto.onSubmit = function onSubmit() {
-      console.log('AppComponent.onSubmit', this.form.value);
+      if (this.form.valid) {
+        console.log('AppComponent.onSubmit', this.form.value);
+        this.form.submitted = true;
+      }
     };
 
     return AppComponent;
@@ -877,55 +900,6 @@
     declarations: [],
     bootstrap: AppComponent
   };
-
-  /*
-  // fixing
-  Module.prototype.makeInputs = function(meta, instance) {
-  	const inputs = {};
-  	if (meta.inputs) {
-  		meta.inputs.forEach((key, i) => {
-  			const input = this.makeInput(instance, key);
-  			if (input) {
-  				inputs[key] = input;
-  			}
-  		});
-  	}
-  	return inputs;
-  };
-
-  // fixing
-  Module.prototype.makeInput = function(instance, key) {
-  	const { node } = getContext(instance);
-  	let input, expression = null;
-  	if (node.hasAttribute(key)) {
-  		expression = `'${node.getAttribute(key)}'`;
-  	} else if (node.hasAttribute(`[${key}]`)) {
-  		expression = node.getAttribute(`[${key}]`);
-  	}
-  	if (expression !== null) {
-  		input = this.makeFunction(expression);
-  	}
-  	return input;
-  };
-
-  // fixing
-  Module.prototype.getInstance = function(node) {
-  	if (node === document) {
-  		return window;
-  	}
-  	const context = getContextByNode(node); // !!!
-  	if (context) {
-  		return context.instance;
-  	}
-  };
-
-  // fixing
-  Module.prototype.getParentInstance = function(node) {
-  	return Module.traverseUp(node, (node) => {
-  		return this.getInstance(node);
-  	});
-  };
-  */
 
   rxcomp.Browser.bootstrap(AppModule);
 

@@ -1,5 +1,5 @@
-import { BehaviorSubject, combineLatest, merge } from 'rxjs';
-import { distinctUntilChanged, map, shareReplay, skip, tap } from 'rxjs/operators';
+import { combineLatest } from 'rxjs';
+import { map, shareReplay } from 'rxjs/operators';
 import FormAbstract from './form-abstract';
 import FormControl from './form-control';
 import FormStatus from './form-status';
@@ -27,6 +27,7 @@ export default class FormAbstractCollection extends FormAbstract {
 	}
 
 	initSubjects_() {
+		/*
 		this.valueSubject = new BehaviorSubject(null);
 		const valueChildren = this.reduce_((result, control) => {
 			result.push(control.value$);
@@ -44,25 +45,35 @@ export default class FormAbstractCollection extends FormAbstract {
 		this.statusChildren = combineLatest(statusChildren).pipe(
 			shareReplay(1)
 		);
+		*/
+		const changesChildren = this.reduce_((result, control) => {
+			result.push(control.changes$);
+			return result;
+		}, []);
+		this.changesChildren = combineLatest(changesChildren).pipe(
+			shareReplay(1)
+		);
 	}
 
 	initObservables_() {
+		/*
 		this.value$ = merge(this.valueSubject, this.valueChildren).pipe(
 			distinctUntilChanged(),
 			skip(1),
-			tap(value => {
-				this.dirty_ = true;
-				// if (value === this.value) {
+			tap(any => {
 				this.statusSubject.next(this);
-				// }
 			}),
 			shareReplay(1)
 		);
 		this.status$ = merge(this.statusSubject, this.statusChildren).pipe(
-			// auditTime(1),
-			tap(status => {
+			tap(any => {
 				this.reduceValidators_();
 			}),
+			shareReplay(1)
+		);
+		*/
+		this.changes$ = this.changesChildren.pipe(
+			map(any => this.value),
 			shareReplay(1)
 		);
 	}
@@ -111,17 +122,28 @@ export default class FormAbstractCollection extends FormAbstract {
 	get pending() { return this.any_('pending', true); }
 	get disabled() { return this.all_('disabled', true); }
 	get enabled() { return this.any_('enabled', true); }
+	get submitted() { return this.all_('submitted', true); }
 	get dirty() { return this.any_('dirty', true); }
 	get pristine() { return this.all_('pristine', true); }
 	get touched() { return this.all_('touched', true); }
 	get untouched() { return this.any_('untouched', true); }
 
+	set disabled(disabled) {
+		this.forEach_(control => {
+			control.disabled = disabled;
+		});
+	}
+
+	set submitted(submitted) {
+		this.forEach_(control => {
+			control.submitted = submitted;
+		});
+	}
+
 	set touched(touched) {
-		// this.touched_ = touched;
 		this.forEach_(control => {
 			control.touched = touched;
 		});
-		this.statusSubject.next(this);
 	}
 
 	get value() {
@@ -131,7 +153,11 @@ export default class FormAbstractCollection extends FormAbstract {
 		}, {});
 	}
 
-	set value(value) {}
+	set value(value) {
+		this.forEach_((control, key) => {
+			control.value = value[key];
+		});
+	}
 
 	reset() {
 		this.forEach_(control => control.reset());

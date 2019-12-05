@@ -25,30 +25,31 @@
 			</a>
 		</div>
 		<!-- (submit) parentInstance should be app-component -->
-		<form [formGroup]="form" (submit)="onValidate() && onSubmit()" name="form" role="form" novalidate autocomplete="off">
+		<form [formGroup]="form" (submit)="onSubmit()" name="form" role="form" novalidate autocomplete="off">
 			<fieldset>
 				<!-- <div class="group--form" [controlGroup]="form.get('firstName')"> -->
 				<div class="group--form">
 					<i class="icon--remove" [class]="{ active: form.get('firstName').dirty }" (click)="form.get('firstName').reset()"></i>
-					<input type="text" class="control--text" [formControl]="form.get('firstName')" placeholder="firstName" />
+					<input type="text" class="control--text" [formControl]="form.get('firstName')" placeholder="firstName" name="firstName" />
 					<i class="icon--check"></i>
 				</div>
 				<div class="group--form" [controlGroupName]="'lastName'">
 					<i class="icon--remove" (click)="control.reset()"></i>
-					<input type="text" class="control--text" [formControl]="control" placeholder="lastName" />
+					<input type="text" class="control--text" [formControl]="control" placeholder="lastName" name="lastName" />
 					<i class="icon--check"></i>
 				</div>
 				<div class="group--form" [controlGroup]="form.get('email')">
 					<i class="icon--remove" (click)="control.reset()"></i>
-					<input type="email" class="control--text" [formControl]="control" placeholder="email" pattern="[A-Za-z]{3}" title="Three letter country code" />
+					<input type="email" class="control--text" [formControl]="control" placeholder="email" name="email" pattern="[A-Za-z]{3}" title="Three letter country code" />
 					<i class="icon--check"></i>
 				</div>
-				<div class="group--form" [controlGroup]="form.get('country')">
+				<div class="group--form group--form--select" [controlGroup]="form.get('country')">
 					<select class="control--select" [formControl]="control">
-						<option value="-1">select</option>
+						<option>select</option>
 						<option value="0">1</option>
 						<option value="1">2</option>
 					</select>
+					<i class="icon--chevron-down"></i>
 				</div>
 				<div class="group--form" *for="let item of form.get('items').controls">
 					<i class="icon--remove" (click)="form.get('items').remove(item)"></i>
@@ -56,7 +57,10 @@
 				</div>
 			</fieldset>
 			<div class="group--form">
-				<button type="submit" class="btn--submit">Send</button>
+				<button type="submit" class="btn--submit">
+					<span *if="!form.submitted">Send</span>
+					<span *if="form.submitted">Sent!</span>
+				</button>
 			</div>
 			<div class="group--form group--form--fixed">
 				<code [innerHTML]="form.value | json"></code>

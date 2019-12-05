@@ -8,17 +8,12 @@ export default class AppComponent extends Component {
 			firstName: null, // 'Jhon',
 			lastName: null, // 'Appleseed',
 			email: null, // 'jhonappleseed@gmail.com',
-			country: 1,
-			items: new FormArray([null, null, null]),
+			country: null,
+			items: new FormArray([null, null, null], [RequiredValidator]),
 		}, [RequiredValidator]);
 
-		form.value$.subscribe(values => {
-			// console.log('AppComponent.form.value', values);
-		});
-
-		form.status$.subscribe(() => {
-			// console.log('AppComponent.form.status$', form.valid);
-			// console.log('AppComponent.form.valid', form.valid);
+		form.changes$.subscribe((changes) => {
+			console.log('AppComponent.form.changes$', changes, form.valid);
 			this.pushChanges();
 		});
 
@@ -31,7 +26,10 @@ export default class AppComponent extends Component {
 	}
 
 	onSubmit() {
-		console.log('AppComponent.onSubmit', this.form.value);
+		if (this.form.valid) {
+			console.log('AppComponent.onSubmit', this.form.value);
+			this.form.submitted = true;
+		}
 	}
 
 }
