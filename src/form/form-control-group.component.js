@@ -1,5 +1,5 @@
 import { Component, getContext } from 'rxcomp';
-import { FormAttributes } from './form-status';
+import { FormAttributes } from './models/form-status';
 
 export default class FormControlGroupComponent extends Component {
 

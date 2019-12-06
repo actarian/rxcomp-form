@@ -45,17 +45,22 @@
 				</div>
 				<div class="group--form group--form--select" [controlGroup]="form.get('country')">
 					<select class="control--select" [formControl]="control">
-						<option>select</option>
-						<option value="0">1</option>
-						<option value="1">2</option>
+						<option value="">select</option>
+						<option value="en-US">English</option>
+						<option value="it-IT">Italiano</option>
 					</select>
 					<i class="icon--chevron-down"></i>
 				</div>
 				<div class="group--form" *for="let item of form.get('items').controls">
-					<i class="icon--remove" (click)="form.get('items').remove(item)"></i>
-					<input type="text" class="control--text" [formControl]="item" placeholder="item" />
+					<i class="icon--remove active" (click)="form.get('items').remove(item)"></i>
+					<input type="text" class="control--text" [formControl]="item" [placeholder]="'item-' + index" />
 				</div>
 			</fieldset>
+			<div class="group--form">
+				<button type="button" class="btn--add" (click)="form.get('items').push()">
+					<span>Add Item</span>
+				</button>
+			</div>
 			<div class="group--form">
 				<button type="submit" class="btn--submit">
 					<span *if="!form.submitted">Send</span>

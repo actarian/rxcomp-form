@@ -1,8 +1,8 @@
-import { combineLatest } from 'rxjs';
-import { map, shareReplay } from 'rxjs/operators';
+import { BehaviorSubject, combineLatest } from 'rxjs';
+import { map, shareReplay, switchAll } from 'rxjs/operators';
 import FormAbstract from './form-abstract';
 import FormControl from './form-control';
-import FormStatus from './form-status';
+import FormStatus from './models/form-status';
 
 export default class FormAbstractCollection extends FormAbstract {
 
@@ -21,7 +21,7 @@ export default class FormAbstractCollection extends FormAbstract {
 
 	initControls_(controls) {
 		this.forEach_((control, key) => {
-			this.set(this.initControl_(control), key);
+			this.init(control, key);
 		});
 		return controls;
 	}
@@ -46,6 +46,7 @@ export default class FormAbstractCollection extends FormAbstract {
 			shareReplay(1)
 		);
 		*/
+		/*
 		const changesChildren = this.reduce_((result, control) => {
 			result.push(control.changes$);
 			return result;
@@ -53,6 +54,19 @@ export default class FormAbstractCollection extends FormAbstract {
 		this.changesChildren = combineLatest(changesChildren).pipe(
 			shareReplay(1)
 		);
+		*/
+		this.changesChildren = new BehaviorSubject().pipe(
+			switchAll()
+		);
+		this.switchSubjects_();
+	}
+
+	switchSubjects_() {
+		const changesChildren = this.reduce_((result, control) => {
+			result.push(control.changes$);
+			return result;
+		}, []);
+		this.changesChildren.next(combineLatest(changesChildren));
 	}
 
 	initObservables_() {
@@ -167,35 +181,39 @@ export default class FormAbstractCollection extends FormAbstract {
 		this.forEach_((control, key) => control.patch(value[key]));
 	}
 
+	init(control, key) {
+		this.controls[key] = this.initControl_(control);
+	}
+
 	get(key) {
 		return this.controls[key];
 	}
 
 	set(control, key) {
-		if (this.controls[key]) {
-			// unsubscribe;
-		}
 		delete(this.controls[key]);
-		if (control) {
-			this.controls[key] = control;
-		}
-		// subscribe
+		this.controls[key] = this.initControl_(control);
+		this.switchSubjects_();
 	}
 
+	// !!! needed?
 	add(control, key) {
-		if (control) {
-			// unsubscribe;
-			this.controls[key] = control;
-			// subscribe
+		this.controls[key] = this.initControl_(control);
+		this.switchSubjects_();
+	}
+
+	remove(control) {
+		const key = Object.keys(this.controls).find(key => this.controls[key] === control ? key : null);
+		if (key) {
+			this.removeKey(key);
 		}
 	}
 
-	remove(key) {
-		if (this.controls[key]) {
-			// unsubscribe;
-		}
+	removeKey(key) {
+		const changed = this.controls[key] !== undefined;
 		delete(this.controls[key]);
-		// subscribe
+		if (changed) {
+			this.switchSubjects_();
+		}
 	}
 
 }

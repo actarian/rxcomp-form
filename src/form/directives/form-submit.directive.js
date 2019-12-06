@@ -2,9 +2,7 @@ import { Directive, getContext } from 'rxcomp';
 import { fromEvent } from 'rxjs';
 import { shareReplay, takeUntil, tap } from 'rxjs/operators';
 
-const EVENTS = ['submit'];
-
-export default class SubmitDirective extends Directive {
+export default class FormSubmitDirective extends Directive {
 
 	onInit() {
 		const { module, node, selector, parentInstance } = getContext(this);
@@ -33,6 +31,6 @@ export default class SubmitDirective extends Directive {
 
 }
 
-SubmitDirective.meta = {
-	selector: `[(${EVENTS.join(')],[(')})]`,
+FormSubmitDirective.meta = {
+	selector: `[(submit)]`,
 };

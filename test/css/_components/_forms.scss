@@ -18,6 +18,10 @@
 		-webkit-box-shadow: 0 0 0px 1000px $background inset;
 		transition: background-color 5000s ease-in-out 0s;
 	}
+
+	&::placeholder {
+		font-family: $font-primary;
+	}
 }
 
 .group--form {
@@ -137,7 +141,7 @@ input.valid+.icon--check {
 	margin: 0;
 	padding: 7px 10px 7px 15px;
 	font-size: 23px;
-	font-weight: 900;
+	font-weight: 600;
 	appearance: none;
 
 	&::placeholder {
@@ -168,7 +172,13 @@ input.valid+.icon--check {
 
 }
 
-.btn--submit {
+%btn--disabled {
+	opacity: 0.5;
+	background: rgb(125, 125, 125);
+	color: white;
+}
+
+%btn {
 	display: block;
 	width: 100%;
 	padding: 10px;
@@ -177,9 +187,18 @@ input.valid+.icon--check {
 	text-transform: uppercase;
 	margin: 5px 0;
 	border-radius: 5px;
+	transition: all ease-in-out 350ms;
+
+	.submitted & {
+		@extend %btn--disabled;
+	}
+}
+
+.btn--submit {
+	@extend %btn;
+
 	background: #4CAF50;
 	color: white;
-	transition: all ease-in-out 350ms;
 
 	&:hover,
 	&:active,
@@ -188,14 +207,21 @@ input.valid+.icon--check {
 		color: white;
 	}
 
-	.invalid &,
-	.submitted & {
-		background: rgb(125, 125, 125);
-		color: white;
-		opacity: 0.5;
+	.invalid & {
+		@extend %btn--disabled;
 	}
 }
 
-::placeholder {
-	font-family: $font-primary;
+.btn--add {
+	@extend %btn;
+
+	background: rgb(211, 131, 60);
+	color: white;
+
+	&:hover,
+	&:active,
+	&:focus {
+		background: rgb(211, 131, 60);
+		color: white;
+	}
 }

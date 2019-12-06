@@ -1,10 +1,14 @@
 export { default as FormModule } from './form.module';
+export { default as FormCollectionDirective } from './form/directives/form-collection.directive';
+export { default as FormPlaceholderDirective } from './form/directives/form-placeholder.directive';
+export { default as FormValueDirective } from './form/directives/form-value.directive';
 export { default as FormAbstract } from './form/form-abstract';
 export { default as FormAbstractCollection } from './form/form-abstract-collection';
 export { default as FormArray } from './form/form-array';
+export { default as FormArrayComponent } from './form/form-array.component';
 export { default as FormControl } from './form/form-control';
 export { default as FormControlDirective } from './form/form-control.directive';
 export { default as FormGroup } from './form/form-group';
 export { default as FormGroupComponent } from './form/form-group.component';
-export { default as FormStatus } from './form/form-status';
-export { RequiredValidator } from './form/form-validators';
+export { default as FormStatus } from './form/models/form-status';
+export { RequiredValidator } from './form/validators/required.validator';

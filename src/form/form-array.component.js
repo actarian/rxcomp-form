@@ -1,18 +1,18 @@
 import { Component, getContext } from 'rxcomp';
 import { FormAttributes } from './models/form-status';
 
-export default class FormGroupComponent extends Component {
+export default class FormArrayComponent extends Component {
 
 	get form() {
-		// console.log('FormGroupComponent', (this.formGroupName ? `formGroupName ${this.formGroupName}` : `formGroup ${this.formGroup}`));
-		if (this.formGroup) {
-			return this.formGroup;
+		// console.log('FormArrayComponent', (this.formArrayName ? `formArrayName ${this.formArrayName}` : `formArray ${this.formArray}`));
+		if (this.formArray) {
+			return this.formArray;
 		} else {
 			const { parentInstance } = getContext(this);
 			if (!parentInstance.form) {
 				throw ('missing form');
 			}
-			return parentInstance.form.get(this.formGroupName);
+			return parentInstance.form.get(this.formArrayName);
 		}
 	}
 
@@ -30,7 +30,7 @@ export default class FormGroupComponent extends Component {
 
 }
 
-FormGroupComponent.meta = {
-	selector: '[[formGroup]],[[formGroupName]],[formGroupName]',
-	inputs: ['formGroup', 'formGroupName'],
+FormArrayComponent.meta = {
+	selector: '[[formArray]],[[formArrayName]],[formArrayName]',
+	inputs: ['formArray', 'formArrayName'],
 };

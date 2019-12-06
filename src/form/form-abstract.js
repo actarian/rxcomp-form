@@ -1,6 +1,6 @@
 import { BehaviorSubject, merge, Subject } from "rxjs";
 import { distinctUntilChanged, map, shareReplay, skip, tap } from 'rxjs/operators';
-import FormStatus from './form-status';
+import FormStatus from './models/form-status';
 
 export default class FormAbstract {
 	constructor(validators = []) {

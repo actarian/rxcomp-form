@@ -40,6 +40,100 @@
     return self;
   }
 
+  var FormPlaceholderDirective =
+  /*#__PURE__*/
+  function (_Directive) {
+    _inheritsLoose(FormPlaceholderDirective, _Directive);
+
+    function FormPlaceholderDirective() {
+      return _Directive.apply(this, arguments) || this;
+    }
+
+    var _proto = FormPlaceholderDirective.prototype;
+
+    _proto.onChanges = function onChanges(changes) {
+      var _getContext = rxcomp.getContext(this),
+          node = _getContext.node;
+
+      node.placeholder = this.placeholder;
+      console.log(this.placeholder);
+    };
+
+    return FormPlaceholderDirective;
+  }(rxcomp.Directive);
+  FormPlaceholderDirective.meta = {
+    selector: 'input[placeholder], input[[placeholder]], textarea[placeholder], textarea[[placeholder]]',
+    inputs: ['placeholder']
+  };
+
+  var FormSubmitDirective =
+  /*#__PURE__*/
+  function (_Directive) {
+    _inheritsLoose(FormSubmitDirective, _Directive);
+
+    function FormSubmitDirective() {
+      return _Directive.apply(this, arguments) || this;
+    }
+
+    var _proto = FormSubmitDirective.prototype;
+
+    _proto.onInit = function onInit() {
+      var _getContext = rxcomp.getContext(this),
+          module = _getContext.module,
+          node = _getContext.node,
+          selector = _getContext.selector,
+          parentInstance = _getContext.parentInstance;
+
+      var event = this.event = selector.replace(/\[|\]|\(|\)/g, '');
+      var event$ = this.event$ = rxjs.fromEvent(node, event).pipe(operators.tap(function (event) {
+        event.preventDefault(); // console.log('event');
+      }), operators.shareReplay(1));
+      var expression = node.getAttribute("(" + event + ")");
+
+      if (expression) {
+        var outputFunction = module.makeFunction(expression, ['$event']);
+        event$.pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (event) {
+          module.resolve(outputFunction, parentInstance, event);
+        });
+      } else {
+        parentInstance[event + "$"] = event$;
+      } // console.log('parentInstance', parentInstance);
+      // console.log('EventDirective.onInit', 'selector', selector, 'event', event);
+
+    };
+
+    return FormSubmitDirective;
+  }(rxcomp.Directive);
+  FormSubmitDirective.meta = {
+    selector: "[(submit)]"
+  };
+
+  var FormValueDirective =
+  /*#__PURE__*/
+  function (_Directive) {
+    _inheritsLoose(FormValueDirective, _Directive);
+
+    function FormValueDirective() {
+      return _Directive.apply(this, arguments) || this;
+    }
+
+    var _proto = FormValueDirective.prototype;
+
+    _proto.onChanges = function onChanges(changes) {
+      var _getContext = rxcomp.getContext(this),
+          node = _getContext.node;
+
+      node.value = this.value;
+      console.log(this.value);
+    };
+
+    return FormValueDirective;
+  }(rxcomp.Directive);
+  FormValueDirective.meta = {
+    selector: 'input[value], input[[value]], textarea[value], textarea[[value]]',
+    inputs: ['value']
+  };
+
   var FormStatus = {
     Pending: 'pending',
     Valid: 'valid',
@@ -47,6 +141,57 @@
     Disabled: 'disabled'
   };
   var FormAttributes = ['untouched', 'touched', 'pristine', 'dirty', 'pending', 'enabled', 'disabled', 'valid', 'invalid', 'submitted'];
+
+  var FormArrayComponent =
+  /*#__PURE__*/
+  function (_Component) {
+    _inheritsLoose(FormArrayComponent, _Component);
+
+    function FormArrayComponent() {
+      return _Component.apply(this, arguments) || this;
+    }
+
+    var _proto = FormArrayComponent.prototype;
+
+    _proto.onChanges = function onChanges(changes) {
+      var _getContext = rxcomp.getContext(this),
+          node = _getContext.node;
+
+      var form = this.form;
+      FormAttributes.forEach(function (x) {
+        if (form[x]) {
+          node.classList.add(x);
+        } else {
+          node.classList.remove(x);
+        }
+      });
+    };
+
+    _createClass(FormArrayComponent, [{
+      key: "form",
+      get: function get() {
+        // console.log('FormArrayComponent', (this.formArrayName ? `formArrayName ${this.formArrayName}` : `formArray ${this.formArray}`));
+        if (this.formArray) {
+          return this.formArray;
+        } else {
+          var _getContext2 = rxcomp.getContext(this),
+              parentInstance = _getContext2.parentInstance;
+
+          if (!parentInstance.form) {
+            throw 'missing form';
+          }
+
+          return parentInstance.form.get(this.formArrayName);
+        }
+      }
+    }]);
+
+    return FormArrayComponent;
+  }(rxcomp.Component);
+  FormArrayComponent.meta = {
+    selector: '[[formArray]],[[formArrayName]],[formArrayName]',
+    inputs: ['formArray', 'formArrayName']
+  };
 
   var FormControlGroupComponent =
   /*#__PURE__*/
@@ -211,6 +356,52 @@
     selector: 'input,textarea,select',
     inputs: ['formControl', 'formControlName']
   };
+  /*
+
+  LEGACY
+  button: 		A push button with no default behavior.
+  checkbox: 		A check box allowing single values to be selected/deselected.
+  file: 			A control that lets the user select a file. Use the accept attribute to define the types of files that the control can select.
+  hidden: 		A control that is not displayed but whose value is submitted to the server.
+  image: 			A graphical submit button. You must use the src attribute to define the source of the image and the alt attribute to define alternative text. You can use the height and width attributes to define the size of the image in pixels.
+  password: 		A single-line text field whose value is obscured. Use the maxlength and minlength attributes to specify the maximum length of the value that can be entered.
+  				Note: Any forms involving sensitive information like passwords (e.g. login forms) should be served over HTTPS;
+  				Firefox now implements multiple mechanisms to warn against insecure login forms — see Insecure passwords.
+  				Other browsers are also implementing similar mechanisms.
+
+  radio: 			A radio button, allowing a single value to be selected out of multiple choices.
+  reset: 			A button that resets the contents of the form to default values.
+  submit: 		A button that submits the form.
+  text: 			A single-line text field. Line-breaks are automatically removed from the input value.
+
+  HTML5
+  color: 			(ie) A control for specifying a color. A color picker's UI has no required features other than accepting simple colors as text (more info).
+  date: 			(ie) A control for entering a date (year, month, and day, with no time).
+  datetime-local: (ie) A control for entering a date and time, with no time zone.
+  email: 			A field for editing an e-mail address.
+  month: 			(ie) A control for entering a month and year, with no time zone.
+  number: 		A control for entering a number.
+  range: 			A control for entering a number whose exact value is not important.
+  search: 		A single-line text field for entering search strings. Line-breaks are automatically removed from the input value.
+  tel: 			A control for entering a telephone number.
+  time: 			(ie) A control for entering a time value with no time zone.
+  url: 			A field for entering a URL.
+  week: 			(ie) A control for entering a date consisting of a week-year number and a week number with no time zone.
+
+  ATTRIBUTES
+  autocomplete	A string indicating the type of autocomplete functionality, if any, to allow on the input
+  autofocus		A Boolean which, if present, makes the input take focus when the form is presented
+  disabled		A Boolean attribute which is present if the input should be disabled
+  form			The id of the <form> of which the input is a member; if absent, the input is a member of the nearest containing form, or is not a member of a form at all
+  list			The id of a <datalist> element that provides a list of suggested values for the input
+  name			The input's name, to identify the input in the data submitted with the form's data
+  readonly		A Boolean attribute which, if true, indicates that the input cannot be edited
+  required		A Boolean which, if true, indicates that the input must have a value before the form can be submitted
+  tabindex		A numeric value providing guidance to the user agent as to the order in which controls receive focus when the user presses the Tab key
+  type			A string indicating which input type the <input> element represents
+  value			The input's current value
+
+  */
 
   var FormGroupComponent =
   /*#__PURE__*/
@@ -263,50 +454,6 @@
     inputs: ['formGroup', 'formGroupName']
   };
 
-  var EVENTS = ['submit'];
-
-  var SubmitDirective =
-  /*#__PURE__*/
-  function (_Directive) {
-    _inheritsLoose(SubmitDirective, _Directive);
-
-    function SubmitDirective() {
-      return _Directive.apply(this, arguments) || this;
-    }
-
-    var _proto = SubmitDirective.prototype;
-
-    _proto.onInit = function onInit() {
-      var _getContext = rxcomp.getContext(this),
-          module = _getContext.module,
-          node = _getContext.node,
-          selector = _getContext.selector,
-          parentInstance = _getContext.parentInstance;
-
-      var event = this.event = selector.replace(/\[|\]|\(|\)/g, '');
-      var event$ = this.event$ = rxjs.fromEvent(node, event).pipe(operators.tap(function (event) {
-        event.preventDefault(); // console.log('event');
-      }), operators.shareReplay(1));
-      var expression = node.getAttribute("(" + event + ")");
-
-      if (expression) {
-        var outputFunction = module.makeFunction(expression, ['$event']);
-        event$.pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (event) {
-          module.resolve(outputFunction, parentInstance, event);
-        });
-      } else {
-        parentInstance[event + "$"] = event$;
-      } // console.log('parentInstance', parentInstance);
-      // console.log('EventDirective.onInit', 'selector', selector, 'event', event);
-
-    };
-
-    return SubmitDirective;
-  }(rxcomp.Directive);
-  SubmitDirective.meta = {
-    selector: "[(" + EVENTS.join(')],[(') + ")]"
-  };
-
   var FormModule =
   /*#__PURE__*/
   function (_Module) {
@@ -318,7 +465,7 @@
 
     return FormModule;
   }(rxcomp.Module);
-  var factories = [FormControlDirective, FormGroupComponent, FormControlGroupComponent, SubmitDirective];
+  var factories = [FormArrayComponent, FormControlDirective, FormControlGroupComponent, FormGroupComponent, FormPlaceholderDirective, FormValueDirective, FormSubmitDirective];
   var pipes = [];
   FormModule.meta = {
     declarations: [].concat(factories, pipes),
@@ -544,7 +691,7 @@
       var _this2 = this;
 
       this.forEach_(function (control, key) {
-        _this2.set(_this2.initControl_(control), key);
+        _this2.init(control, key);
       });
       return controls;
     };
@@ -569,11 +716,26 @@
       	shareReplay(1)
       );
       */
+
+      /*
+      const changesChildren = this.reduce_((result, control) => {
+      	result.push(control.changes$);
+      	return result;
+      }, []);
+      this.changesChildren = combineLatest(changesChildren).pipe(
+      	shareReplay(1)
+      );
+      */
+      this.changesChildren = new rxjs.BehaviorSubject().pipe(operators.switchAll());
+      this.switchSubjects_();
+    };
+
+    _proto.switchSubjects_ = function switchSubjects_() {
       var changesChildren = this.reduce_(function (result, control) {
         result.push(control.changes$);
         return result;
       }, []);
-      this.changesChildren = rxjs.combineLatest(changesChildren).pipe(operators.shareReplay(1));
+      this.changesChildren.next(rxjs.combineLatest(changesChildren));
     };
 
     _proto.initObservables_ = function initObservables_() {
@@ -660,32 +822,45 @@
       });
     };
 
+    _proto.init = function init(control, key) {
+      this.controls[key] = this.initControl_(control);
+    };
+
     _proto.get = function get(key) {
       return this.controls[key];
     };
 
     _proto.set = function set(control, key) {
-      if (this.controls[key]) ;
-
       delete this.controls[key];
-
-      if (control) {
-        this.controls[key] = control;
-      } // subscribe
-
-    };
+      this.controls[key] = this.initControl_(control);
+      this.switchSubjects_();
+    } // !!! needed?
+    ;
 
     _proto.add = function add(control, key) {
-      if (control) {
-        // unsubscribe;
-        this.controls[key] = control; // subscribe
+      this.controls[key] = this.initControl_(control);
+      this.switchSubjects_();
+    };
+
+    _proto.remove = function remove(control) {
+      var _this5 = this;
+
+      var key = Object.keys(this.controls).find(function (key) {
+        return _this5.controls[key] === control ? key : null;
+      });
+
+      if (key) {
+        this.removeKey(key);
       }
     };
 
-    _proto.remove = function remove(key) {
-      if (this.controls[key]) ;
+    _proto.removeKey = function removeKey(key) {
+      var changed = this.controls[key] !== undefined;
+      delete this.controls[key];
 
-      delete this.controls[key]; // subscribe
+      if (changed) {
+        this.switchSubjects_();
+      }
     };
 
     _createClass(FormAbstractCollection, [{
@@ -792,14 +967,54 @@
       });
     };
 
-    /*
-    get(key) {
-    	return this.controls[key];
-    }
-    */
-    _proto.set = function set(control, key) {
+    _proto.init = function init(control, key) {
       this.controls.length = Math.max(this.controls.length, key);
-      this.controls[key] = control;
+      this.controls[key] = this.initControl_(control);
+    };
+
+    _proto.set = function set(control, key) {
+      // this.controls.length = Math.max(this.controls.length, key);
+      // this.controls[key] = this.initControl_(control);
+      this.controls.splice(key, 1, this.initControl_(control));
+      this.switchSubjects_();
+    } // !!! needed?
+    ;
+
+    _proto.add = function add(control, key) {
+      this.controls.length = Math.max(this.controls.length, key);
+      this.controls[key] = this.initControl_(control);
+      this.switchSubjects_();
+    };
+
+    _proto.push = function push(control) {
+      // this.controls.length = Math.max(this.controls.length, key);
+      // this.controls[key] = this.initControl_(control);
+      this.controls.push(this.initControl_(control));
+      this.switchSubjects_();
+    };
+
+    _proto.insert = function insert(control, key) {
+      this.controls.splice(key, 0, this.initControl_(control));
+      this.switchSubjects_();
+    };
+
+    _proto.remove = function remove(control) {
+      var key = this.controls.indexOf(control);
+
+      if (key !== -1) {
+        this.removeKey(key);
+      }
+    };
+
+    _proto.removeKey = function removeKey(key) {
+      if (this.controls[key]) {
+        this.controls.splice(key, 1);
+        this.switchSubjects_();
+      }
+    };
+
+    _proto.at = function at(key) {
+      return this.controls[key];
     };
 
     _createClass(FormArray, [{
@@ -808,7 +1023,12 @@
         return this.reduce_(function (result, control, key) {
           result[key] = control.value;
           return result;
-        }, []);
+        }, []); // init as array
+      }
+    }, {
+      key: "length",
+      get: function get() {
+        return this.controls.length;
       }
     }]);
 
