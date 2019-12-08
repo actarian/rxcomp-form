@@ -242,6 +242,7 @@ button,
   margin: 13px 10px 7px 0;
   pointer-events: none;
   opacity: 0.3;
+  color: green;
   cursor: pointer; }
   .enabled.dirty > .icon--remove, .icon--remove.active {
     pointer-events: all;
@@ -277,59 +278,68 @@ input.valid + .icon--check {
   border-radius: 0px;
   outline: none;
   width: 100%;
-  margin: 0;
+  margin: 5px 10px 0 0;
   padding: 0 20px 0 0;
-  font-size: 23px;
-  font-weight: 800;
+  font-size: 19px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  line-height: 1.5;
   border: none;
-  outline: none;
-  border-bottom: 4px solid transparent;
-  margin-top: 5px; }
+  outline: 0;
+  border-bottom: 4px solid transparent; }
   .control--text:-webkit-autofill, .control--text:-webkit-autofill:hover, .control--text:-webkit-autofill:focus {
     background: transparent;
     color: #212121;
     border: 0px solid transparent;
     border-radius: 0px;
-    font-size: 20px;
-    font-weight: bold;
+    font-size: 19px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    line-height: 1.5;
     -webkit-text-fill-color: #212121;
     -webkit-box-shadow: 0 0 0px 1000px transparent inset;
+            box-shadow: 0 0 0px 1000px transparent inset;
     -webkit-transition: background-color 5000s ease-in-out 0s;
     transition: background-color 5000s ease-in-out 0s; }
   .control--text::-webkit-input-placeholder {
-    font-family: "Open Sans", sans-serif; }
+    font-family: "Open Sans", sans-serif;
+    font-size: 19px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    line-height: 1.5;
+    color: rgba(98, 108, 98, 0.2); }
   .control--text::-moz-placeholder {
-    font-family: "Open Sans", sans-serif; }
+    font-family: "Open Sans", sans-serif;
+    font-size: 19px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    line-height: 1.5;
+    color: rgba(98, 108, 98, 0.2); }
   .control--text:-ms-input-placeholder {
-    font-family: "Open Sans", sans-serif; }
+    font-family: "Open Sans", sans-serif;
+    font-size: 19px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    line-height: 1.5;
+    color: rgba(98, 108, 98, 0.2); }
   .control--text::-ms-input-placeholder {
-    font-family: "Open Sans", sans-serif; }
+    font-family: "Open Sans", sans-serif;
+    font-size: 19px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    line-height: 1.5;
+    color: rgba(98, 108, 98, 0.2); }
   .control--text::placeholder {
-    font-family: "Open Sans", sans-serif; }
-  .control--text::-webkit-input-placeholder {
-    font-size: 23px;
-    font-weight: 800;
-    color: rgba(33, 33, 33, 0.2); }
-  .control--text::-moz-placeholder {
-    font-size: 23px;
-    font-weight: 800;
-    color: rgba(33, 33, 33, 0.2); }
-  .control--text:-ms-input-placeholder {
-    font-size: 23px;
-    font-weight: 800;
-    color: rgba(33, 33, 33, 0.2); }
-  .control--text::-ms-input-placeholder {
-    font-size: 23px;
-    font-weight: 800;
-    color: rgba(33, 33, 33, 0.2); }
-  .control--text::placeholder {
-    font-size: 23px;
-    font-weight: 800;
-    color: rgba(33, 33, 33, 0.2); }
+    font-family: "Open Sans", sans-serif;
+    font-size: 19px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    line-height: 1.5;
+    color: rgba(98, 108, 98, 0.2); }
   .control--text.pristine {
     color: black; }
   .control--text.dirty {
-    color: plum; }
+    color: green; }
   .control--text.touched {
     color: gray; }
   .control--text.valid {
@@ -345,7 +355,7 @@ input.valid + .icon--check {
     top: 50%;
     margin-top: -10px;
     font-size: 14px;
-    color: rgba(0, 0, 0, 0.3);
+    color: rgba(0, 128, 0, 0.3);
     pointer-events: none; }
 
 .control--select {
@@ -356,9 +366,13 @@ input.valid + .icon--check {
   outline: none;
   width: 100%;
   margin: 0;
-  padding: 7px 10px 7px 15px;
-  font-size: 23px;
-  font-weight: 600;
+  padding: 7px 35px 7px 19px;
+  font-size: 19px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  line-height: 1.5;
+  border: none;
+  outline: 0;
   -webkit-appearance: none;
      -moz-appearance: none;
           appearance: none; }
@@ -367,52 +381,106 @@ input.valid + .icon--check {
     color: white;
     border: 0px solid transparent;
     border-radius: 3px;
-    font-size: 20px;
-    font-weight: bold;
+    font-size: 19px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    line-height: 1.5;
     -webkit-text-fill-color: white;
     -webkit-box-shadow: 0 0 0px 1000px #e0e0e0 inset;
+            box-shadow: 0 0 0px 1000px #e0e0e0 inset;
     -webkit-transition: background-color 5000s ease-in-out 0s;
     transition: background-color 5000s ease-in-out 0s; }
   .control--select::-webkit-input-placeholder {
-    font-family: "Open Sans", sans-serif; }
+    font-family: "Open Sans", sans-serif;
+    font-size: 19px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    line-height: 1.5;
+    color: rgba(98, 108, 98, 0.2); }
   .control--select::-moz-placeholder {
-    font-family: "Open Sans", sans-serif; }
+    font-family: "Open Sans", sans-serif;
+    font-size: 19px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    line-height: 1.5;
+    color: rgba(98, 108, 98, 0.2); }
   .control--select:-ms-input-placeholder {
-    font-family: "Open Sans", sans-serif; }
+    font-family: "Open Sans", sans-serif;
+    font-size: 19px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    line-height: 1.5;
+    color: rgba(98, 108, 98, 0.2); }
   .control--select::-ms-input-placeholder {
-    font-family: "Open Sans", sans-serif; }
+    font-family: "Open Sans", sans-serif;
+    font-size: 19px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    line-height: 1.5;
+    color: rgba(98, 108, 98, 0.2); }
   .control--select::placeholder {
-    font-family: "Open Sans", sans-serif; }
-  .control--select::-webkit-input-placeholder {
-    font-size: 23px;
-    font-weight: 800;
-    color: rgba(33, 33, 33, 0.2); }
-  .control--select::-moz-placeholder {
-    font-size: 23px;
-    font-weight: 800;
-    color: rgba(33, 33, 33, 0.2); }
-  .control--select:-ms-input-placeholder {
-    font-size: 23px;
-    font-weight: 800;
-    color: rgba(33, 33, 33, 0.2); }
-  .control--select::-ms-input-placeholder {
-    font-size: 23px;
-    font-weight: 800;
-    color: rgba(33, 33, 33, 0.2); }
-  .control--select::placeholder {
-    font-size: 23px;
-    font-weight: 800;
-    color: rgba(33, 33, 33, 0.2); }
+    font-family: "Open Sans", sans-serif;
+    font-size: 19px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    line-height: 1.5;
+    color: rgba(98, 108, 98, 0.2); }
   .control--select.pristine {
     color: black; }
   .control--select.dirty {
-    color: plum; }
+    color: green; }
   .control--select.touched {
     color: gray; }
   .control--select.valid {
-    border-color: green; }
+    border-color: green;
+    color: green; }
   .control--select.invalid:not(.pristine) {
-    border-color: red; }
+    color: red; }
+
+.group--radio label,
+.group--checkbox label {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  font-size: 14px;
+  letter-spacing: 0.5px;
+  margin-right: 10px;
+  padding: 2px 4px;
+  border-radius: 3px;
+  background: #e0e0e0;
+  color: green;
+  cursor: pointer; }
+  .group--radio label input,
+  .group--checkbox label input {
+    -webkit-appearance: none;
+       -moz-appearance: none;
+            appearance: none;
+    padding: 0;
+    margin: 0 4px;
+    border: 2px solid green;
+    outline: 0; }
+    .group--radio label input:checked,
+    .group--checkbox label input:checked {
+      background: green; }
+
+.group--radio input {
+  width: 12px;
+  height: 12px;
+  border-radius: 7px; }
+
+.group--radio span {
+  margin: 0 5px 0 4px; }
+
+.group--checkbox input {
+  width: 11px;
+  height: 11px;
+  border-radius: 2px; }
+
+.group--checkbox span {
+  margin: 0 5px; }
 
 .submitted .btn--submit, .submitted .btn--add, .invalid .btn--submit {
   opacity: 0.5;

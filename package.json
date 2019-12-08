@@ -2,7 +2,7 @@
 	"author": "Luca Zampetti <lzampetti@gmail.com>",
 	"name": "rxcomp-form",
 	"description": "rxcomp-form",
-	"version": "1.0.0-alpha.8",
+	"version": "1.0.0-alpha.11",
 	"license": "MIT",
 	"repository": {
 		"type": "git",
@@ -22,7 +22,7 @@
 	},
 	"dependencies": {
 		"rxjs": "~6.5.3",
-		"rxcomp": "1.0.0-alpha.8"
+		"rxcomp": "1.0.0-alpha.11"
 	},
 	"devDependencies": {
 		"@babel/core": "~7.6.4",

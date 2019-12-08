@@ -27,29 +27,37 @@
 		<!-- (submit) parentInstance should be app-component -->
 		<form [formGroup]="form" (submit)="onSubmit()" name="form" role="form" novalidate autocomplete="off">
 			<fieldset>
-				<!-- <div class="group--form" [controlGroup]="form.get('firstName')"> -->
+				<!-- <div class="group--form" [formField]="form.get('firstName')"> -->
 				<div class="group--form">
 					<i class="icon--remove" [class]="{ active: form.get('firstName').dirty }" (click)="form.get('firstName').reset()"></i>
 					<input type="text" class="control--text" [formControl]="form.get('firstName')" placeholder="firstName" name="firstName" />
 					<i class="icon--check"></i>
 				</div>
-				<div class="group--form" [controlGroupName]="'lastName'">
+				<div class="group--form" [formFieldName]="'lastName'">
 					<i class="icon--remove" (click)="control.reset()"></i>
 					<input type="text" class="control--text" [formControl]="control" placeholder="lastName" name="lastName" />
 					<i class="icon--check"></i>
 				</div>
-				<div class="group--form" [controlGroup]="form.get('email')">
+				<div class="group--form" [formField]="form.get('email')">
 					<i class="icon--remove" (click)="control.reset()"></i>
 					<input type="email" class="control--text" [formControl]="control" placeholder="email" name="email" pattern="[A-Za-z]{3}" title="Three letter country code" />
 					<i class="icon--check"></i>
 				</div>
-				<div class="group--form group--form--select" [controlGroup]="form.get('country')">
+				<div class="group--form group--form--select" formFieldName="country">
 					<select class="control--select" [formControl]="control">
 						<option value="">select</option>
 						<option value="en-US">English</option>
 						<option value="it-IT">Italiano</option>
 					</select>
 					<i class="icon--chevron-down"></i>
+				</div>
+				<div class="group--form group--radio" [formField]="form.get('evaluate')">
+					<label><input type="radio" class="control--radio" [formControl]="control" name="evaluate" value="free" /><span>free</span></label>
+					<label><input type="radio" class="control--radio" [formControl]="control" name="evaluate" value="pro" /><span>pro</span></label>
+					<label><input type="radio" class="control--radio" [formControl]="control" name="evaluate" value="enterprise" /><span>enterprise</span></label>
+				</div>
+				<div class="group--form group--checkbox" formFieldName="privacy">
+					<label><input type="checkbox" class="control--checkbox" [formControl]="control" [value]="true" /><span>accept privacy</span></label>
 				</div>
 				<div class="group--form" *for="let item of form.get('items').controls">
 					<i class="icon--remove active" (click)="form.get('items').remove(item)"></i>
@@ -74,7 +82,7 @@
 	</main>
 	<script src="https://polyfill.io/v3/polyfill.min.js?features=es5%2CArray.prototype.find%2CObject.assign"></script>
 	<script src="https://unpkg.com/@reactivex/rxjs@6.5.3/dist/global/rxjs.umd.min.js"></script>
-	<script src="https://unpkg.com/rxcomp@1.0.0-alpha.8/dist/rxcomp.min.js"></script>
+	<script src="https://unpkg.com/rxcomp@1.0.0-alpha.11/dist/rxcomp.min.js"></script>
 	<script src="js/main.min.js"></script>
 </body>
 

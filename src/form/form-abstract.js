@@ -21,7 +21,7 @@ export default class FormAbstract {
 		this.value$ = merge(this.valueSubject, this.valueChildren).pipe(
 			distinctUntilChanged(),
 			skip(1),
-			tap(any => {
+			tap(() => {
 				this.submitted_ = false;
 				this.dirty_ = true;
 				this.statusSubject.next(this);
@@ -30,13 +30,13 @@ export default class FormAbstract {
 		);
 		this.status$ = merge(this.statusSubject, this.statusChildren).pipe(
 			// auditTime(1),
-			tap(any => {
+			tap(() => {
 				this.reduceValidators_();
 			}),
 			shareReplay(1)
 		);
 		this.changes$ = merge(this.value$, this.status$).pipe(
-			map(any => this.value),
+			map(() => this.value),
 			shareReplay(1)
 		);
 	}
@@ -50,10 +50,10 @@ export default class FormAbstract {
 			// this.errors = {};
 			this.errors = [];
 		} else {
-			// this.errors = Object.assign({}, ...this.validators.map(x => x(value)));
-			// this.status = Object.keys(this.errors).length === 0 ? FormStatus.Valid : FormStatus.Invalid;
-			this.errors = this.validators.map(x => x(value)).filter(x => x !== null);
-			this.status = this.errors.length === 0 ? FormStatus.Valid : FormStatus.Invalid;
+			this.errors = Object.assign({}, ...this.validators.map(x => x(value)));
+			this.status = Object.keys(this.errors).length === 0 ? FormStatus.Valid : FormStatus.Invalid;
+			// this.errors = this.validators.map(x => x(value)).filter(x => x !== null);
+			// this.status = this.errors.length === 0 ? FormStatus.Valid : FormStatus.Invalid;
 		}
 		return this.errors;
 	}

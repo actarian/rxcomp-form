@@ -1,20 +1,24 @@
 import { Module } from 'rxcomp';
+import FormArrayDirective from './form/directives/form-array.directive';
+import FormCheckboxDirective from './form/directives/form-checkbox.directive';
+import FormFieldComponent from './form/directives/form-field.component';
+import FormGroupDirective from './form/directives/form-group.directive';
+import FormInputDirective from './form/directives/form-input.directive';
 import FormPlaceholderDirective from './form/directives/form-placeholder.directive';
+import FormRadioDirective from './form/directives/form-radio.directive';
+import FormSelectDirective from './form/directives/form-select.directive';
 import FormSubmitDirective from './form/directives/form-submit.directive';
-import FormValueDirective from './form/directives/form-value.directive';
-import FormArrayComponent from './form/form-array.component';
-import FormControlGroupComponent from './form/form-control-group.component';
-import FormControlDirective from './form/form-control.directive';
-import FormGroupComponent from './form/form-group.component';
 
 export default class FormModule extends Module {}
 const factories = [
-	FormArrayComponent,
-	FormControlDirective,
-	FormControlGroupComponent,
-	FormGroupComponent,
+	FormArrayDirective,
+	FormCheckboxDirective,
+	FormFieldComponent,
+	FormInputDirective,
+	FormRadioDirective,
+	FormSelectDirective,
+	FormGroupDirective,
 	FormPlaceholderDirective,
-	FormValueDirective,
 	FormSubmitDirective,
 ];
 const pipes = [

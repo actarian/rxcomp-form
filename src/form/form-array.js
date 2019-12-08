@@ -60,7 +60,7 @@ export default class FormArray extends FormAbstractCollection {
 	}
 
 	removeKey(key) {
-		if (this.controls[key]) {
+		if (this.controls.length > key) {
 			this.controls.splice(key, 1);
 			this.switchSubjects_();
 		}

@@ -1,5 +1,5 @@
 /**
- * @license rxcomp-form v1.0.0-alpha.8
+ * @license rxcomp-form v1.0.0-alpha.11
  * (c) 2019 Luca Zampetti <lzampetti@gmail.com>
  * License: MIT
  */
@@ -40,6 +40,451 @@
     return self;
   }
 
+  var FormStatus = {
+    Pending: 'pending',
+    Valid: 'valid',
+    Invalid: 'invalid',
+    Disabled: 'disabled'
+  };
+  var FormAttributes = ['untouched', 'touched', 'pristine', 'dirty', 'pending', 'enabled', 'disabled', 'valid', 'invalid', 'submitted'];
+
+  var FormAbstractCollectionDirective =
+  /*#__PURE__*/
+  function (_Directive) {
+    _inheritsLoose(FormAbstractCollectionDirective, _Directive);
+
+    function FormAbstractCollectionDirective() {
+      return _Directive.apply(this, arguments) || this;
+    }
+
+    var _proto = FormAbstractCollectionDirective.prototype;
+
+    _proto.onChanges = function onChanges(changes) {
+      var _getContext = rxcomp.getContext(this),
+          node = _getContext.node;
+
+      var control = this.control;
+      FormAttributes.forEach(function (x) {
+        if (control[x]) {
+          node.classList.add(x);
+        } else {
+          node.classList.remove(x);
+        }
+      });
+    };
+
+    _createClass(FormAbstractCollectionDirective, [{
+      key: "control",
+      get: function get() {
+        return {};
+      }
+    }]);
+
+    return FormAbstractCollectionDirective;
+  }(rxcomp.Directive);
+  FormAbstractCollectionDirective.meta = {
+    // no selection, abstract class
+    hosts: {
+      host: FormAbstractCollectionDirective
+    }
+  };
+
+  var FormArrayDirective =
+  /*#__PURE__*/
+  function (_FormAbstractCollecti) {
+    _inheritsLoose(FormArrayDirective, _FormAbstractCollecti);
+
+    function FormArrayDirective() {
+      return _FormAbstractCollecti.apply(this, arguments) || this;
+    }
+
+    _createClass(FormArrayDirective, [{
+      key: "control",
+      get: function get() {
+        // console.log('FormArrayDirective', (this.formArrayName ? `formArrayName ${this.formArrayName}` : `formArray ${this.formArray}`));
+        if (this.formArray) {
+          return this.formArray;
+        } else {
+          if (!this.host) {
+            throw 'missing form collection';
+          }
+
+          return this.host.control.get(this.formArrayName);
+        }
+      }
+    }]);
+
+    return FormArrayDirective;
+  }(FormAbstractCollectionDirective);
+  FormArrayDirective.meta = {
+    selector: '[formArray],[formArrayName]',
+    inputs: ['formArray', 'formArrayName'],
+    hosts: {
+      host: FormAbstractCollectionDirective
+    }
+  };
+
+  var FormAbstractDirective =
+  /*#__PURE__*/
+  function (_Directive) {
+    _inheritsLoose(FormAbstractDirective, _Directive);
+
+    function FormAbstractDirective() {
+      return _Directive.apply(this, arguments) || this;
+    }
+
+    var _proto = FormAbstractDirective.prototype;
+
+    _proto.onInit = function onInit() {
+      var _getContext = rxcomp.getContext(this),
+          node = _getContext.node;
+
+      this.node = node;
+      this.onChange = this.onChange.bind(this);
+      this.onBlur = this.onBlur.bind(this); // this.onFocus = this.onFocus.bind(this);
+
+      node.addEventListener('input', this.onChange);
+      node.addEventListener('change', this.onChange);
+      node.addEventListener('blur', this.onBlur); // node.addEventListener('focus', this.onFocus);
+    };
+
+    _proto.onChanges = function onChanges(changes) {
+      var _getContext2 = rxcomp.getContext(this),
+          node = _getContext2.node;
+
+      var control = this.control;
+      /*
+      // remove all invalids then
+      Object.keys(control.errors).forEach(key => {
+      	node.classList.add(`invalid-${key}`);
+      });
+      */
+
+      FormAttributes.forEach(function (x) {
+        if (control[x]) {
+          node.classList.add(x);
+        } else {
+          node.classList.remove(x);
+        }
+      });
+      this.writeValue(control.value);
+    };
+
+    _proto.writeValue = function writeValue(value) {
+      var _getContext3 = rxcomp.getContext(this),
+          node = _getContext3.node; // node.setAttribute('value', value == null ? '' : value);
+
+
+      node.value = value == null ? '' : value;
+    };
+
+    _proto.onChange = function onChange(event) {
+      var _getContext4 = rxcomp.getContext(this),
+          node = _getContext4.node;
+
+      this.control.value = node.value === '' ? null : node.value;
+    };
+
+    _proto.onBlur = function onBlur(event) {
+      this.control.touched = true;
+    } // onFocus(event) {}
+    ;
+
+    _proto.setDisabledState = function setDisabledState(disabled) {
+      var _getContext5 = rxcomp.getContext(this),
+          node = _getContext5.node;
+
+      node.disabled = disabled; // node.setAttribute('disabled', disabled);
+    };
+
+    _createClass(FormAbstractDirective, [{
+      key: "control",
+      get: function get() {
+        if (this.formControl) {
+          return this.formControl;
+        } else {
+          if (!this.host) {
+            throw 'missing form collection';
+          }
+
+          return this.host.control.get(this.formControlName);
+        }
+      }
+    }]);
+
+    return FormAbstractDirective;
+  }(rxcomp.Directive);
+  FormAbstractDirective.meta = {
+    // no selection, abstract class
+    inputs: ['formControl', 'formControlName', 'value'],
+    hosts: {
+      host: FormAbstractCollectionDirective
+    }
+  };
+  /*
+
+  LEGACY
+  button: 		A push button with no default behavior.
+  checkbox: 		A check box allowing single values to be selected/deselected.
+  file: 			A control that lets the user select a file. Use the accept attribute to define the types of files that the control can select.
+  hidden: 		A control that is not displayed but whose value is submitted to the server.
+  image: 			A graphical submit button. You must use the src attribute to define the source of the image and the alt attribute to define alternative text. You can use the height and width attributes to define the size of the image in pixels.
+  password: 		A single-line text field whose value is obscured. Use the maxlength and minlength attributes to specify the maximum length of the value that can be entered.
+  				Note: Any forms involving sensitive information like passwords (e.g. login forms) should be served over HTTPS;
+  				Firefox now implements multiple mechanisms to warn against insecure login forms — see Insecure passwords.
+  				Other browsers are also implementing similar mechanisms.
+
+  radio: 			A radio button, allowing a single value to be selected out of multiple choices.
+  reset: 			A button that resets the contents of the form to default values.
+  submit: 		A button that submits the form.
+  text: 			A single-line text field. Line-breaks are automatically removed from the input value.
+
+  */
+
+  /*
+
+  HTML5
+  color: 			(ie) A control for specifying a color. A color picker's UI has no required features other than accepting simple colors as text (more info).
+  date: 			(ie) A control for entering a date (year, month, and day, with no time).
+  datetime-local: (ie) A control for entering a date and time, with no time zone.
+  email: 			A field for editing an e-mail address.
+  month: 			(ie) A control for entering a month and year, with no time zone.
+  number: 		A control for entering a number.
+  range: 			A control for entering a number whose exact value is not important.
+  search: 		A single-line text field for entering search strings. Line-breaks are automatically removed from the input value.
+  tel: 			A control for entering a telephone number.
+  time: 			(ie) A control for entering a time value with no time zone.
+  url: 			A field for entering a URL.
+  week: 			(ie) A control for entering a date consisting of a week-year number and a week number with no time zone.
+
+  */
+
+  /*
+
+  ATTRIBUTES
+  autocomplete	A string indicating the type of autocomplete functionality, if any, to allow on the input
+  autofocus		A Boolean which, if present, makes the input take focus when the form is presented
+  disabled		A Boolean attribute which is present if the input should be disabled
+  form			The id of the <form> of which the input is a member; if absent, the input is a member of the nearest containing form, or is not a member of a form at all
+  list			The id of a <datalist> element that provides a list of suggested values for the input
+  name			The input's name, to identify the input in the data submitted with the form's data
+  readonly		A Boolean attribute which, if true, indicates that the input cannot be edited
+  required		A Boolean which, if true, indicates that the input must have a value before the form can be submitted
+  tabindex		A numeric value providing guidance to the user agent as to the order in which controls receive focus when the user presses the Tab key
+  type			A string indicating which input type the <input> element represents
+  value			The input's current value
+
+  */
+
+  var FormCheckboxDirective =
+  /*#__PURE__*/
+  function (_FormAbstractDirectiv) {
+    _inheritsLoose(FormCheckboxDirective, _FormAbstractDirectiv);
+
+    function FormCheckboxDirective() {
+      return _FormAbstractDirectiv.apply(this, arguments) || this;
+    }
+
+    var _proto = FormCheckboxDirective.prototype;
+
+    _proto.onInit = function onInit() {
+      var _getContext = rxcomp.getContext(this),
+          node = _getContext.node;
+
+      this.node = node; // log(node.getAttributeNode('formControl').value);
+      // log('name', node.name);
+
+      this.onChange = this.onChange.bind(this);
+      this.onBlur = this.onBlur.bind(this); // this.onFocus = this.onFocus.bind(this);
+
+      node.addEventListener('input', this.onChange); // node.addEventListener('change', this.onChange);
+
+      node.addEventListener('blur', this.onBlur); // node.addEventListener('focus', this.onFocus);
+    };
+
+    _proto.writeValue = function writeValue(value) {
+      var _getContext2 = rxcomp.getContext(this),
+          node = _getContext2.node;
+
+      value === this.value ? node.setAttribute('checked', value) : node.removeAttribute('checked');
+      /*
+      const checked = (node.value === value);
+      if (node.checked !== checked) {
+      	node.checked = checked;
+      }
+      */
+    };
+
+    _proto.setDisabledState = function setDisabledState(disabled) {
+      var _getContext3 = rxcomp.getContext(this),
+          node = _getContext3.node;
+
+      node.disabled = disabled;
+    };
+
+    _proto.onChange = function onChange(event) {
+      var _getContext4 = rxcomp.getContext(this),
+          node = _getContext4.node;
+
+      this.control.value = node.checked ? this.value : this.value === true ? false : null;
+    };
+
+    _proto.onBlur = function onBlur(event) {
+      this.control.touched = true;
+    } // onFocus(event) {}
+    ;
+
+    return FormCheckboxDirective;
+  }(FormAbstractDirective);
+  FormCheckboxDirective.meta = {
+    selector: 'input[type=checkbox][formControl],input[type=checkbox][formControlName]',
+    inputs: ['formControl', 'formControlName', 'value'],
+    hosts: {
+      host: FormAbstractCollectionDirective
+    }
+  };
+  /*
+
+  ATTRIBUTES
+  autocomplete	A string indicating the type of autocomplete functionality, if any, to allow on the input
+  autofocus		A Boolean which, if present, makes the input take focus when the form is presented
+  disabled		A Boolean attribute which is present if the input should be disabled
+  form			The id of the <form> of which the input is a member; if absent, the input is a member of the nearest containing form, or is not a member of a form at all
+  list			The id of a <datalist> element that provides a list of suggested values for the input
+  name			The input's name, to identify the input in the data submitted with the form's data
+  readonly		A Boolean attribute which, if true, indicates that the input cannot be edited
+  required		A Boolean which, if true, indicates that the input must have a value before the form can be submitted
+  tabindex		A numeric value providing guidance to the user agent as to the order in which controls receive focus when the user presses the Tab key
+  type			A string indicating which input type the <input> element represents
+  value			The input's current value
+
+  */
+
+  var FormFieldComponent =
+  /*#__PURE__*/
+  function (_Component) {
+    _inheritsLoose(FormFieldComponent, _Component);
+
+    function FormFieldComponent() {
+      return _Component.apply(this, arguments) || this;
+    }
+
+    var _proto = FormFieldComponent.prototype;
+
+    _proto.onChanges = function onChanges(changes) {
+      var _getContext = rxcomp.getContext(this),
+          node = _getContext.node;
+
+      var control = this.control;
+      FormAttributes.forEach(function (x) {
+        if (control[x]) {
+          node.classList.add(x);
+        } else {
+          node.classList.remove(x);
+        }
+      });
+    };
+
+    _createClass(FormFieldComponent, [{
+      key: "control",
+      get: function get() {
+        // console.log('FormFieldComponent', (this.formFieldName ? `formFieldName ${this.formFieldName}` : `formField ${this.formField}`));
+        if (this.formField) {
+          return this.formField;
+        } else {
+          if (!this.host) {
+            throw 'missing form collection';
+          }
+
+          return this.host.control.get(this.formFieldName);
+        }
+      }
+    }]);
+
+    return FormFieldComponent;
+  }(rxcomp.Component);
+  FormFieldComponent.meta = {
+    selector: '[formField],[formFieldName]',
+    inputs: ['formField', 'formFieldName'],
+    hosts: {
+      host: FormAbstractCollectionDirective
+    }
+  };
+
+  var FormGroupDirective =
+  /*#__PURE__*/
+  function (_FormAbstractCollecti) {
+    _inheritsLoose(FormGroupDirective, _FormAbstractCollecti);
+
+    function FormGroupDirective() {
+      return _FormAbstractCollecti.apply(this, arguments) || this;
+    }
+
+    _createClass(FormGroupDirective, [{
+      key: "control",
+      get: function get() {
+        // console.log('FormGroupDirective', (this.formGroupName ? `formGroupName ${this.formGroupName}` : `formGroup ${this.formGroup}`));
+        if (this.formGroup) {
+          return this.formGroup;
+        } else {
+          if (!this.host) {
+            throw 'missing form collection';
+          }
+
+          return this.host.control.get(this.formGroupName);
+        }
+      }
+    }]);
+
+    return FormGroupDirective;
+  }(FormAbstractCollectionDirective);
+  FormGroupDirective.meta = {
+    selector: '[formGroup],[formGroupName]',
+    inputs: ['formGroup', 'formGroupName'],
+    hosts: {
+      host: FormAbstractCollectionDirective
+    }
+  };
+
+  var FormInputDirective =
+  /*#__PURE__*/
+  function (_FormAbstractDirectiv) {
+    _inheritsLoose(FormInputDirective, _FormAbstractDirectiv);
+
+    function FormInputDirective() {
+      return _FormAbstractDirectiv.apply(this, arguments) || this;
+    }
+
+    var _proto = FormInputDirective.prototype;
+
+    _proto.writeValue = function writeValue(value) {
+      var _getContext = rxcomp.getContext(this),
+          node = _getContext.node;
+
+      node.value = value == null ? '' : value;
+    };
+
+    _proto.onChange = function onChange(event) {
+      var _getContext2 = rxcomp.getContext(this),
+          node = _getContext2.node;
+
+      this.control.value = node.value === '' ? null : node.value;
+    };
+
+    _proto.onBlur = function onBlur(event) {
+      this.control.touched = true;
+    };
+
+    return FormInputDirective;
+  }(FormAbstractDirective);
+  FormInputDirective.meta = {
+    selector: 'input[type=text][formControl],input[type=text][formControlName],input[type=email][formControl],input[type=email][formControlName],input[type=password][formControl],input[type=password][formControlName],textarea[formControl],textarea[formControlName]',
+    inputs: ['formControl', 'formControlName'],
+    hosts: {
+      host: FormAbstractCollectionDirective
+    }
+  };
+
   var FormPlaceholderDirective =
   /*#__PURE__*/
   function (_Directive) {
@@ -56,14 +501,122 @@
           node = _getContext.node;
 
       node.placeholder = this.placeholder;
-      console.log(this.placeholder);
     };
 
     return FormPlaceholderDirective;
   }(rxcomp.Directive);
   FormPlaceholderDirective.meta = {
-    selector: 'input[placeholder], input[[placeholder]], textarea[placeholder], textarea[[placeholder]]',
+    selector: 'input[placeholder],textarea[placeholder]',
     inputs: ['placeholder']
+  };
+
+  var FormRadioDirective =
+  /*#__PURE__*/
+  function (_FormAbstractDirectiv) {
+    _inheritsLoose(FormRadioDirective, _FormAbstractDirectiv);
+
+    function FormRadioDirective() {
+      return _FormAbstractDirectiv.apply(this, arguments) || this;
+    }
+
+    var _proto = FormRadioDirective.prototype;
+
+    _proto.onInit = function onInit() {
+      var _getContext = rxcomp.getContext(this),
+          node = _getContext.node;
+
+      this.node = node; // log(node.getAttributeNode('formControl').value);
+      // log('name', node.name);
+
+      this.onChange = this.onChange.bind(this);
+      this.onBlur = this.onBlur.bind(this); // this.onFocus = this.onFocus.bind(this);
+
+      node.addEventListener('input', this.onChange); // node.addEventListener('change', this.onChange);
+
+      node.addEventListener('blur', this.onBlur); // node.addEventListener('focus', this.onFocus);
+    };
+
+    _proto.writeValue = function writeValue(value) {
+      var _getContext2 = rxcomp.getContext(this),
+          node = _getContext2.node;
+
+      node.checked = node.value === value;
+    };
+
+    _proto.setDisabledState = function setDisabledState(disabled) {
+      var _getContext3 = rxcomp.getContext(this),
+          node = _getContext3.node;
+
+      node.disabled = disabled;
+    };
+
+    _proto.onChange = function onChange(event) {
+      var _getContext4 = rxcomp.getContext(this),
+          node = _getContext4.node;
+
+      if (node.checked) {
+        this.control.value = node.value;
+      }
+    };
+
+    _proto.onBlur = function onBlur(event) {
+      this.control.touched = true;
+    };
+
+    return FormRadioDirective;
+  }(FormAbstractDirective);
+  FormRadioDirective.meta = {
+    selector: 'input[type=radio][formControl],input[type=radio][formControlName]',
+    inputs: ['formControl', 'formControlName'],
+    hosts: {
+      host: FormAbstractCollectionDirective
+    }
+  };
+
+  var FormSelectDirective =
+  /*#__PURE__*/
+  function (_FormAbstractDirectiv) {
+    _inheritsLoose(FormSelectDirective, _FormAbstractDirectiv);
+
+    function FormSelectDirective() {
+      return _FormAbstractDirectiv.apply(this, arguments) || this;
+    }
+
+    var _proto = FormSelectDirective.prototype;
+
+    _proto.writeValue = function writeValue(value) {
+      var _getContext = rxcomp.getContext(this),
+          node = _getContext.node;
+
+      node.value = value == null ? '' : value;
+    };
+
+    _proto.setDisabledState = function setDisabledState(disabled) {
+      var _getContext2 = rxcomp.getContext(this),
+          node = _getContext2.node;
+
+      node.disabled = disabled;
+    };
+
+    _proto.onChange = function onChange(event) {
+      var _getContext3 = rxcomp.getContext(this),
+          node = _getContext3.node;
+
+      this.control.value = node.value === '' ? null : node.value;
+    };
+
+    _proto.onBlur = function onBlur(event) {
+      this.control.touched = true;
+    };
+
+    return FormSelectDirective;
+  }(FormAbstractDirective);
+  FormSelectDirective.meta = {
+    selector: 'select[formControl],select[formControlName]',
+    inputs: ['formControl', 'formControlName'],
+    hosts: {
+      host: FormAbstractCollectionDirective
+    }
   };
 
   var FormSubmitDirective =
@@ -108,352 +661,6 @@
     selector: "[(submit)]"
   };
 
-  var FormValueDirective =
-  /*#__PURE__*/
-  function (_Directive) {
-    _inheritsLoose(FormValueDirective, _Directive);
-
-    function FormValueDirective() {
-      return _Directive.apply(this, arguments) || this;
-    }
-
-    var _proto = FormValueDirective.prototype;
-
-    _proto.onChanges = function onChanges(changes) {
-      var _getContext = rxcomp.getContext(this),
-          node = _getContext.node;
-
-      node.value = this.value;
-      console.log(this.value);
-    };
-
-    return FormValueDirective;
-  }(rxcomp.Directive);
-  FormValueDirective.meta = {
-    selector: 'input[value], input[[value]], textarea[value], textarea[[value]]',
-    inputs: ['value']
-  };
-
-  var FormStatus = {
-    Pending: 'pending',
-    Valid: 'valid',
-    Invalid: 'invalid',
-    Disabled: 'disabled'
-  };
-  var FormAttributes = ['untouched', 'touched', 'pristine', 'dirty', 'pending', 'enabled', 'disabled', 'valid', 'invalid', 'submitted'];
-
-  var FormArrayComponent =
-  /*#__PURE__*/
-  function (_Component) {
-    _inheritsLoose(FormArrayComponent, _Component);
-
-    function FormArrayComponent() {
-      return _Component.apply(this, arguments) || this;
-    }
-
-    var _proto = FormArrayComponent.prototype;
-
-    _proto.onChanges = function onChanges(changes) {
-      var _getContext = rxcomp.getContext(this),
-          node = _getContext.node;
-
-      var form = this.form;
-      FormAttributes.forEach(function (x) {
-        if (form[x]) {
-          node.classList.add(x);
-        } else {
-          node.classList.remove(x);
-        }
-      });
-    };
-
-    _createClass(FormArrayComponent, [{
-      key: "form",
-      get: function get() {
-        // console.log('FormArrayComponent', (this.formArrayName ? `formArrayName ${this.formArrayName}` : `formArray ${this.formArray}`));
-        if (this.formArray) {
-          return this.formArray;
-        } else {
-          var _getContext2 = rxcomp.getContext(this),
-              parentInstance = _getContext2.parentInstance;
-
-          if (!parentInstance.form) {
-            throw 'missing form';
-          }
-
-          return parentInstance.form.get(this.formArrayName);
-        }
-      }
-    }]);
-
-    return FormArrayComponent;
-  }(rxcomp.Component);
-  FormArrayComponent.meta = {
-    selector: '[[formArray]],[[formArrayName]],[formArrayName]',
-    inputs: ['formArray', 'formArrayName']
-  };
-
-  var FormControlGroupComponent =
-  /*#__PURE__*/
-  function (_Component) {
-    _inheritsLoose(FormControlGroupComponent, _Component);
-
-    function FormControlGroupComponent() {
-      return _Component.apply(this, arguments) || this;
-    }
-
-    var _proto = FormControlGroupComponent.prototype;
-
-    _proto.onChanges = function onChanges(changes) {
-      var _getContext = rxcomp.getContext(this),
-          node = _getContext.node;
-
-      var control = this.control;
-      FormAttributes.forEach(function (x) {
-        if (control[x]) {
-          node.classList.add(x);
-        } else {
-          node.classList.remove(x);
-        }
-      });
-    };
-
-    _createClass(FormControlGroupComponent, [{
-      key: "control",
-      get: function get() {
-        // console.log('FormControlGroupComponent', (this.controlGroupName ? `controlGroupName ${this.controlGroupName}` : `controlGroup ${this.controlGroup}`));
-        if (this.controlGroup) {
-          return this.controlGroup;
-        } else {
-          var _getContext2 = rxcomp.getContext(this),
-              parentInstance = _getContext2.parentInstance;
-
-          if (!parentInstance.form) {
-            throw 'missing form';
-          }
-
-          return parentInstance.form.get(this.controlGroupName);
-        }
-      }
-    }]);
-
-    return FormControlGroupComponent;
-  }(rxcomp.Component);
-  FormControlGroupComponent.meta = {
-    selector: '[[controlGroup]],[[controlGroupName]],[controlGroupName]',
-    inputs: ['controlGroup', 'controlGroupName']
-  };
-
-  var FormControlDirective =
-  /*#__PURE__*/
-  function (_Directive) {
-    _inheritsLoose(FormControlDirective, _Directive);
-
-    function FormControlDirective() {
-      return _Directive.apply(this, arguments) || this;
-    }
-
-    var _proto = FormControlDirective.prototype;
-
-    _proto.onInit = function onInit() {
-      var _getContext = rxcomp.getContext(this),
-          node = _getContext.node;
-
-      this.node = node; // log(node.getAttributeNode('formControl').value);
-      // log('name', node.name);
-
-      this.onChange = this.onChange.bind(this);
-      this.onBlur = this.onBlur.bind(this); // this.onFocus = this.onFocus.bind(this);
-
-      node.addEventListener('input', this.onChange);
-      node.addEventListener('change', this.onChange);
-      node.addEventListener('blur', this.onBlur); // node.addEventListener('focus', this.onFocus);
-    };
-
-    _proto.onChanges = function onChanges(changes) {
-      var _getContext2 = rxcomp.getContext(this),
-          node = _getContext2.node;
-      /*
-      const pre = this.getPre(node);
-      pre.textContent = '';
-      */
-
-
-      var control = this.control;
-      FormAttributes.forEach(function (x) {
-        if (control[x]) {
-          node.classList.add(x); // pre.textContent += x + ', ';
-        } else {
-          node.classList.remove(x);
-        }
-      }); // control.errors.forEach(x => pre.textContent += `invalid-${x}, `);
-
-      this.writeValue(control.value);
-    };
-
-    _proto.writeValue = function writeValue(value) {
-      var _getContext3 = rxcomp.getContext(this),
-          node = _getContext3.node; // node.setAttribute('value', value == null ? '' : value);
-
-
-      node.value = value == null ? '' : value; // console.log(node, node.getAttribute('value'));
-    };
-
-    _proto.setDisabledState = function setDisabledState(disabled) {
-      var _getContext4 = rxcomp.getContext(this),
-          node = _getContext4.node;
-
-      node.disabled = disabled; // node.setAttribute('disabled', disabled);
-    };
-
-    _proto.onChange = function onChange(event) {
-      var _getContext5 = rxcomp.getContext(this),
-          node = _getContext5.node; // log(event.type);
-
-
-      this.control.value = node.value;
-    };
-
-    _proto.onFocus = function onFocus(event) {};
-
-    _proto.onBlur = function onBlur(event) {
-      // log(event.type);
-      this.control.touched = true;
-    };
-
-    _proto.getPre = function getPre(node) {
-      var pre = node.previousSibling;
-
-      if (!pre || pre.nodeType !== 3) {
-        pre = document.createTextNode('');
-        node.parentNode.insertBefore(pre, node);
-      }
-
-      return pre;
-    };
-
-    _createClass(FormControlDirective, [{
-      key: "control",
-      get: function get() {
-        if (this.formControl) {
-          return this.formControl;
-        } else {
-          var _getContext6 = rxcomp.getContext(this),
-              parentInstance = _getContext6.parentInstance;
-
-          if (!parentInstance.form) {
-            throw 'missing form';
-          }
-
-          return parentInstance.form.get(this.formControlName);
-        }
-      }
-    }]);
-
-    return FormControlDirective;
-  }(rxcomp.Directive);
-  FormControlDirective.meta = {
-    selector: 'input,textarea,select',
-    inputs: ['formControl', 'formControlName']
-  };
-  /*
-
-  LEGACY
-  button: 		A push button with no default behavior.
-  checkbox: 		A check box allowing single values to be selected/deselected.
-  file: 			A control that lets the user select a file. Use the accept attribute to define the types of files that the control can select.
-  hidden: 		A control that is not displayed but whose value is submitted to the server.
-  image: 			A graphical submit button. You must use the src attribute to define the source of the image and the alt attribute to define alternative text. You can use the height and width attributes to define the size of the image in pixels.
-  password: 		A single-line text field whose value is obscured. Use the maxlength and minlength attributes to specify the maximum length of the value that can be entered.
-  				Note: Any forms involving sensitive information like passwords (e.g. login forms) should be served over HTTPS;
-  				Firefox now implements multiple mechanisms to warn against insecure login forms — see Insecure passwords.
-  				Other browsers are also implementing similar mechanisms.
-
-  radio: 			A radio button, allowing a single value to be selected out of multiple choices.
-  reset: 			A button that resets the contents of the form to default values.
-  submit: 		A button that submits the form.
-  text: 			A single-line text field. Line-breaks are automatically removed from the input value.
-
-  HTML5
-  color: 			(ie) A control for specifying a color. A color picker's UI has no required features other than accepting simple colors as text (more info).
-  date: 			(ie) A control for entering a date (year, month, and day, with no time).
-  datetime-local: (ie) A control for entering a date and time, with no time zone.
-  email: 			A field for editing an e-mail address.
-  month: 			(ie) A control for entering a month and year, with no time zone.
-  number: 		A control for entering a number.
-  range: 			A control for entering a number whose exact value is not important.
-  search: 		A single-line text field for entering search strings. Line-breaks are automatically removed from the input value.
-  tel: 			A control for entering a telephone number.
-  time: 			(ie) A control for entering a time value with no time zone.
-  url: 			A field for entering a URL.
-  week: 			(ie) A control for entering a date consisting of a week-year number and a week number with no time zone.
-
-  ATTRIBUTES
-  autocomplete	A string indicating the type of autocomplete functionality, if any, to allow on the input
-  autofocus		A Boolean which, if present, makes the input take focus when the form is presented
-  disabled		A Boolean attribute which is present if the input should be disabled
-  form			The id of the <form> of which the input is a member; if absent, the input is a member of the nearest containing form, or is not a member of a form at all
-  list			The id of a <datalist> element that provides a list of suggested values for the input
-  name			The input's name, to identify the input in the data submitted with the form's data
-  readonly		A Boolean attribute which, if true, indicates that the input cannot be edited
-  required		A Boolean which, if true, indicates that the input must have a value before the form can be submitted
-  tabindex		A numeric value providing guidance to the user agent as to the order in which controls receive focus when the user presses the Tab key
-  type			A string indicating which input type the <input> element represents
-  value			The input's current value
-
-  */
-
-  var FormGroupComponent =
-  /*#__PURE__*/
-  function (_Component) {
-    _inheritsLoose(FormGroupComponent, _Component);
-
-    function FormGroupComponent() {
-      return _Component.apply(this, arguments) || this;
-    }
-
-    var _proto = FormGroupComponent.prototype;
-
-    _proto.onChanges = function onChanges(changes) {
-      var _getContext = rxcomp.getContext(this),
-          node = _getContext.node;
-
-      var form = this.form;
-      FormAttributes.forEach(function (x) {
-        if (form[x]) {
-          node.classList.add(x);
-        } else {
-          node.classList.remove(x);
-        }
-      });
-    };
-
-    _createClass(FormGroupComponent, [{
-      key: "form",
-      get: function get() {
-        // console.log('FormGroupComponent', (this.formGroupName ? `formGroupName ${this.formGroupName}` : `formGroup ${this.formGroup}`));
-        if (this.formGroup) {
-          return this.formGroup;
-        } else {
-          var _getContext2 = rxcomp.getContext(this),
-              parentInstance = _getContext2.parentInstance;
-
-          if (!parentInstance.form) {
-            throw 'missing form';
-          }
-
-          return parentInstance.form.get(this.formGroupName);
-        }
-      }
-    }]);
-
-    return FormGroupComponent;
-  }(rxcomp.Component);
-  FormGroupComponent.meta = {
-    selector: '[[formGroup]],[[formGroupName]],[formGroupName]',
-    inputs: ['formGroup', 'formGroupName']
-  };
-
   var FormModule =
   /*#__PURE__*/
   function (_Module) {
@@ -465,7 +672,7 @@
 
     return FormModule;
   }(rxcomp.Module);
-  var factories = [FormArrayComponent, FormControlDirective, FormControlGroupComponent, FormGroupComponent, FormPlaceholderDirective, FormValueDirective, FormSubmitDirective];
+  var factories = [FormArrayDirective, FormCheckboxDirective, FormFieldComponent, FormInputDirective, FormRadioDirective, FormSelectDirective, FormGroupDirective, FormPlaceholderDirective, FormSubmitDirective];
   var pipes = [];
   FormModule.meta = {
     declarations: [].concat(factories, pipes),
@@ -498,17 +705,17 @@
     _proto.initObservables_ = function initObservables_() {
       var _this = this;
 
-      this.value$ = rxjs.merge(this.valueSubject, this.valueChildren).pipe(operators.distinctUntilChanged(), operators.skip(1), operators.tap(function (any) {
+      this.value$ = rxjs.merge(this.valueSubject, this.valueChildren).pipe(operators.distinctUntilChanged(), operators.skip(1), operators.tap(function () {
         _this.submitted_ = false;
         _this.dirty_ = true;
 
         _this.statusSubject.next(_this);
       }), operators.shareReplay(1));
       this.status$ = rxjs.merge(this.statusSubject, this.statusChildren).pipe( // auditTime(1),
-      operators.tap(function (any) {
+      operators.tap(function () {
         _this.reduceValidators_();
       }), operators.shareReplay(1));
-      this.changes$ = rxjs.merge(this.value$, this.status$).pipe(operators.map(function (any) {
+      this.changes$ = rxjs.merge(this.value$, this.status$).pipe(operators.map(function () {
         return _this.value;
       }), operators.shareReplay(1));
     };
@@ -522,14 +729,11 @@
         // this.errors = {};
         this.errors = [];
       } else {
-        // this.errors = Object.assign({}, ...this.validators.map(x => x(value)));
-        // this.status = Object.keys(this.errors).length === 0 ? FormStatus.Valid : FormStatus.Invalid;
-        this.errors = this.validators.map(function (x) {
+        this.errors = Object.assign.apply(Object, [{}].concat(this.validators.map(function (x) {
           return x(value);
-        }).filter(function (x) {
-          return x !== null;
-        });
-        this.status = this.errors.length === 0 ? FormStatus.Valid : FormStatus.Invalid;
+        })));
+        this.status = Object.keys(this.errors).length === 0 ? FormStatus.Valid : FormStatus.Invalid; // this.errors = this.validators.map(x => x(value)).filter(x => x !== null);
+        // this.status = this.errors.length === 0 ? FormStatus.Valid : FormStatus.Invalid;
       }
 
       return this.errors;
@@ -735,7 +939,8 @@
         result.push(control.changes$);
         return result;
       }, []);
-      this.changesChildren.next(rxjs.combineLatest(changesChildren));
+      var changesChildren$ = changesChildren.length ? rxjs.combineLatest(changesChildren) : rxjs.of(changesChildren);
+      this.changesChildren.next(changesChildren$);
     };
 
     _proto.initObservables_ = function initObservables_() {
@@ -745,19 +950,19 @@
       this.value$ = merge(this.valueSubject, this.valueChildren).pipe(
       	distinctUntilChanged(),
       	skip(1),
-      	tap(any => {
+      	tap(() => {
       		this.statusSubject.next(this);
       	}),
       	shareReplay(1)
       );
       this.status$ = merge(this.statusSubject, this.statusChildren).pipe(
-      	tap(any => {
+      	tap(() => {
       		this.reduceValidators_();
       	}),
       	shareReplay(1)
       );
       */
-      this.changes$ = this.changesChildren.pipe(operators.map(function (any) {
+      this.changes$ = this.changesChildren.pipe(operators.map(function () {
         return _this3.value;
       }), operators.shareReplay(1));
     };
@@ -817,9 +1022,11 @@
     };
 
     _proto.patch = function patch(value) {
-      this.forEach_(function (control, key) {
-        return control.patch(value[key]);
-      });
+      if (value) {
+        this.forEach_(function (control, key) {
+          control.patch(value[key]);
+        });
+      }
     };
 
     _proto.init = function init(control, key) {
@@ -1007,7 +1214,7 @@
     };
 
     _proto.removeKey = function removeKey(key) {
-      if (this.controls[key]) {
+      if (this.controls.length > key) {
         this.controls.splice(key, 1);
         this.switchSubjects_();
       }
@@ -1052,9 +1259,65 @@
   }(FormAbstractCollection);
 
   function RequiredValidator(value) {
-    // return (value == null || value.length === 0) ? { required: true } : null;
-    return value == null || value.length === 0 ? 'required' : null;
+    return value == null || value.length === 0 ? {
+      required: true
+    } : null; // return (value == null || value.length === 0) ? 'required' : null;
   }
+  /*
+  export function compose(validators) {
+  	if (!validators) {
+  		return null;
+  	}
+  	const presentValidators = validators.filter(isPresent);
+  	if (presentValidators.length == 0) {
+  		return null;
+  	}
+  	return function(control) {
+  		return _mergeErrors(_executeValidators(control, presentValidators));
+  	};
+  }
+
+  export function composeAsync(validators) {
+  	if (!validators) {
+  		return null;
+  	}
+  	const presentValidators = validators.filter(isPresent);
+  	if (presentValidators.length == 0) {
+  		return null;
+  	}
+  	return function(control) {
+  		const observables = _executeAsyncValidators(control, presentValidators).map(toObservable);
+  		return forkJoin(observables).pipe(map(_mergeErrors));
+  	};
+  }
+
+  function isPresent(o) {
+  	return o != null;
+  }
+
+  export function toObservable(r) {
+  	const obs = isPromise(r) ? from(r) : r;
+  	if (!(isObservable(obs))) {
+  		throw new Error(`Expected validator to return Promise or Observable.`);
+  	}
+  	return obs;
+  }
+
+  function _executeValidators(control, validators) {
+  	return validators.map(v => v(control));
+  }
+
+  function _executeAsyncValidators(control, validators) {
+  	return validators.map(v => v(control));
+  }
+
+  function _mergeErrors(arrayOfErrors) {
+  	const res = arrayOfErrors.reduce((res, errors) => {
+  		return errors != null ? { ...res, ...errors } : res;
+  	}, {});
+  	return Object.keys(res).length === 0 ? null : res;
+  }
+  */
 
   var AppComponent =
   /*#__PURE__*/
@@ -1072,14 +1335,19 @@
 
       var form = new FormGroup({
         firstName: null,
-        // 'Jhon',
         lastName: null,
-        // 'Appleseed',
         email: null,
-        // 'jhonappleseed@gmail.com',
         country: null,
+        evaluate: null,
+        privacy: null,
         items: new FormArray([null, null, null], [RequiredValidator])
       }, [RequiredValidator]);
+      form.patch({
+        firstName: 'Jhon',
+        lastName: 'Appleseed',
+        email: 'jhonappleseed@gmail.com',
+        country: 'en-US'
+      });
       form.changes$.subscribe(function (changes) {
         console.log('AppComponent.form.changes$', changes, form.valid);
 

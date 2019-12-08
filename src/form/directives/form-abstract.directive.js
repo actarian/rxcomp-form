@@ -1,25 +1,23 @@
 import { Directive, getContext } from 'rxcomp';
-import { FormAttributes } from './models/form-status';
+import { FormAttributes } from '../models/form-status';
+import FormAbstractCollectionDirective from './form-abstract-collection.directive';
 
-export default class FormControlDirective extends Directive {
+export default class FormAbstractDirective extends Directive {
 
 	get control() {
 		if (this.formControl) {
 			return this.formControl;
 		} else {
-			const { parentInstance } = getContext(this);
-			if (!parentInstance.form) {
-				throw ('missing form');
+			if (!this.host) {
+				throw ('missing form collection');
 			}
-			return parentInstance.form.get(this.formControlName);
+			return this.host.control.get(this.formControlName);
 		}
 	}
 
 	onInit() {
 		const { node } = getContext(this);
 		this.node = node;
-		// log(node.getAttributeNode('formControl').value);
-		// log('name', node.name);
 		this.onChange = this.onChange.bind(this);
 		this.onBlur = this.onBlur.bind(this);
 		// this.onFocus = this.onFocus.bind(this);
@@ -31,20 +29,20 @@ export default class FormControlDirective extends Directive {
 
 	onChanges(changes) {
 		const { node } = getContext(this);
-		/*
-		const pre = this.getPre(node);
-		pre.textContent = '';
-		*/
 		const control = this.control;
+		/*
+		// remove all invalids then
+		Object.keys(control.errors).forEach(key => {
+			node.classList.add(`invalid-${key}`);
+		});
+		*/
 		FormAttributes.forEach(x => {
 			if (control[x]) {
 				node.classList.add(x);
-				// pre.textContent += x + ', ';
 			} else {
 				node.classList.remove(x);
 			}
 		});
-		// control.errors.forEach(x => pre.textContent += `invalid-${x}, `);
 		this.writeValue(control.value);
 	}
 
@@ -52,8 +50,18 @@ export default class FormControlDirective extends Directive {
 		const { node } = getContext(this);
 		// node.setAttribute('value', value == null ? '' : value);
 		node.value = value == null ? '' : value;
-		// console.log(node, node.getAttribute('value'));
 	}
+
+	onChange(event) {
+		const { node } = getContext(this);
+		this.control.value = node.value === '' ? null : node.value;
+	}
+
+	onBlur(event) {
+		this.control.touched = true;
+	}
+
+	// onFocus(event) {}
 
 	setDisabledState(disabled) {
 		const { node } = getContext(this);
@@ -61,33 +69,12 @@ export default class FormControlDirective extends Directive {
 		// node.setAttribute('disabled', disabled);
 	}
 
-	onChange(event) {
-		const { node } = getContext(this);
-		// log(event.type);
-		this.control.value = node.value;
-	}
-
-	onFocus(event) {}
-
-	onBlur(event) {
-		// log(event.type);
-		this.control.touched = true;
-	}
-
-	getPre(node) {
-		let pre = node.previousSibling;
-		if (!pre || pre.nodeType !== 3) {
-			pre = document.createTextNode('');
-			node.parentNode.insertBefore(pre, node);
-		}
-		return pre;
-	}
-
 }
 
-FormControlDirective.meta = {
-	selector: 'input,textarea,select',
-	inputs: ['formControl', 'formControlName'],
+FormAbstractDirective.meta = {
+	// no selection, abstract class
+	inputs: ['formControl', 'formControlName', 'value'],
+	hosts: { host: FormAbstractCollectionDirective },
 };
 
 /*
@@ -108,6 +95,10 @@ reset: 			A button that resets the contents of the form to default values.
 submit: 		A button that submits the form.
 text: 			A single-line text field. Line-breaks are automatically removed from the input value.
 
+*/
+
+/*
+
 HTML5
 color: 			(ie) A control for specifying a color. A color picker's UI has no required features other than accepting simple colors as text (more info).
 date: 			(ie) A control for entering a date (year, month, and day, with no time).
@@ -121,6 +112,10 @@ tel: 			A control for entering a telephone number.
 time: 			(ie) A control for entering a time value with no time zone.
 url: 			A field for entering a URL.
 week: 			(ie) A control for entering a date consisting of a week-year number and a week number with no time zone.
+
+*/
+
+/*
 
 ATTRIBUTES
 autocomplete	A string indicating the type of autocomplete functionality, if any, to allow on the input

@@ -5,12 +5,21 @@ export default class AppComponent extends Component {
 
 	onInit() {
 		const form = new FormGroup({
-			firstName: null, // 'Jhon',
-			lastName: null, // 'Appleseed',
-			email: null, // 'jhonappleseed@gmail.com',
+			firstName: null,
+			lastName: null,
+			email: null,
 			country: null,
+			evaluate: null,
+			privacy: null,
 			items: new FormArray([null, null, null], [RequiredValidator]),
 		}, [RequiredValidator]);
+
+		form.patch({
+			firstName: 'Jhon',
+			lastName: 'Appleseed',
+			email: 'jhonappleseed@gmail.com',
+			country: 'en-US'
+		});
 
 		form.changes$.subscribe((changes) => {
 			console.log('AppComponent.form.changes$', changes, form.valid);

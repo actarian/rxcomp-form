@@ -1,4 +1,4 @@
-import { BehaviorSubject, combineLatest } from 'rxjs';
+import { BehaviorSubject, combineLatest, of } from 'rxjs';
 import { map, shareReplay, switchAll } from 'rxjs/operators';
 import FormAbstract from './form-abstract';
 import FormControl from './form-control';
@@ -66,7 +66,8 @@ export default class FormAbstractCollection extends FormAbstract {
 			result.push(control.changes$);
 			return result;
 		}, []);
-		this.changesChildren.next(combineLatest(changesChildren));
+		let changesChildren$ = changesChildren.length ? combineLatest(changesChildren) : of (changesChildren);
+		this.changesChildren.next(changesChildren$);
 	}
 
 	initObservables_() {
@@ -74,20 +75,20 @@ export default class FormAbstractCollection extends FormAbstract {
 		this.value$ = merge(this.valueSubject, this.valueChildren).pipe(
 			distinctUntilChanged(),
 			skip(1),
-			tap(any => {
+			tap(() => {
 				this.statusSubject.next(this);
 			}),
 			shareReplay(1)
 		);
 		this.status$ = merge(this.statusSubject, this.statusChildren).pipe(
-			tap(any => {
+			tap(() => {
 				this.reduceValidators_();
 			}),
 			shareReplay(1)
 		);
 		*/
 		this.changes$ = this.changesChildren.pipe(
-			map(any => this.value),
+			map(() => this.value),
 			shareReplay(1)
 		);
 	}
@@ -178,7 +179,11 @@ export default class FormAbstractCollection extends FormAbstract {
 	}
 
 	patch(value) {
-		this.forEach_((control, key) => control.patch(value[key]));
+		if (value) {
+			this.forEach_((control, key) => {
+				control.patch(value[key]);
+			});
+		}
 	}
 
 	init(control, key) {
