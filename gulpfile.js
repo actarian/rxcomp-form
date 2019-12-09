@@ -10,6 +10,7 @@ const fs = require('fs'),
 	filter = require('gulp-filter'),
 	gulpif = require('gulp-if'),
 	html2js = require('gulp-html2js'),
+	jsdoc = require('rollup-plugin-jsdoc'),
 	license = require('rollup-plugin-license'),
 	plumber = require('gulp-plumber'),
 	rename = require('gulp-rename'),
@@ -112,23 +113,29 @@ function compileJs(done) {
 }
 
 function compileRollupJs(item) {
+	const plugins = [
+		rollupBabel({
+			presets: [
+				[babelPresetEnv, { modules: false, loose: true }]
+			],
+			exclude: 'node_modules/**' // only transpile our source code
+			// babelrc: false,
+		}),
+		license({
+			banner: `@license <%= pkg.name %> v<%= pkg.version %>
+(c) <%= moment().format('YYYY') %> <%= pkg.author %>
+License: <%= pkg.license %>`,
+		})];
+	if (item.jsdoc) {
+		plugins.unshift(jsdoc({
+			config: 'jsdoc.config.json', // Path to the configuration file for JSDoc. Default: jsdoc.json
+			// args: ['-d', 'doc'], // Command-line options passed to JSDoc, Note: use "config" to indicate configuration file, do not use "-c" or "--configure" in "args"
+		}));
+	}
 	return src(item.input, { base: '.', allowEmpty: true, sourcemaps: true })
 		.pipe(plumber())
 		.pipe(rollup({
-			plugins: [
-				rollupBabel({
-					presets: [
-						[babelPresetEnv, { modules: false, loose: true }]
-					],
-					exclude: 'node_modules/**' // only transpile our source code
-					// babelrc: false,
-				}),
-				license({
-					banner: `@license <%= pkg.name %> v<%= pkg.version %>
-					(c) <%= moment().format('YYYY') %> <%= pkg.author %>
-					License: <%= pkg.license %>`,
-				}),
-			]
+			plugins: plugins
 		}, Object.assign({
 			file: item.output,
 			name: path.basename(item.output, '.js'),

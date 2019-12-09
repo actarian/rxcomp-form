@@ -1,39 +1,28 @@
-# 💎 RxCompForm
+# 💎 RxComp
 
 [![Licence](https://img.shields.io/github/license/actarian/rxcomp-form.svg)](https://github.com/actarian/rxcomp-form)
 
-[RxComp](https://github.com/actarian/rxcomp-form) is a reactive component library built on top of [RxJs](https://github.com/ReactiveX/rxjs) that mimics the [Angular](https://angular.io/) declarative syntax. 
+[RxComp](https://github.com/actarian/rxcomp) is a reactive component library built on top of [RxJs](https://github.com/ReactiveX/rxjs) that mimics the [Angular](https://angular.io/) declarative syntax. 
 
 If you like Angular declarative syntax but you just want go Vanilla, RxComp library come in useful.
 
-RxComp bundle size `4.8Kb` gzipped, `15Kb` minified.  
-RxJS dependancy bundle size `26Kb` gzipped, `345.5Kb` minified.  
+ lib & dependancy    | size
+:--------------------|:----------------------------------------------------------------------------------------------|
+rxcomp-form.min.js   | ![](https://img.badgesize.io/actarian/rxcomp-form/master/dist/rxcomp-form.min.js.svg?compression=gzip)
+rxcomp-form.min.js   | ![](https://img.badgesize.io/actarian/rxcomp-form/master/dist/rxcomp-form.min.js.svg)
+rxcomp.min.js        | ![](https://img.badgesize.io/actarian/rxcomp/master/dist/rxcomp.min.js.svg?compression=gzip)
+rxcomp.min.js        | ![](https://img.badgesize.io/actarian/rxcomp/master/dist/rxcomp.min.js.svg)
+rxjs.min.js          | ![](https://img.badgesize.io/https://unpkg.com/@reactivex/rxjs@6.5.3/dist/global/rxjs.umd.min.js.svg?compression=gzip)
+rxjs.min.js          | ![](https://img.badgesize.io/https://unpkg.com/@reactivex/rxjs@6.5.3/dist/global/rxjs.umd.min.js.svg)
  
-> [RxCompForm demo](https://actarian.github.io/rxcomp-form/)  
-> [RxCompForm source](https://github.com/actarian/rxcomp-form)
+> [RxComp Form demo](https://actarian.github.io/rxcomp-form/)  
+
 ___
 
 ### What is included
-* Modules
-* Components *```inputs```, ```outputs```, ```template```*
-* Structures *```ForStructure```, ```IfStructure```*
-* Directives *```ClassDirective```, ```EventDirective```, ```InnerHtmlDirective```, ```StyleDirective```*
-* Pipes *```JsonPipe```*
-* Declarative Syntax
-* OnPush Strategy via *```pushChanges```* method
-* Automatic Subscription / Unsubscription
-* Optional Chaining
+* Models *```FormControl```, ```FormGroup```, ```FormArray```*
+* Directives *```FormInput```, ```FormTextarea```, ```FormSelect```, ```FormCheckbox```, ```FormRadio```, ```FormSubmit```*
 * Component Template
-
-___
-
-### What is NOT included
-* ~~Two-Way Data Binding~~
-* ~~Dependency Injection~~
-* ~~Routing~~
-* ~~Form Validation~~
-* ~~Reactive Forms~~
-* ~~Server Side Rendering~~
 
 ___
 
@@ -41,6 +30,7 @@ ___
 
 ### ES6 via npm
 ```
+npm install rxcomp --save  
 npm install rxcomp-form --save
 ```
 ___
@@ -50,13 +40,20 @@ ___
 For CDN, you can use unpkg
 
 ```html
+<script src="https://unpkg.com/rxcomp@1.0.0-alpha.11/dist/rxcomp.min.js"></script>  
 <script src="https://unpkg.com/rxcomp-form@1.0.0-alpha.11/dist/rxcomp-form.min.js"></script>
 ```
 
-The global namespace for RxCompForm is `rxcomp-form`
+The global namespace for RxComp is `rxcomp`
 
 ```javascript
-import { CoreModule, Module } from 'rxcomp-form';
+import { CoreModule, Module } from 'rxcomp';
+```
+
+The global namespace for RxComp FormModule is `rxcomp-form`
+
+```javascript
+import { FormModule } from 'rxcomp-form';
 ```
 ___
 
@@ -78,89 +75,82 @@ ___
 ### Bootstrapping Module
 
 ```javascript
-import { CoreModule, Module } from 'rxcomp-form';
+import { CoreModule, Module } from 'rxcomp';
+import { FormModule } from 'rxcomp-form';
+import AppComponent from './app.component';
 
 export default class AppModule extends Module {}
 
 AppModule.meta = {
 	imports: [
-		CoreModule
+		CoreModule,
+		FormModule
 	],
-	declarations: [
-		TodoItemComponent,
-		DatePipe,
-	],
+	declarations: [],
 	bootstrap: AppComponent,
 };
 ```
 ___
 
-### Component Definition
+### Reactive Form Definition
 
 ```javascript
-export default class TodoItemComponent extends Component {
+import { Component } from 'rxcomp';
+import { FormArray, FormGroup, RequiredValidator } from 'rxcomp-form';
 
-    onChanges(changes) {
-        this.color = color(changes.item.id);
-    }
+export default class AppComponent extends Component {
 
-    onToggle($event) {
-        this.toggle.next($event);
-    }
+	onInit() {
+		const form = new FormGroup({
+			firstName: null,
+			lastName: null,
+			email: null,
+			country: null,
+			evaluate: null,
+			privacy: null,
+			items: new FormArray([null, null, null], [RequiredValidator]),
+		}, [RequiredValidator]);
 
-    onRemove($event) {
-        this.remove.next($event);
-    }
+		/*
+		// patch example
+		form.patch({
+			firstName: 'Jhon',
+			lastName: 'Appleseed',
+			email: 'jhonappleseed@gmail.com',
+			country: 'en-US'
+		});
+		*/
+
+		form.changes$.subscribe((changes) => {
+			this.pushChanges();
+		});
+
+		this.form = form;
+	}
+
+	onSubmit() {
+		if (this.form.valid) {
+			this.form.submitted = true;
+			// this.form.reset();
+		}
+	}
 
 }
 
-TodoItemComponent.meta = {
-    selector: '[todo-item-component]',
-    inputs: ['item'],
-    outputs: ['toggle', 'remove'],
-    template: /* html */ `
-        <button type="button" class="btn--toggle" (click)="onToggle(item)">
-            <div class="date" [innerHTML]="item.date | date : 'en-US' : { month: 'short', day: '2-digit', year: 'numeric' }"></div>
-            <div class="title" [innerHTML]="item.name"></div>
-        </button>
-        <button type="button" class="btn--remove" (click)="onRemove(item)">
-            <i class="icon--remove"></i>
-        </button>
-    `,
+AppComponent.meta = {
+	selector: '[app-component]',
 };
-
 ```
 ___
 
 ### Declarative Syntax
 
 ```html
-<li class="list__item" *for="let item of items" [class]="{ done: item.done }" [style]="{ background: background, color: foreground, '--accent': accent }" todo-item-component [item]="item" (toggle)="onToggleItem($event)" (remove)="onRemoveItem($event)">
-    <button type="button" class="btn--toggle" (click)="onToggle(item)">
-        <div class="date" [innerHTML]="item.date | date : 'en-US' : { month: 'short', day: '2-digit', year: 'numeric' }"></div>
-        <div class="title" [innerHTML]="item.name"></div>
-    </button>
-    <button type="button" class="btn--remove" (click)="onRemove(item)">
-        <i class="icon--remove"></i>
-    </button>
-</li>
-```
-___
-
-### LifeCycle Hooks
-
-```javascript
-onInit() {
-} 
-
-onChanges(changes) {	
-}
-
-onView() {	
-}
-
-onDestroy() {
-}
+<form [formGroup]="form" (submit)="onSubmit()" name="form" role="form" novalidate autocomplete="off">
+	<input type="text" formControlName="firstName" placeholder="firstName" />
+	<input type="text" formControlName="lastName" placeholder="lastName" />
+	<button type="submit" [class]="{ submitted: form.submitted }">Submit</button>
+</form>
 ```
 ___
 ### Browser Compatibility
@@ -213,6 +203,14 @@ Changelog [here](https://github.com/actarian/rxcomp-form/blob/master/CHANGELOG.m
 
 ---
 
-### 1.0.0-alpha.11
+## 1.0.0-alpha.11
+* Initial release of RxComp Form module
 
-* Initial release of RxComp library
+
+<!--
+jsdoc
+
+"template": "templates/default", // same as -t templates/default
+"tutorials": "path/to/tutorials" // same as -u path/to/tutorials
+
+-->
