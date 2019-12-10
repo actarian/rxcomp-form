@@ -2,14 +2,23 @@ import { BehaviorSubject, merge, Subject } from "rxjs";
 import { distinctUntilChanged, map, shareReplay, skip, tap } from 'rxjs/operators';
 import FormStatus from './models/form-status';
 
+/** Class representing an abstract form control. */
 export default class FormAbstract {
+
+	/**
+	 * Create a FormAbstract.
+	 * @param {Validator[]} validators - A list of validators.
+	 */
 	constructor(validators = []) {
 		this.status = FormStatus.Pending;
 		this.validators = validators;
-		// this.errors = {};
 		this.errors = [];
 	}
 
+	/**
+	 * @private initialize subjects
+	 * @return {void}
+	 */
 	initSubjects_() {
 		this.valueSubject = new BehaviorSubject(null);
 		this.valueChildren = new Subject();
@@ -17,6 +26,10 @@ export default class FormAbstract {
 		this.statusChildren = new Subject();
 	}
 
+	/**
+	 * @private initialize observables
+	 * @return {void}
+	 */
 	initObservables_() {
 		this.value$ = merge(this.valueSubject, this.valueChildren).pipe(
 			distinctUntilChanged(),
@@ -41,14 +54,21 @@ export default class FormAbstract {
 		);
 	}
 
+	/**
+	 * @private
+	 * @return {errors} an object with key, value errors
+	 */
 	reduceValidators_() {
 		return this.validate(this.value);
 	}
 
+	/**
+	 * @param {null | string} value - the inner control value
+	 * @return {errors} an object with key, value errors
+	 */
 	validate(value) {
 		if (this.status === FormStatus.Disabled || this.submitted_) {
-			// this.errors = {};
-			this.errors = [];
+			this.errors = {};
 		} else {
 			this.errors = Object.assign({}, ...this.validators.map(x => x(value)));
 			this.status = Object.keys(this.errors).length === 0 ? FormStatus.Valid : FormStatus.Invalid;
@@ -58,17 +78,60 @@ export default class FormAbstract {
 		return this.errors;
 	}
 
+	/**
+	 * @return {boolean} the pending status
+	 */
 	get pending() { return this.status === FormStatus.Pending; }
+
+	/**
+	 * @return {boolean} the valid status
+	 */
 	get valid() { return this.status === FormStatus.Valid; }
+
+	/**
+	 * @return {boolean} the invalid status
+	 */
 	get invalid() { return this.status === FormStatus.Invalid; }
+
+	/**
+	 * @return {boolean} the disabled status
+	 */
 	get disabled() { return this.status === FormStatus.Disabled; }
+
+	/**
+	 * @return {boolean} the enabled status
+	 */
 	get enabled() { return this.status !== FormStatus.Disabled; }
+
+	/**
+	 * @return {boolean} the submitted status
+	 */
 	get submitted() { return this.submitted_; }
+
+	/**
+	 * @return {boolean} the dirty status
+	 */
 	get dirty() { return this.dirty_; }
+
+	/**
+	 * @return {boolean} the pristine status
+	 */
 	get pristine() { return !this.dirty_; }
+
+	/**
+	 * @return {boolean} the touched status
+	 */
 	get touched() { return this.touched_; }
+
+	/**
+	 * @return {boolean} the untouched status
+	 */
 	get untouched() { return !this.touched_; }
 
+	/**
+	 * @param {boolean} disabled - the disabled state
+	 * @return {void}
+	 */
 	set disabled(disabled) {
 		if (disabled) {
 			this.status = FormStatus.Disabled;
@@ -78,24 +141,42 @@ export default class FormAbstract {
 		this.statusSubject.next(this);
 	}
 
+	/**
+	 * @param {boolean} submitted - the submitted state
+	 * @return {void}
+	 */
 	set submitted(submitted) {
 		this.submitted_ = submitted;
 		this.statusSubject.next(this);
 	}
 
+	/**
+	 * @param {boolean} touched - the touched state
+	 * @return {void}
+	 */
 	set touched(touched) {
 		this.touched_ = touched;
 		this.statusSubject.next(this);
 	}
 
+	/**
+	 * @return {null | string} inner value of the control
+	 */
 	get value() { return this.value_; }
 
+	/**
+	 * @param {null | string} value - a value
+	 * @return {void}
+	 */
 	set value(value) {
 		// console.log('set value', value);
 		this.value_ = value;
 		this.valueSubject.next(value);
 	}
 
+	/**
+	 * @return {void}
+	 */
 	reset() {
 		this.status = FormStatus.Pending;
 		this.value_ = null;
@@ -105,6 +186,10 @@ export default class FormAbstract {
 		this.statusSubject.next(this);
 	}
 
+	/**
+	 * @param {null | string} value - a value
+	 * @return {void}
+	 */
 	patch(value) {
 		this.value_ = value;
 		this.dirty_ = true;

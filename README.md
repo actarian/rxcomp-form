@@ -1,6 +1,8 @@
-# 💎 RxComp
+# 💎 RxComp FormModule
 
 [![Licence](https://img.shields.io/github/license/actarian/rxcomp-form.svg)](https://github.com/actarian/rxcomp-form)
+
+[RxComp FormModule](https://github.com/actarian/rxcomp-form) is a Reactive Form Module for RxComp library
 
 [RxComp](https://github.com/actarian/rxcomp) is a reactive component library built on top of [RxJs](https://github.com/ReactiveX/rxjs) that mimics the [Angular](https://angular.io/) declarative syntax. 
 

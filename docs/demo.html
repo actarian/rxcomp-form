@@ -9,11 +9,29 @@
 	<meta name="Content-Language" content="it" />
 	<meta name="robots" content="noindex,nofollow" />
 	<title>RxComp Form</title>
+	<script>
+		(function(w, d, s, l, i) {
+			w[l] = w[l] || [];
+			w[l].push({
+				'gtm.start': new Date().getTime(),
+				event: 'gtm.js'
+			});
+			var f = d.getElementsByTagName(s)[0],
+				j = d.createElement(s),
+				dl = l != 'dataLayer' ? '&l=' + l : '';
+			j.async = true;
+			j.src =
+				'https://www.googletagmanager.com/gtm.js?id=' + i + dl;
+			f.parentNode.insertBefore(j, f);
+		})(window, document, 'script', 'dataLayer', 'GTM-WL42JM2');
+
+	</script>
 	<link href="https://fonts.googleapis.com/css?family=Open+Sans:800&display=swap" rel="stylesheet">
 	<link rel="stylesheet" href="css/main.min.css" />
 </head>
 
 <body class="page--test">
+	<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-WL42JM2" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 	<main app-component>
 		<div class="header">
 			<a href="https://github.com/actarian/rxcomp" target="_blank" class="brand">RxComp</a>

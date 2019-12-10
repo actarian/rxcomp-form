@@ -1,12 +1,12 @@
 import FormAbstract from "./form-abstract";
 
-/** Class representing a point. */
+/** Class representing a FormControl. */
 export default class FormControl extends FormAbstract {
 
 	/**
-	 * Create a point.
-	 * @param {any} value - The value of the control.
-	 * @param {validato[]} validators - A list of validators.
+	 * Create a FormControl.
+	 * @param {null | string | FormControl} value - The value of the control.
+	 * @param {Validator[]} validators - A list of validators.
 	 */
 	constructor(value = null, validators) {
 		super(validators);
@@ -18,6 +18,7 @@ export default class FormControl extends FormAbstract {
 
 }
 
+/** Shortcut for new FormControl. */
 export function formControl(value, validators) {
 	return new FormControl(value, validators);
 }

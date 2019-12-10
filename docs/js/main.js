@@ -679,19 +679,29 @@
     exports: [].concat(factories, pipes)
   };
 
+  /** Class representing an abstract form control. */
+
   var FormAbstract =
   /*#__PURE__*/
   function () {
+    /**
+     * Create a FormAbstract.
+     * @param {Validator[]} validators - A list of validators.
+     */
     function FormAbstract(validators) {
       if (validators === void 0) {
         validators = [];
       }
 
       this.status = FormStatus.Pending;
-      this.validators = validators; // this.errors = {};
-
+      this.validators = validators;
       this.errors = [];
     }
+    /**
+     * @private initialize subjects
+     * @return {void}
+     */
+
 
     var _proto = FormAbstract.prototype;
 
@@ -700,7 +710,12 @@
       this.valueChildren = new rxjs.Subject();
       this.statusSubject = new rxjs.BehaviorSubject(this);
       this.statusChildren = new rxjs.Subject();
-    };
+    }
+    /**
+     * @private initialize observables
+     * @return {void}
+     */
+    ;
 
     _proto.initObservables_ = function initObservables_() {
       var _this = this;
@@ -718,16 +733,25 @@
       this.changes$ = rxjs.merge(this.value$, this.status$).pipe(operators.map(function () {
         return _this.value;
       }), operators.shareReplay(1));
-    };
+    }
+    /**
+     * @private
+     * @return {errors} an object with key, value errors
+     */
+    ;
 
     _proto.reduceValidators_ = function reduceValidators_() {
       return this.validate(this.value);
-    };
+    }
+    /**
+     * @param {null | string} value - the inner control value
+     * @return {errors} an object with key, value errors
+     */
+    ;
 
     _proto.validate = function validate(value) {
       if (this.status === FormStatus.Disabled || this.submitted_) {
-        // this.errors = {};
-        this.errors = [];
+        this.errors = {};
       } else {
         this.errors = Object.assign.apply(Object, [{}].concat(this.validators.map(function (x) {
           return x(value);
@@ -739,6 +763,9 @@
       return this.errors;
     };
 
+    /**
+     * @return {void}
+     */
     _proto.reset = function reset() {
       this.status = FormStatus.Pending;
       this.value_ = null;
@@ -746,7 +773,12 @@
       this.touched_ = false;
       this.submitted_ = false;
       this.statusSubject.next(this);
-    };
+    }
+    /**
+     * @param {null | string} value - a value
+     * @return {void}
+     */
+    ;
 
     _proto.patch = function patch(value) {
       this.value_ = value;
@@ -775,6 +807,11 @@
       get: function get() {
         return this.status === FormStatus.Disabled;
       },
+
+      /**
+       * @param {boolean} disabled - the disabled state
+       * @return {void}
+       */
       set: function set(disabled) {
         if (disabled) {
           this.status = FormStatus.Disabled;
@@ -784,6 +821,11 @@
 
         this.statusSubject.next(this);
       }
+      /**
+       * @param {boolean} submitted - the submitted state
+       * @return {void}
+       */
+
     }, {
       key: "enabled",
       get: function get() {
@@ -798,6 +840,11 @@
         this.submitted_ = submitted;
         this.statusSubject.next(this);
       }
+      /**
+       * @param {boolean} touched - the touched state
+       * @return {void}
+       */
+
     }, {
       key: "dirty",
       get: function get() {
@@ -817,6 +864,10 @@
         this.touched_ = touched;
         this.statusSubject.next(this);
       }
+      /**
+       * @return {null | string} inner value of the control
+       */
+
     }, {
       key: "untouched",
       get: function get() {
@@ -826,7 +877,12 @@
       key: "value",
       get: function get() {
         return this.value_;
-      },
+      }
+      /**
+       * @param {null | string} value - a value
+       * @return {void}
+       */
+      ,
       set: function set(value) {
         // console.log('set value', value);
         this.value_ = value;
@@ -837,7 +893,7 @@
     return FormAbstract;
   }();
 
-  /** Class representing a point. */
+  /** Class representing a FormControl. */
 
   var FormControl =
   /*#__PURE__*/
@@ -845,9 +901,9 @@
     _inheritsLoose(FormControl, _FormAbstract);
 
     /**
-     * Create a point.
-     * @param {any} value - The value of the control.
-     * @param {validato[]} validators - A list of validators.
+     * Create a FormControl.
+     * @param {null | string | FormControl} value - The value of the control.
+     * @param {Validator[]} validators - A list of validators.
      */
     function FormControl(value, validators) {
       var _this;

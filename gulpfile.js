@@ -7,11 +7,10 @@ const fs = require('fs'),
 	concat = require('gulp-concat'),
 	concatutil = require('gulp-concat-util'),
 	cssmin = require('gulp-cssmin'),
-	esdoc = require("gulp-esdoc"),
+	esdoc = require('gulp-esdoc'),
 	filter = require('gulp-filter'),
 	gulpif = require('gulp-if'),
 	html2js = require('gulp-html2js'),
-	jsdoc = require('gulp-jsdoc3'),
 	license = require('rollup-plugin-license'),
 	plumber = require('gulp-plumber'),
 	rename = require('gulp-rename'),
@@ -132,7 +131,7 @@ License: <%= pkg.license %>`,
 	if (item.jsdoc) {
 		plugins.unshift(jsdoc({
 			config: 'jsdoc.config.json', // Path to the configuration file for JSDoc. Default: jsdoc.json
-			// args: ['-d', 'doc'], // Command-line options passed to JSDoc, Note: use "config" to indicate configuration file, do not use "-c" or "--configure" in "args"
+			// args: ['-d', 'doc'], // Command-line options passed to JSDoc, Note: use 'config' to indicate configuration file, do not use '-c' or '--configure' in 'args'
 		}));
 	}
 	*/
@@ -276,7 +275,7 @@ function compileSnippets() {
 		.pipe(concatutil('glsl.json', {
 			process: (source, filePath) => {
 				source = source.replace(new RegExp(',\n' + '$'), '\n');
-				return "{\n" + source + "\n}";
+				return '{\n' + source + '\n}';
 			}
 		}))
 		.pipe(dest('./snippets/'));
@@ -375,11 +374,44 @@ function tfsCheckout(skip) {
 // JSDOC
 function doJsDoc(done) {
 	console.log('doJsDoc');
-	return src("./src").pipe(esdoc({ destination: "./docs2" }));
-	const config = require('jsdoc.config.json');
-	const skip = item.input.length === 1 && item.input[0] === item.output;
-	return src(['README.md', './src/**/*.js'], { read: false })
-		.pipe(jsdoc(config, done));
+	return src('./src').pipe(esdoc({
+		"destination": './docs2',
+		"access": ['public', 'protected'],
+		"plugins": [{
+			"name": "esdoc-standard-plugin",
+			"option": {
+				"lint": { "enable": true },
+				"coverage": { "enable": true },
+				"accessor": { "access": ["public", "protected"], "autoPrivate": true }, // "private"
+				"undocumentIdentifier": { "enable": false },
+				"unexportedIdentifier": { "enable": false },
+				"typeInference": { "enable": true },
+				"brand": {
+					"title": 'RxComp FormModule',
+					"description": "RxComp FormModule is a Reactive Form Module for RxComp library.",
+					"repository": "https://github.com/actarian/rxcomp-form",
+					"site": "https://actarian.github.io/rxcomp-form/",
+					"author": "https://twitter.com/actarian",
+					// "logo": "./logo.png",
+					// "image": "http://my-library.org/logo.png"
+				},
+				"manual": {
+					"globalIndex": true,
+					// "index": "./manual/index.md",
+					// "asset": "./manual/asset",
+					// "files": ["./manual/overview.md"]
+				},
+				/*
+				"test": {
+					"source": "./test/",
+					"interfaces": ["describe", "it", "context", "suite", "test"],
+					"includes": ["(spec|Spec|test|Test)\\.js$"],
+					"excludes": ["\\.config\\.js$"]
+				}
+				*/
+			}
+		}]
+	}));
 }
 
 // WATCH
