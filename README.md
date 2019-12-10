@@ -205,12 +205,3 @@ Changelog [here](https://github.com/actarian/rxcomp-form/blob/master/CHANGELOG.m
 
 ## 1.0.0-alpha.11
 * Initial release of RxComp Form module
-
-
-<!--
-jsdoc
-
-"template": "templates/default", // same as -t templates/default
-"tutorials": "path/to/tutorials" // same as -u path/to/tutorials
-
--->

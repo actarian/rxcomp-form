@@ -7,10 +7,11 @@ const fs = require('fs'),
 	concat = require('gulp-concat'),
 	concatutil = require('gulp-concat-util'),
 	cssmin = require('gulp-cssmin'),
+	esdoc = require("gulp-esdoc"),
 	filter = require('gulp-filter'),
 	gulpif = require('gulp-if'),
 	html2js = require('gulp-html2js'),
-	jsdoc = require('rollup-plugin-jsdoc'),
+	jsdoc = require('gulp-jsdoc3'),
 	license = require('rollup-plugin-license'),
 	plumber = require('gulp-plumber'),
 	rename = require('gulp-rename'),
@@ -40,6 +41,7 @@ exports.build = series(compileTask, bundleTask);
 exports.watch = watchTask;
 exports.serve = serveTask;
 exports.start = series(compileTask, bundleTask, watchTask);
+exports.docs = doJsDoc;
 exports.default = series(compileTask, bundleTask, serveTask, watchTask);
 
 // COMPILERS
@@ -126,14 +128,19 @@ function compileRollupJs(item) {
 (c) <%= moment().format('YYYY') %> <%= pkg.author %>
 License: <%= pkg.license %>`,
 		})];
+	/*
 	if (item.jsdoc) {
 		plugins.unshift(jsdoc({
 			config: 'jsdoc.config.json', // Path to the configuration file for JSDoc. Default: jsdoc.json
 			// args: ['-d', 'doc'], // Command-line options passed to JSDoc, Note: use "config" to indicate configuration file, do not use "-c" or "--configure" in "args"
 		}));
 	}
+	*/
+	// const config = require('./jsdoc.config.json');
+	// gulp.src(['README.md', './src/**/*.js'], {read: false});
 	return src(item.input, { base: '.', allowEmpty: true, sourcemaps: true })
 		.pipe(plumber())
+		// .pipe(gulpif(item.jsdoc, jsdoc(config)))
 		.pipe(rollup({
 			plugins: plugins
 		}, Object.assign({
@@ -365,6 +372,16 @@ function tfsCheckout(skip) {
 	);
 }
 
+// JSDOC
+function doJsDoc(done) {
+	console.log('doJsDoc');
+	return src("./src").pipe(esdoc({ destination: "./docs2" }));
+	const config = require('jsdoc.config.json');
+	const skip = item.input.length === 1 && item.input[0] === item.output;
+	return src(['README.md', './src/**/*.js'], { read: false })
+		.pipe(jsdoc(config, done));
+}
+
 // WATCH
 let watchers = [];
 
@@ -394,6 +411,7 @@ function watchTask(done) {
 			return doJsBundle(item);
 		}).on('change', logWatch);
 	});
+
 	// resource
 	const resourceWatches = getResources().map((item) => {
 		return watch(item.input, function bundleResource(done) {

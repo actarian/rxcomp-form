@@ -837,11 +837,18 @@
     return FormAbstract;
   }();
 
+  /** Class representing a point. */
+
   var FormControl =
   /*#__PURE__*/
   function (_FormAbstract) {
     _inheritsLoose(FormControl, _FormAbstract);
 
+    /**
+     * Create a point.
+     * @param {any} value - The value of the control.
+     * @param {validato[]} validators - A list of validators.
+     */
     function FormControl(value, validators) {
       var _this;
 

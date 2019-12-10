@@ -1,9 +1,3 @@
-/**
- * FormModule module.
- * @module my/pants
- * @see module:my/shirt
- */
-
 import { Module } from 'rxcomp';
 import FormArrayDirective from './form/directives/form-array.directive';
 import FormCheckboxDirective from './form/directives/form-checkbox.directive';
