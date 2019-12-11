@@ -661,6 +661,15 @@
     selector: "[(submit)]"
   };
 
+  /**
+   * @namespace FormModule
+   */
+
+  /**
+   * FormModule Class.
+   * @extends Module
+   */
+
   var FormModule =
   /*#__PURE__*/
   function (_Module) {
@@ -679,34 +688,77 @@
     exports: [].concat(factories, pipes)
   };
 
+  /**
+   * @memberof FormModule
+   * @abstract
+   * @access public
+   * @desc Abstract class representing a form control.
+   * @example
+   * let myClass = new MyClass();
+   * let result = myClass.foo();
+   * console.log(result);
+   *
+   * @example
+   * let result = MyClass.bar();
+   * console.log(result);
+   */
+
   var FormAbstract =
   /*#__PURE__*/
   function () {
+    /**
+     * Create a FormAbstract.
+     * @param {Validator[]} validators - A list of validators.
+     */
     function FormAbstract(validators) {
       if (validators === void 0) {
         validators = [];
       }
 
       this.status = FormStatus.Pending;
-      this.validators = validators; // this.errors = {};
-
+      this.validators = validators;
       this.errors = [];
     }
+    /**
+     * @private initialize subjects
+     * @return {void}
+     */
+
 
     var _proto = FormAbstract.prototype;
 
     _proto.initSubjects_ = function initSubjects_() {
       this.valueSubject = new rxjs.BehaviorSubject(null);
+      /**
+       * @private
+       */
+
       this.valueChildren = new rxjs.Subject();
       this.statusSubject = new rxjs.BehaviorSubject(this);
+      /**
+       * @private
+       */
+
       this.statusChildren = new rxjs.Subject();
-    };
+    }
+    /**
+     * @private initialize observables
+     * @return {void}
+     */
+    ;
 
     _proto.initObservables_ = function initObservables_() {
       var _this = this;
 
       this.value$ = rxjs.merge(this.valueSubject, this.valueChildren).pipe(operators.distinctUntilChanged(), operators.skip(1), operators.tap(function () {
+        /**
+         * @private
+         */
         _this.submitted_ = false;
+        /**
+         * @private
+         */
+
         _this.dirty_ = true;
 
         _this.statusSubject.next(_this);
@@ -718,16 +770,25 @@
       this.changes$ = rxjs.merge(this.value$, this.status$).pipe(operators.map(function () {
         return _this.value;
       }), operators.shareReplay(1));
-    };
+    }
+    /**
+     * @private
+     * @return {errors} an object with key, value errors
+     */
+    ;
 
     _proto.reduceValidators_ = function reduceValidators_() {
       return this.validate(this.value);
-    };
+    }
+    /**
+     * @param {null | string} value - the inner control value
+     * @return {errors} an object with key, value errors
+     */
+    ;
 
     _proto.validate = function validate(value) {
       if (this.status === FormStatus.Disabled || this.submitted_) {
-        // this.errors = {};
-        this.errors = [];
+        this.errors = {};
       } else {
         this.errors = Object.assign.apply(Object, [{}].concat(this.validators.map(function (x) {
           return x(value);
@@ -737,8 +798,15 @@
       }
 
       return this.errors;
-    };
+    }
+    /**
+     * @return {boolean} the pending status
+     */
+    ;
 
+    /**
+     * @return {void}
+     */
     _proto.reset = function reset() {
       this.status = FormStatus.Pending;
       this.value_ = null;
@@ -746,7 +814,12 @@
       this.touched_ = false;
       this.submitted_ = false;
       this.statusSubject.next(this);
-    };
+    }
+    /**
+     * @param {null | string} value - a value
+     * @return {void}
+     */
+    ;
 
     _proto.patch = function patch(value) {
       this.value_ = value;
@@ -760,21 +833,42 @@
       get: function get() {
         return this.status === FormStatus.Pending;
       }
+      /**
+       * @return {boolean} the valid status
+       */
+
     }, {
       key: "valid",
       get: function get() {
         return this.status === FormStatus.Valid;
       }
+      /**
+       * @return {boolean} the invalid status
+       */
+
     }, {
       key: "invalid",
       get: function get() {
         return this.status === FormStatus.Invalid;
       }
+      /**
+       * @return {boolean} the disabled status
+       */
+
     }, {
       key: "disabled",
       get: function get() {
         return this.status === FormStatus.Disabled;
-      },
+      }
+      /**
+       * @return {boolean} the enabled status
+       */
+      ,
+
+      /**
+       * @param {boolean} disabled - the disabled state
+       * @return {void}
+       */
       set: function set(disabled) {
         if (disabled) {
           this.status = FormStatus.Disabled;
@@ -784,39 +878,76 @@
 
         this.statusSubject.next(this);
       }
+      /**
+       * @param {boolean} submitted - the submitted state
+       * @return {void}
+       */
+
     }, {
       key: "enabled",
       get: function get() {
         return this.status !== FormStatus.Disabled;
       }
+      /**
+       * @return {boolean} the submitted status
+       */
+
     }, {
       key: "submitted",
       get: function get() {
         return this.submitted_;
-      },
+      }
+      /**
+       * @return {boolean} the dirty status
+       */
+      ,
       set: function set(submitted) {
         this.submitted_ = submitted;
         this.statusSubject.next(this);
       }
+      /**
+       * @param {boolean} touched - the touched state
+       * @return {void}
+       */
+
     }, {
       key: "dirty",
       get: function get() {
         return this.dirty_;
       }
+      /**
+       * @return {boolean} the pristine status
+       */
+
     }, {
       key: "pristine",
       get: function get() {
         return !this.dirty_;
       }
+      /**
+       * @return {boolean} the touched status
+       */
+
     }, {
       key: "touched",
       get: function get() {
         return this.touched_;
-      },
+      }
+      /**
+       * @return {boolean} the untouched status
+       */
+      ,
       set: function set(touched) {
+        /**
+         * @private
+         */
         this.touched_ = touched;
         this.statusSubject.next(this);
       }
+      /**
+       * @return {null | string} inner value of the control
+       */
+
     }, {
       key: "untouched",
       get: function get() {
@@ -826,9 +957,18 @@
       key: "value",
       get: function get() {
         return this.value_;
-      },
+      }
+      /**
+       * @param {null | string} value - a value
+       * @return {void}
+       */
+      ,
       set: function set(value) {
         // console.log('set value', value);
+
+        /**
+         * @private
+         */
         this.value_ = value;
         this.valueSubject.next(value);
       }
@@ -837,7 +977,7 @@
     return FormAbstract;
   }();
 
-  /** Class representing a point. */
+  /** Class representing a FormControl. */
 
   var FormControl =
   /*#__PURE__*/
@@ -845,9 +985,16 @@
     _inheritsLoose(FormControl, _FormAbstract);
 
     /**
-     * Create a point.
-     * @param {any} value - The value of the control.
-     * @param {validato[]} validators - A list of validators.
+     * @memberof FormModule
+     * Create a FormControl.
+     * @param {null | string | FormControl} value - The value of the control.
+     * @param {Validator[]} validators - A list of validators.
+     * @example
+     * const form = new FormControl(null);
+     *
+     * form.changes$.subscribe(changes => {
+     * 	console.log(changes);
+     * });
      */
     function FormControl(value, validators) {
       var _this;
@@ -857,6 +1004,10 @@
       }
 
       _this = _FormAbstract.call(this, validators) || this;
+      /**
+       * @private
+       */
+
       _this.value_ = value;
 
       _this.initSubjects_();
@@ -871,11 +1022,23 @@
     return FormControl;
   }(FormAbstract);
 
+  /**
+   * @memberof FormModule
+   * @abstract
+   * @access public
+   * @desc Abstract class representing a form collection.
+   */
+
   var FormAbstractCollection =
   /*#__PURE__*/
   function (_FormAbstract) {
     _inheritsLoose(FormAbstractCollection, _FormAbstract);
 
+    /**
+     * Create a FormAbstract.
+     * @param {Map<string, any|FormAbstract>} controls - An object containing controls.
+     * @param {Validator[]} validators - A list of validators.
+     */
     function FormAbstractCollection(controls, validators) {
       var _this;
 
@@ -891,12 +1054,20 @@
 
       return _this;
     }
+    /**
+     * @private
+     */
+
 
     var _proto = FormAbstractCollection.prototype;
 
     _proto.initControl_ = function initControl_(control) {
       return control instanceof FormAbstract ? control : new FormControl(control, this.validators);
-    };
+    }
+    /**
+     * @private
+     */
+    ;
 
     _proto.initControls_ = function initControls_(controls) {
       var _this2 = this;
@@ -905,7 +1076,11 @@
         _this2.init(control, key);
       });
       return controls;
-    };
+    }
+    /**
+     * @private
+     */
+    ;
 
     _proto.initSubjects_ = function initSubjects_() {
       /*
@@ -939,7 +1114,11 @@
       */
       this.changesChildren = new rxjs.BehaviorSubject().pipe(operators.switchAll());
       this.switchSubjects_();
-    };
+    }
+    /**
+     * @private
+     */
+    ;
 
     _proto.switchSubjects_ = function switchSubjects_() {
       var changesChildren = this.reduce_(function (result, control) {
@@ -948,7 +1127,11 @@
       }, []);
       var changesChildren$ = changesChildren.length ? rxjs.combineLatest(changesChildren) : rxjs.of(changesChildren);
       this.changesChildren.next(changesChildren$);
-    };
+    }
+    /**
+     * @private
+     */
+    ;
 
     _proto.initObservables_ = function initObservables_() {
       var _this3 = this;
@@ -993,7 +1176,11 @@
       }
 
       return this.errors;
-    };
+    }
+    /**
+     * @private
+     */
+    ;
 
     _proto.forEach_ = function forEach_(callback) {
       var _this4 = this;
@@ -1001,20 +1188,32 @@
       Object.keys(this.controls).forEach(function (key) {
         return callback(_this4.controls[key], key);
       });
-    };
+    }
+    /**
+     * @private
+     */
+    ;
 
     _proto.reduce_ = function reduce_(callback, result) {
       this.forEach_(function (control, key) {
         result = callback(result, control, key);
       });
       return result;
-    };
+    }
+    /**
+     * @private
+     */
+    ;
 
     _proto.all_ = function all_(key, value) {
       return this.reduce_(function (result, control) {
         return result && control[key] === value;
       }, true);
-    };
+    }
+    /**
+     * @private
+     */
+    ;
 
     _proto.any_ = function any_(key, value) {
       return this.reduce_(function (result, control) {
@@ -1165,6 +1364,18 @@
   function (_FormAbstractCollecti) {
     _inheritsLoose(FormArray, _FormAbstractCollecti);
 
+    /**
+     * Create a FormArray.
+     * @class FormArray
+     * @param {any|FormControl[]} controls - An array containing controls.
+     * @param {Validator[]} validators - A list of validators.
+     * @example
+     * const form = new FormArray([null, null, null]);
+     *
+     * form.changes$.subscribe(changes => {
+     * 	console.log(changes);
+     * });
+     */
     function FormArray(controls, validators) {
       if (controls === void 0) {
         controls = [];
@@ -1172,6 +1383,11 @@
 
       return _FormAbstractCollecti.call(this, controls, validators) || this;
     }
+    /**
+     * @memberof FormArray
+     * @private
+     */
+
 
     var _proto = FormArray.prototype;
 
@@ -1179,12 +1395,29 @@
       this.controls.forEach(function (control, key) {
         return callback(control, key);
       });
-    };
+    }
+    /**
+     * @memberof FormArray
+     * @return {any[]}
+     */
+    ;
 
+    /**
+     * @memberof FormArray
+     * @protected
+     * @param {FormAbstract} control
+     * @param {number} key
+     */
     _proto.init = function init(control, key) {
       this.controls.length = Math.max(this.controls.length, key);
       this.controls[key] = this.initControl_(control);
-    };
+    }
+    /**
+     * @memberof FormArray
+     * @param {FormAbstract} control
+     * @param {number} key
+     */
+    ;
 
     _proto.set = function set(control, key) {
       // this.controls.length = Math.max(this.controls.length, key);
@@ -1192,25 +1425,47 @@
       this.controls.splice(key, 1, this.initControl_(control));
       this.switchSubjects_();
     } // !!! needed?
+
+    /**
+     * @memberof FormArray
+     * @param {FormAbstract} control
+     * @param {number} key
+     */
     ;
 
     _proto.add = function add(control, key) {
       this.controls.length = Math.max(this.controls.length, key);
       this.controls[key] = this.initControl_(control);
       this.switchSubjects_();
-    };
+    }
+    /**
+     * @memberof FormArray
+     * @param {FormAbstract} control
+     */
+    ;
 
     _proto.push = function push(control) {
       // this.controls.length = Math.max(this.controls.length, key);
       // this.controls[key] = this.initControl_(control);
       this.controls.push(this.initControl_(control));
       this.switchSubjects_();
-    };
+    }
+    /**
+     * @memberof FormArray
+     * @param {FormAbstract} control
+     * @param {number} key
+     */
+    ;
 
     _proto.insert = function insert(control, key) {
       this.controls.splice(key, 0, this.initControl_(control));
       this.switchSubjects_();
-    };
+    }
+    /**
+     * @memberof FormArray
+     * @param {FormAbstract} control
+     */
+    ;
 
     _proto.remove = function remove(control) {
       var key = this.controls.indexOf(control);
@@ -1218,14 +1473,24 @@
       if (key !== -1) {
         this.removeKey(key);
       }
-    };
+    }
+    /**
+     * @memberof FormArray
+     * @param {number} key
+     */
+    ;
 
     _proto.removeKey = function removeKey(key) {
       if (this.controls.length > key) {
         this.controls.splice(key, 1);
         this.switchSubjects_();
       }
-    };
+    }
+    /**
+     * @memberof FormArray
+     * @param {number} key
+     */
+    ;
 
     _proto.at = function at(key) {
       return this.controls[key];
@@ -1239,6 +1504,11 @@
           return result;
         }, []); // init as array
       }
+      /**
+       * @memberof FormArray
+       * @return {number}
+       */
+
     }, {
       key: "length",
       get: function get() {
@@ -1257,6 +1527,21 @@
   function (_FormAbstractCollecti) {
     _inheritsLoose(FormGroup, _FormAbstractCollecti);
 
+    /**
+     * Create a FormControl.
+     * @memberof FormModule
+     * @param {Map<string, any|FormAbstract>} controls - An object containing controls.
+     * @param {Validator[]} validators - A list of validators.
+     * @example
+     * const form = new FormGroup({
+     * 	firstName: null,
+     *  lastName: null,
+     * });
+     *
+     * form.changes$.subscribe(changes => {
+     * 	console.log(changes);
+     * });
+     */
     function FormGroup(controls, validators) {
       if (controls === void 0) {
         controls = {};

@@ -4,6 +4,7 @@ export default class FormGroup extends FormAbstractCollection {
 
 	/**
 	 * Create a FormControl.
+	 * @memberof FormModule
 	 * @param {Map<string, any|FormAbstract>} controls - An object containing controls.
 	 * @param {Validator[]} validators - A list of validators.
 	 * @example

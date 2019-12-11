@@ -4,7 +4,8 @@ import FormAbstractCollection from './form-abstract-collection';
 export default class FormArray extends FormAbstractCollection {
 
 	/**
-	 * @desc Create a FormArray.
+	 * Create a FormArray.
+	 * @class FormArray
 	 * @param {any|FormControl[]} controls - An array containing controls.
 	 * @param {Validator[]} validators - A list of validators.
 	 * @example
@@ -19,6 +20,7 @@ export default class FormArray extends FormAbstractCollection {
 	}
 
 	/**
+	 * @memberof FormArray
 	 * @private
 	 */
 	forEach_(callback) {
@@ -26,6 +28,7 @@ export default class FormArray extends FormAbstractCollection {
 	}
 
 	/**
+	 * @memberof FormArray
 	 * @return {any[]}
 	 */
 	get value() {
@@ -36,6 +39,7 @@ export default class FormArray extends FormAbstractCollection {
 	}
 
 	/**
+	 * @memberof FormArray
 	 * @return {number}
 	 */
 	get length() {
@@ -43,6 +47,7 @@ export default class FormArray extends FormAbstractCollection {
 	}
 
 	/**
+	 * @memberof FormArray
 	 * @protected
 	 * @param {FormAbstract} control
 	 * @param {number} key
@@ -53,7 +58,7 @@ export default class FormArray extends FormAbstractCollection {
 	}
 
 	/**
-	 *
+	 * @memberof FormArray
 	 * @param {FormAbstract} control
 	 * @param {number} key
 	 */
@@ -66,7 +71,7 @@ export default class FormArray extends FormAbstractCollection {
 
 	// !!! needed?
 	/**
-	 *
+	 * @memberof FormArray
 	 * @param {FormAbstract} control
 	 * @param {number} key
 	 */
@@ -77,7 +82,7 @@ export default class FormArray extends FormAbstractCollection {
 	}
 
 	/**
-	 *
+	 * @memberof FormArray
 	 * @param {FormAbstract} control
 	 */
 	push(control) {
@@ -88,7 +93,7 @@ export default class FormArray extends FormAbstractCollection {
 	}
 
 	/**
-	 *
+	 * @memberof FormArray
 	 * @param {FormAbstract} control
 	 * @param {number} key
 	 */
@@ -98,7 +103,7 @@ export default class FormArray extends FormAbstractCollection {
 	}
 
 	/**
-	 *
+	 * @memberof FormArray
 	 * @param {FormAbstract} control
 	 */
 	remove(control) {
@@ -109,7 +114,7 @@ export default class FormArray extends FormAbstractCollection {
 	}
 
 	/**
-	 *
+	 * @memberof FormArray
 	 * @param {number} key
 	 */
 	removeKey(key) {
@@ -120,7 +125,7 @@ export default class FormArray extends FormAbstractCollection {
 	}
 
 	/**
-	 *
+	 * @memberof FormArray
 	 * @param {number} key
 	 */
 	at(key) {
@@ -130,6 +135,7 @@ export default class FormArray extends FormAbstractCollection {
 }
 
 /**
+ * @memberof FormModule
  * @desc Shortcut for new FormArray
  * @param {any|FormControl[]} controls
  * @param {Validator[]} validators

@@ -9,6 +9,14 @@ import FormRadioDirective from './form/directives/form-radio.directive';
 import FormSelectDirective from './form/directives/form-select.directive';
 import FormSubmitDirective from './form/directives/form-submit.directive';
 
+/**
+ * @namespace FormModule
+ */
+
+/**
+ * FormModule Class.
+ * @extends Module
+ */
 export default class FormModule extends Module {}
 const factories = [
 	FormArrayDirective,

@@ -23,6 +23,10 @@
 		},
 		"dist": {
 			"compile": [{
+				"input": "esdoc/css/esdoc.scss",
+				"output": "esdoc/css/esdoc.css",
+				"minify": true
+			}, {
 				"input": "src/rxcomp-form.js",
 				"output": "dist/rxcomp-form.js",
 				"rollup": {
@@ -34,10 +38,16 @@
 					},
 					"external": ["rxjs", "rxcomp"]
 				},
-				"jsdoc": true,
 				"minify": true
 			}],
-			"bundle": []
+			"bundle": [],
+			"docs": [{
+				"input": "src/rxcomp-form.js",
+				"output": "docs3",
+				"esdoc": {
+
+				}
+			}]
 		}
 	},
 	"options": {

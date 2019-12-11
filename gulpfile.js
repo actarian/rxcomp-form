@@ -7,7 +7,6 @@ const fs = require('fs'),
 	concat = require('gulp-concat'),
 	concatutil = require('gulp-concat-util'),
 	cssmin = require('gulp-cssmin'),
-	esdoc = require('gulp-esdoc'),
 	filter = require('gulp-filter'),
 	gulpif = require('gulp-if'),
 	html2js = require('gulp-html2js'),
@@ -31,7 +30,7 @@ const target = argv.target || 'browser';
 
 let configuration = getJson('./gulpfile.config.json');
 
-const compileTask = parallel(compileScss, compileJs, compileTs); // compilePartials, compileSnippets
+const compileTask = parallel(compileScss, compileJs, compileTs, compileDocs); // compilePartials, compileSnippets
 const bundleTask = parallel(bundleCss, bundleJs, bundleResource);
 
 exports.compile = compileTask;
@@ -40,7 +39,7 @@ exports.build = series(compileTask, bundleTask);
 exports.watch = watchTask;
 exports.serve = serveTask;
 exports.start = series(compileTask, bundleTask, watchTask);
-exports.docs = doJsDoc;
+exports.docs = doEsDoc;
 exports.default = series(compileTask, bundleTask, serveTask, watchTask);
 
 // COMPILERS
@@ -127,19 +126,8 @@ function compileRollupJs(item) {
 (c) <%= moment().format('YYYY') %> <%= pkg.author %>
 License: <%= pkg.license %>`,
 		})];
-	/*
-	if (item.jsdoc) {
-		plugins.unshift(jsdoc({
-			config: 'jsdoc.config.json', // Path to the configuration file for JSDoc. Default: jsdoc.json
-			// args: ['-d', 'doc'], // Command-line options passed to JSDoc, Note: use 'config' to indicate configuration file, do not use '-c' or '--configure' in 'args'
-		}));
-	}
-	*/
-	// const config = require('./jsdoc.config.json');
-	// gulp.src(['README.md', './src/**/*.js'], {read: false});
 	return src(item.input, { base: '.', allowEmpty: true, sourcemaps: true })
 		.pipe(plumber())
-		// .pipe(gulpif(item.jsdoc, jsdoc(config)))
 		.pipe(rollup({
 			plugins: plugins
 		}, Object.assign({
@@ -371,47 +359,126 @@ function tfsCheckout(skip) {
 	);
 }
 
-// JSDOC
-function doJsDoc(done) {
-	console.log('doJsDoc');
-	return src('./src').pipe(esdoc({
-		"destination": './docs2',
-		"access": ['public', 'protected'],
-		"plugins": [{
-			"name": "esdoc-standard-plugin",
-			"option": {
-				"lint": { "enable": true },
-				"coverage": { "enable": true },
-				"accessor": { "access": ["public", "protected"], "autoPrivate": true }, // "private"
-				"undocumentIdentifier": { "enable": false },
-				"unexportedIdentifier": { "enable": false },
-				"typeInference": { "enable": true },
-				"brand": {
-					"title": 'RxComp FormModule',
-					"description": "RxComp FormModule is a Reactive Form Module for RxComp library.",
-					"repository": "https://github.com/actarian/rxcomp-form",
-					"site": "https://actarian.github.io/rxcomp-form/",
-					"author": "https://twitter.com/actarian",
-					// "logo": "./logo.png",
-					// "image": "http://my-library.org/logo.png"
-				},
-				"manual": {
-					"globalIndex": true,
-					// "index": "./manual/index.md",
-					// "asset": "./manual/asset",
-					// "files": ["./manual/overview.md"]
-				},
-				/*
-				"test": {
-					"source": "./test/",
-					"interfaces": ["describe", "it", "context", "suite", "test"],
-					"includes": ["(spec|Spec|test|Test)\\.js$"],
-					"excludes": ["\\.config\\.js$"]
-				}
-				*/
+const esdocOptions01 = {
+	destination: './docs2',
+	package: './package.json',
+	// access: ['public', 'protected'],
+	plugins: [
+		{ name: 'esdoc-lint-plugin', option: { enable: true } },
+		{ name: 'esdoc-coverage-plugin', option: { enable: false } },
+		{
+			name: 'esdoc-accessor-plugin',
+			option: {
+				access: ['public', 'protected'],
+				autoPrivate: true
 			}
+		}, // 'private'
+		{
+			name: 'esdoc-type-inference-plugin',
+			option: { enable: true }
+		},
+		{ name: 'esdoc-external-ecmascript-plugin', option: { enable: false } },
+		{
+			name: 'esdoc-brand-plugin',
+			option: {
+				title: 'RxComp FormModule',
+				description: 'RxComp FormModule is a Reactive Form Module for RxComp library.',
+				repository: 'https://github.com/actarian/rxcomp-form',
+				site: 'https://actarian.github.io/rxcomp-form/',
+				author: 'https://twitter.com/actarian',
+				// logo: './logo.png',
+				// image: 'http://my-library.org/logo.png'
+			}
+		},
+		{ name: 'esdoc-undocumented-identifier-plugin', option: { enable: false } },
+		{ name: 'esdoc-unexported-identifier-plugin', option: { enable: false } },
+		// { name: 'esdoc-integrate-manual-plugin', option: { globalIndex: true } },
+		{ name: 'esdoc-inject-assets-plugin', option: { enable: true, assets: [{ path: 'esdoc/css/esdoc.css', type: 'link', copy: true }] } },
+		{ name: './esdoc/gtm.plugin.js', option: { code: 'GTM-WL42JM2' } },
+		{ name: 'esdoc-publish-html-plugin' },
+		// { name: 'esdoc-integrate-test-plugin', option: { source: './test/', interfaces: ['describe', 'it', 'context', 'suite', 'test'], includes: ['(spec|Spec|test|Test)\\.js$'], excludes: ['\\.config\\.js$'] } },
+	]
+};
+
+const esdocOptions02 = {
+	destination: './docs2',
+	package: './package.json',
+	access: ['public', 'protected'],
+	plugins: [{
+		name: 'esdoc-standard-plugin',
+		option: {
+			lint: { enable: true },
+			coverage: { enable: true },
+			accessor: { access: ['public', 'protected'], autoPrivate: false }, // 'private'
+			undocumentIdentifier: { enable: false },
+			unexportedIdentifier: { enable: false },
+			typeInference: { enable: true },
+			brand: {
+				title: 'RxComp FormModule',
+				description: 'RxComp FormModule is a Reactive Form Module for RxComp library.',
+				repository: 'https://github.com/actarian/rxcomp-form',
+				site: 'https://actarian.github.io/rxcomp-form/',
+				author: 'https://twitter.com/actarian',
+				// logo: './logo.png',
+				// image: 'http://my-library.org/logo.png'
+			},
+			manual: {
+				globalIndex: true,
+				// index: './manual/index.md',
+				// asset: './manual/asset',
+				// files: ['./manual/overview.md']
+			},
+		}
 		}]
-	}));
+};
+
+// DOCS
+function doEsDoc(done) {
+	return src('./src').pipe(compileEsDoc(esdocOptions01));
+}
+
+const ESDoc = require('esdoc').default;
+// const publisher = require('esdoc/out/src/Publisher/publish').default;
+
+function compileEsDoc(options) {
+	return through2.obj((file, enc, callback) => {
+		if (!options.destination) {
+			// this.emit('error', new gutil.PluginError(PLUGIN_NAME, 'Must specify options.destination'));
+			logger.log('compileEsDoc', 'Must specify options.destination');
+			return callback();
+		}
+		if (file.isStream()) {
+			// this.emit('error', new gutil.PluginError(PLUGIN_NAME, 'Streaming not supported'));
+			logger.log('compileEsDoc', 'Streaming not supported');
+			return callback();
+		}
+		options.source = options.source || file.path;
+		const plugins = options.plugins.map(x => x.name);
+		// logger.log('compileEsDoc', plugins);
+		ESDoc.generate(options, (results, config) => {
+			// console.log(results);
+		});
+		// ESDoc.generate(options, publisher);
+		callback();
+	});
+}
+
+function compileDocs(done) {
+	const items = getDocs('.js');
+	const tasks = [];
+	items.forEach(item => {
+		tasks.push(function itemTask(done) {
+			return compileDoc(item);
+		});
+	});
+	return tasks.length ? parallel(...tasks)(done) : done();
+}
+
+function compileDoc(item) {
+	// item.input !!
+	return src('./src', { base: '.', allowEmpty: true, sourcemaps: true })
+		.pipe(plumber())
+		.pipe(compileEsDoc(esdocOptions01));
 }
 
 // WATCH
@@ -429,6 +496,8 @@ function watchTask(done) {
 	const jsWatch = watch(getCompilersGlobs('.js'), compileJs).on('change', logWatch);
 	// ts
 	const tsWatch = watch(getCompilersGlobs('.ts'), compileTs).on('change', logWatch);
+	// docs
+	const docsWatch = watch(getDocsGlobs('.js'), compileDocs).on('change', logWatch);
 
 	// watch bundle files
 	// css
@@ -457,7 +526,7 @@ function watchTask(done) {
 		return series(compileTask, bundleTask, watchTask)(done);
 	}).on('change', logWatch);
 
-	watchers = [].concat([scssWatch, jsWatch, tsWatch], cssWatches, jsWatches, resourceWatches, [configWatch]);
+	watchers = [].concat([scssWatch, jsWatch, tsWatch, docsWatch], cssWatches, jsWatches, resourceWatches, [configWatch]);
 	// watch('./src/artisan/**/*.html', ['compile:partials']).on('change', logWatch);
 	// watch('./src/snippets/**/*.glsl', ['compile:snippets']).on('change', logWatch);
 	done();
@@ -524,6 +593,24 @@ function getResources() {
 
 function getCompilersGlobs(ext) {
 	return getCompilers(ext).map(x => {
+		return x.input.replace(/\/[^\/]*$/, '/**/*' + ext);
+	});
+}
+
+function getDocs(ext) {
+	const options = configuration.targets[target];
+	if (options) {
+		console.log(options.docs);
+		return options.docs.filter((item) => {
+			return new RegExp(`${ext}$`).test(item.input);
+		});
+	} else {
+		return [];
+	}
+}
+
+function getDocsGlobs(ext) {
+	return getDocs(ext).map(x => {
 		return x.input.replace(/\/[^\/]*$/, '/**/*' + ext);
 	});
 }
