@@ -7,9 +7,18 @@ export default class FormControl extends FormAbstract {
 	 * Create a FormControl.
 	 * @param {null | string | FormControl} value - The value of the control.
 	 * @param {Validator[]} validators - A list of validators.
+	 * @example
+	 * const form = new FormControl(null);
+	 *
+	 * form.changes$.subscribe(changes => {
+	 * 	console.log(changes);
+	 * });
 	 */
 	constructor(value = null, validators) {
 		super(validators);
+		/**
+		 * @private
+		 */
 		this.value_ = value;
 		this.initSubjects_();
 		this.initObservables_();

@@ -2,9 +2,20 @@ import { BehaviorSubject, merge, Subject } from "rxjs";
 import { distinctUntilChanged, map, shareReplay, skip, tap } from 'rxjs/operators';
 import FormStatus from './models/form-status';
 
-/** Class representing an abstract form control. */
+/**
+ * @abstract
+ * @access public
+ * @desc Abstract class representing a form control.
+ * @example
+ * let myClass = new MyClass();
+ * let result = myClass.foo();
+ * console.log(result);
+ *
+ * @example
+ * let result = MyClass.bar();
+ * console.log(result);
+ */
 export default class FormAbstract {
-
 	/**
 	 * Create a FormAbstract.
 	 * @param {Validator[]} validators - A list of validators.
@@ -21,8 +32,14 @@ export default class FormAbstract {
 	 */
 	initSubjects_() {
 		this.valueSubject = new BehaviorSubject(null);
+		/**
+		 * @private
+		 */
 		this.valueChildren = new Subject();
 		this.statusSubject = new BehaviorSubject(this);
+		/**
+		 * @private
+		 */
 		this.statusChildren = new Subject();
 	}
 
@@ -35,7 +52,13 @@ export default class FormAbstract {
 			distinctUntilChanged(),
 			skip(1),
 			tap(() => {
+				/**
+				 * @private
+				 */
 				this.submitted_ = false;
+				/**
+				 * @private
+				 */
 				this.dirty_ = true;
 				this.statusSubject.next(this);
 			}),
@@ -155,6 +178,9 @@ export default class FormAbstract {
 	 * @return {void}
 	 */
 	set touched(touched) {
+		/**
+		 * @private
+		 */
 		this.touched_ = touched;
 		this.statusSubject.next(this);
 	}
@@ -170,6 +196,9 @@ export default class FormAbstract {
 	 */
 	set value(value) {
 		// console.log('set value', value);
+		/**
+		 * @private
+		 */
 		this.value_ = value;
 		this.valueSubject.next(value);
 	}

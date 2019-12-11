@@ -4,8 +4,17 @@ import FormAbstract from './form-abstract';
 import FormControl from './form-control';
 import FormStatus from './models/form-status';
 
+/**
+ * @abstract
+ * @access public
+ * @desc Abstract class representing a form collection.
+ */
 export default class FormAbstractCollection extends FormAbstract {
-
+	/**
+	 * Create a FormAbstract.
+	 * @param {Map<string, any|FormAbstract>} controls - An object containing controls.
+	 * @param {Validator[]} validators - A list of validators.
+	 */
 	constructor(controls, validators) {
 		super(validators);
 		this.controls = controls;
@@ -15,10 +24,16 @@ export default class FormAbstractCollection extends FormAbstract {
 		// this.statusSubject.next(this);
 	}
 
+	/**
+	 * @private
+	 */
 	initControl_(control) {
 		return control instanceof FormAbstract ? control : new FormControl(control, this.validators);
 	}
 
+	/**
+	 * @private
+	 */
 	initControls_(controls) {
 		this.forEach_((control, key) => {
 			this.init(control, key);
@@ -26,6 +41,9 @@ export default class FormAbstractCollection extends FormAbstract {
 		return controls;
 	}
 
+	/**
+	 * @private
+	 */
 	initSubjects_() {
 		/*
 		this.valueSubject = new BehaviorSubject(null);
@@ -61,6 +79,9 @@ export default class FormAbstractCollection extends FormAbstract {
 		this.switchSubjects_();
 	}
 
+	/**
+	 * @private
+	 */
 	switchSubjects_() {
 		const changesChildren = this.reduce_((result, control) => {
 			result.push(control.changes$);
@@ -70,6 +91,9 @@ export default class FormAbstractCollection extends FormAbstract {
 		this.changesChildren.next(changesChildren$);
 	}
 
+	/**
+	 * @private
+	 */
 	initObservables_() {
 		/*
 		this.value$ = merge(this.valueSubject, this.valueChildren).pipe(
@@ -109,10 +133,16 @@ export default class FormAbstractCollection extends FormAbstract {
 		return this.errors;
 	}
 
+	/**
+	 * @private
+	 */
 	forEach_(callback) {
 		Object.keys(this.controls).forEach(key => callback(this.controls[key], key));
 	}
 
+	/**
+	 * @private
+	 */
 	reduce_(callback, result) {
 		this.forEach_((control, key) => {
 			result = callback(result, control, key);
@@ -120,12 +150,18 @@ export default class FormAbstractCollection extends FormAbstract {
 		return result;
 	}
 
+	/**
+	 * @private
+	 */
 	all_(key, value) {
 		return this.reduce_((result, control) => {
 			return result && control[key] === value;
 		}, true);
 	}
 
+	/**
+	 * @private
+	 */
 	any_(key, value) {
 		return this.reduce_((result, control) => {
 			return result || control[key] === value;

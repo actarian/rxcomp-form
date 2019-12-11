@@ -761,7 +761,11 @@
       }
 
       return this.errors;
-    };
+    }
+    /**
+     * @return {boolean} the pending status
+     */
+    ;
 
     /**
      * @return {void}
@@ -792,21 +796,37 @@
       get: function get() {
         return this.status === FormStatus.Pending;
       }
+      /**
+       * @return {boolean} the valid status
+       */
+
     }, {
       key: "valid",
       get: function get() {
         return this.status === FormStatus.Valid;
       }
+      /**
+       * @return {boolean} the invalid status
+       */
+
     }, {
       key: "invalid",
       get: function get() {
         return this.status === FormStatus.Invalid;
       }
+      /**
+       * @return {boolean} the disabled status
+       */
+
     }, {
       key: "disabled",
       get: function get() {
         return this.status === FormStatus.Disabled;
-      },
+      }
+      /**
+       * @return {boolean} the enabled status
+       */
+      ,
 
       /**
        * @param {boolean} disabled - the disabled state
@@ -831,11 +851,19 @@
       get: function get() {
         return this.status !== FormStatus.Disabled;
       }
+      /**
+       * @return {boolean} the submitted status
+       */
+
     }, {
       key: "submitted",
       get: function get() {
         return this.submitted_;
-      },
+      }
+      /**
+       * @return {boolean} the dirty status
+       */
+      ,
       set: function set(submitted) {
         this.submitted_ = submitted;
         this.statusSubject.next(this);
@@ -850,16 +878,28 @@
       get: function get() {
         return this.dirty_;
       }
+      /**
+       * @return {boolean} the pristine status
+       */
+
     }, {
       key: "pristine",
       get: function get() {
         return !this.dirty_;
       }
+      /**
+       * @return {boolean} the touched status
+       */
+
     }, {
       key: "touched",
       get: function get() {
         return this.touched_;
-      },
+      }
+      /**
+       * @return {boolean} the untouched status
+       */
+      ,
       set: function set(touched) {
         this.touched_ = touched;
         this.statusSubject.next(this);
