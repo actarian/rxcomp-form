@@ -53,9 +53,9 @@
 	"options": {
 		"tfs": false,
 		"server": {
-			"src": "./docs2",
+			"src": "./docs",
 			"fallback": "index.html",
-			"path": "/",
+			"path": "/rxcomp-form",
 			"host": "localhost",
 			"port": 40997
 		}

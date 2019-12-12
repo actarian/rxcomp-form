@@ -5,8 +5,10 @@ export { default as FormCheckboxDirective } from './form/directives/form-checkbo
 export { default as FormFieldComponent } from './form/directives/form-field.component';
 export { default as FormGroupDirective } from './form/directives/form-group.directive';
 export { default as FormInputDirective } from './form/directives/form-input.directive';
+export { default as FormMinLengthDirective } from './form/directives/form-min-length.directive';
 export { default as FormPlaceholderDirective } from './form/directives/form-placeholder.directive';
 export { default as FormRadioDirective } from './form/directives/form-radio.directive';
+export { default as FormRequiredDirective } from './form/directives/form-required.directive';
 export { default as FormSelectDirective } from './form/directives/form-select.directive';
 export { default as FormAbstract } from './form/form-abstract';
 export { default as FormAbstractCollection } from './form/form-abstract-collection';
@@ -14,4 +16,4 @@ export { default as FormArray, formArray } from './form/form-array';
 export { default as FormControl } from './form/form-control';
 export { default as FormGroup, formGroup } from './form/form-group';
 export { default as FormStatus } from './form/models/form-status';
-export { RequiredValidator } from './form/validators/required.validator';
+export { EmailValidator, MaxLengthValidator, MaxValidator, MinLengthValidator, MinValidator, NullValidator, PatternValidator, RequiredTrueValidator, RequiredValidator } from './form/validators/validators';

@@ -4,7 +4,6 @@ import FormAbstract from "./form-abstract";
 export default class FormControl extends FormAbstract {
 
 	/**
-	 * @memberof FormModule
 	 * Create a FormControl.
 	 * @param {null | string | FormControl} value - The value of the control.
 	 * @param {Validator[]} validators - A list of validators.

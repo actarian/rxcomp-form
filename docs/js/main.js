@@ -485,6 +485,123 @@
     }
   };
 
+  function RequiredValidator(value) {
+    return value == null || value.length === 0 ? {
+      required: true
+    } : null; // return (value == null || value.length === 0) ? 'required' : null;
+  }
+  function MinLengthValidator(minlength) {
+    return function (value) {
+      if (!value || !minlength) {
+        return null;
+      }
+
+      var length = value ? value.length : 0;
+      return length < minlength ? {
+        minlength: {
+          requiredLength: minlength,
+          actualLength: length
+        }
+      } : null;
+    };
+  }
+  /*
+  export function compose(validators) {
+  	if (!validators) {
+  		return null;
+  	}
+  	const presentValidators = validators.filter(isPresent);
+  	if (presentValidators.length == 0) {
+  		return null;
+  	}
+  	return function(control) {
+  		return _mergeErrors(_executeValidators(control, presentValidators));
+  	};
+  }
+
+  export function composeAsync(validators) {
+  	if (!validators) {
+  		return null;
+  	}
+  	const presentValidators = validators.filter(isPresent);
+  	if (presentValidators.length == 0) {
+  		return null;
+  	}
+  	return function(control) {
+  		const observables = _executeAsyncValidators(control, presentValidators).map(toObservable);
+  		return forkJoin(observables).pipe(map(_mergeErrors));
+  	};
+  }
+
+  function isPresent(o) {
+  	return o != null;
+  }
+
+  export function toObservable(r) {
+  	const obs = isPromise(r) ? from(r) : r;
+  	if (!(isObservable(obs))) {
+  		throw new Error(`Expected validator to return Promise or Observable.`);
+  	}
+  	return obs;
+  }
+
+  function _executeValidators(control, validators) {
+  	return validators.map(v => v(control));
+  }
+
+  function _executeAsyncValidators(control, validators) {
+  	return validators.map(v => v(control));
+  }
+
+  function _mergeErrors(arrayOfErrors) {
+  	const res = arrayOfErrors.reduce((res, errors) => {
+  		return errors != null ? { ...res, ...errors } : res;
+  	}, {});
+  	return Object.keys(res).length === 0 ? null : res;
+  }
+  */
+
+  var FormMinLengthDirective =
+  /*#__PURE__*/
+  function (_Directive) {
+    _inheritsLoose(FormMinLengthDirective, _Directive);
+
+    function FormMinLengthDirective() {
+      return _Directive.apply(this, arguments) || this;
+    }
+
+    var _proto2 = FormMinLengthDirective.prototype;
+
+    _proto2.onInit = function onInit() {
+      console.log('FormMinLengthDirective', this.host.control, this.minlength);
+      var validator = this.validator = MinLengthValidator(this.minlength);
+      this.host.control.validators.push(this.validator);
+    };
+
+    _proto2.onChanges = function onChanges(changes) {
+      var validator = MinLengthValidator(this.minlength);
+      this.host.control.validators.push(this.validator);
+      var index = this.host.control.validators.indexOf(this.validator);
+
+      if (index !== -1) {
+        this.host.control.validators.splice(index, 1, validator);
+      } else {
+        this.host.control.validators.push(validator);
+      }
+
+      this.validator = validator;
+    };
+
+    return FormMinLengthDirective;
+  }(rxcomp.Directive);
+  FormMinLengthDirective.meta = {
+    selector: '[minlength][formControl],[minlength][formControlName]',
+    inputs: ['minlength'],
+    hosts: {
+      host: FormAbstractDirective
+    }
+  };
+
   var FormPlaceholderDirective =
   /*#__PURE__*/
   function (_Directive) {
@@ -570,6 +687,32 @@
     inputs: ['formControl', 'formControlName'],
     hosts: {
       host: FormAbstractCollectionDirective
+    }
+  };
+
+  var FormRequiredDirective =
+  /*#__PURE__*/
+  function (_Directive) {
+    _inheritsLoose(FormRequiredDirective, _Directive);
+
+    function FormRequiredDirective() {
+      return _Directive.apply(this, arguments) || this;
+    }
+
+    var _proto = FormRequiredDirective.prototype;
+
+    _proto.onInit = function onInit() {
+      console.log('FormRequiredDirective', this.host.control);
+      this.host.control.validators.push(RequiredValidator);
+    };
+
+    return FormRequiredDirective;
+  }(rxcomp.Directive);
+  FormRequiredDirective.meta = {
+    selector: '[required][formControl],[required][formControlName]',
+    inputs: ['required'],
+    hosts: {
+      host: FormAbstractDirective
     }
   };
 
@@ -662,10 +805,6 @@
   };
 
   /**
-   * @namespace FormModule
-   */
-
-  /**
    * FormModule Class.
    * @extends Module
    */
@@ -681,7 +820,7 @@
 
     return FormModule;
   }(rxcomp.Module);
-  var factories = [FormArrayDirective, FormCheckboxDirective, FormFieldComponent, FormInputDirective, FormRadioDirective, FormSelectDirective, FormGroupDirective, FormPlaceholderDirective, FormSubmitDirective];
+  var factories = [FormArrayDirective, FormCheckboxDirective, FormFieldComponent, FormInputDirective, FormMinLengthDirective, FormRadioDirective, FormSelectDirective, FormGroupDirective, FormPlaceholderDirective, FormRequiredDirective, FormSubmitDirective];
   var pipes = [];
   FormModule.meta = {
     declarations: [].concat(factories, pipes),
@@ -689,10 +828,9 @@
   };
 
   /**
-   * @memberof FormModule
+   * @desc Abstract class representing a form control.
    * @abstract
    * @access public
-   * @desc Abstract class representing a form control.
    * @example
    * let myClass = new MyClass();
    * let result = myClass.foo();
@@ -985,7 +1123,6 @@
     _inheritsLoose(FormControl, _FormAbstract);
 
     /**
-     * @memberof FormModule
      * Create a FormControl.
      * @param {null | string | FormControl} value - The value of the control.
      * @param {Validator[]} validators - A list of validators.
@@ -1023,10 +1160,9 @@
   }(FormAbstract);
 
   /**
-   * @memberof FormModule
+   * @desc Abstract class representing a form collection.
    * @abstract
    * @access public
-   * @desc Abstract class representing a form collection.
    */
 
   var FormAbstractCollection =
@@ -1384,7 +1520,6 @@
       return _FormAbstractCollecti.call(this, controls, validators) || this;
     }
     /**
-     * @memberof FormArray
      * @private
      */
 
@@ -1397,13 +1532,11 @@
       });
     }
     /**
-     * @memberof FormArray
      * @return {any[]}
      */
     ;
 
     /**
-     * @memberof FormArray
      * @protected
      * @param {FormAbstract} control
      * @param {number} key
@@ -1413,7 +1546,6 @@
       this.controls[key] = this.initControl_(control);
     }
     /**
-     * @memberof FormArray
      * @param {FormAbstract} control
      * @param {number} key
      */
@@ -1427,7 +1559,6 @@
     } // !!! needed?
 
     /**
-     * @memberof FormArray
      * @param {FormAbstract} control
      * @param {number} key
      */
@@ -1439,7 +1570,6 @@
       this.switchSubjects_();
     }
     /**
-     * @memberof FormArray
      * @param {FormAbstract} control
      */
     ;
@@ -1451,7 +1581,6 @@
       this.switchSubjects_();
     }
     /**
-     * @memberof FormArray
      * @param {FormAbstract} control
      * @param {number} key
      */
@@ -1462,7 +1591,6 @@
       this.switchSubjects_();
     }
     /**
-     * @memberof FormArray
      * @param {FormAbstract} control
      */
     ;
@@ -1475,7 +1603,6 @@
       }
     }
     /**
-     * @memberof FormArray
      * @param {number} key
      */
     ;
@@ -1487,7 +1614,6 @@
       }
     }
     /**
-     * @memberof FormArray
      * @param {number} key
      */
     ;
@@ -1505,7 +1631,6 @@
         }, []); // init as array
       }
       /**
-       * @memberof FormArray
        * @return {number}
        */
 
@@ -1526,7 +1651,6 @@
 
     /**
      * Create a FormControl.
-     * @memberof FormModule
      * @param {Map<string, any|FormAbstract>} controls - An object containing controls.
      * @param {Validator[]} validators - A list of validators.
      * @example
@@ -1549,67 +1673,6 @@
 
     return FormGroup;
   }(FormAbstractCollection);
-
-  function RequiredValidator(value) {
-    return value == null || value.length === 0 ? {
-      required: true
-    } : null; // return (value == null || value.length === 0) ? 'required' : null;
-  }
-  /*
-  export function compose(validators) {
-  	if (!validators) {
-  		return null;
-  	}
-  	const presentValidators = validators.filter(isPresent);
-  	if (presentValidators.length == 0) {
-  		return null;
-  	}
-  	return function(control) {
-  		return _mergeErrors(_executeValidators(control, presentValidators));
-  	};
-  }
-
-  export function composeAsync(validators) {
-  	if (!validators) {
-  		return null;
-  	}
-  	const presentValidators = validators.filter(isPresent);
-  	if (presentValidators.length == 0) {
-  		return null;
-  	}
-  	return function(control) {
-  		const observables = _executeAsyncValidators(control, presentValidators).map(toObservable);
-  		return forkJoin(observables).pipe(map(_mergeErrors));
-  	};
-  }
-
-  function isPresent(o) {
-  	return o != null;
-  }
-
-  export function toObservable(r) {
-  	const obs = isPromise(r) ? from(r) : r;
-  	if (!(isObservable(obs))) {
-  		throw new Error(`Expected validator to return Promise or Observable.`);
-  	}
-  	return obs;
-  }
-
-  function _executeValidators(control, validators) {
-  	return validators.map(v => v(control));
-  }
-
-  function _executeAsyncValidators(control, validators) {
-  	return validators.map(v => v(control));
-  }
-
-  function _mergeErrors(arrayOfErrors) {
-  	const res = arrayOfErrors.reduce((res, errors) => {
-  		return errors != null ? { ...res, ...errors } : res;
-  	}, {});
-  	return Object.keys(res).length === 0 ? null : res;
-  }
-  */
 
   var AppComponent =
   /*#__PURE__*/

@@ -662,10 +662,6 @@
   };
 
   /**
-   * @namespace FormModule
-   */
-
-  /**
    * FormModule Class.
    * @extends Module
    */
@@ -689,10 +685,9 @@
   };
 
   /**
-   * @memberof FormModule
+   * @desc Abstract class representing a form control.
    * @abstract
    * @access public
-   * @desc Abstract class representing a form control.
    * @example
    * let myClass = new MyClass();
    * let result = myClass.foo();
@@ -985,7 +980,6 @@
     _inheritsLoose(FormControl, _FormAbstract);
 
     /**
-     * @memberof FormModule
      * Create a FormControl.
      * @param {null | string | FormControl} value - The value of the control.
      * @param {Validator[]} validators - A list of validators.
@@ -1023,10 +1017,9 @@
   }(FormAbstract);
 
   /**
-   * @memberof FormModule
+   * @desc Abstract class representing a form collection.
    * @abstract
    * @access public
-   * @desc Abstract class representing a form collection.
    */
 
   var FormAbstractCollection =
@@ -1384,7 +1377,6 @@
       return _FormAbstractCollecti.call(this, controls, validators) || this;
     }
     /**
-     * @memberof FormArray
      * @private
      */
 
@@ -1397,13 +1389,11 @@
       });
     }
     /**
-     * @memberof FormArray
      * @return {any[]}
      */
     ;
 
     /**
-     * @memberof FormArray
      * @protected
      * @param {FormAbstract} control
      * @param {number} key
@@ -1413,7 +1403,6 @@
       this.controls[key] = this.initControl_(control);
     }
     /**
-     * @memberof FormArray
      * @param {FormAbstract} control
      * @param {number} key
      */
@@ -1427,7 +1416,6 @@
     } // !!! needed?
 
     /**
-     * @memberof FormArray
      * @param {FormAbstract} control
      * @param {number} key
      */
@@ -1439,7 +1427,6 @@
       this.switchSubjects_();
     }
     /**
-     * @memberof FormArray
      * @param {FormAbstract} control
      */
     ;
@@ -1451,7 +1438,6 @@
       this.switchSubjects_();
     }
     /**
-     * @memberof FormArray
      * @param {FormAbstract} control
      * @param {number} key
      */
@@ -1462,7 +1448,6 @@
       this.switchSubjects_();
     }
     /**
-     * @memberof FormArray
      * @param {FormAbstract} control
      */
     ;
@@ -1475,7 +1460,6 @@
       }
     }
     /**
-     * @memberof FormArray
      * @param {number} key
      */
     ;
@@ -1487,7 +1471,6 @@
       }
     }
     /**
-     * @memberof FormArray
      * @param {number} key
      */
     ;
@@ -1505,7 +1488,6 @@
         }, []); // init as array
       }
       /**
-       * @memberof FormArray
        * @return {number}
        */
 
@@ -1529,7 +1511,6 @@
 
     /**
      * Create a FormControl.
-     * @memberof FormModule
      * @param {Map<string, any|FormAbstract>} controls - An object containing controls.
      * @param {Validator[]} validators - A list of validators.
      * @example

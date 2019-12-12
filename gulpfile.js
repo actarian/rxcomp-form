@@ -559,7 +559,7 @@ function serveTask() {
 function getCompilers(ext) {
 	const options = configuration.targets[target];
 	if (options) {
-		return options.compile.filter((item) => {
+		return (options.compile || []).filter((item) => {
 			return new RegExp(`${ext}$`).test(item.input);
 		});
 	} else {
@@ -570,7 +570,7 @@ function getCompilers(ext) {
 function getBundles(ext) {
 	const options = configuration.targets[target];
 	if (options) {
-		return options.bundle.filter((item) => {
+		return (options.bundle || []).filter((item) => {
 			if (ext && item.output) {
 				return new RegExp(`${ext}$`).test(item.output);
 			} else {
@@ -600,8 +600,7 @@ function getCompilersGlobs(ext) {
 function getDocs(ext) {
 	const options = configuration.targets[target];
 	if (options) {
-		console.log(options.docs);
-		return options.docs.filter((item) => {
+		return (options.docs || []).filter((item) => {
 			return new RegExp(`${ext}$`).test(item.input);
 		});
 	} else {

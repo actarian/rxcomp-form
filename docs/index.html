@@ -48,7 +48,7 @@
 				<!-- <div class="group--form" [formField]="form.get('firstName')"> -->
 				<div class="group--form">
 					<i class="icon--remove" [class]="{ active: form.get('firstName').dirty }" (click)="form.get('firstName').reset()"></i>
-					<input type="text" class="control--text" [formControl]="form.get('firstName')" placeholder="firstName" name="firstName" />
+					<input type="text" class="control--text" formControlName="firstName" placeholder="firstName" name="firstName" required minlength="20" />
 					<i class="icon--check"></i>
 				</div>
 				<div class="group--form" [formFieldName]="'lastName'">

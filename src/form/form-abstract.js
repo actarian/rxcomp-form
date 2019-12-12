@@ -3,10 +3,9 @@ import { distinctUntilChanged, map, shareReplay, skip, tap } from 'rxjs/operator
 import FormStatus from './models/form-status';
 
 /**
- * @memberof FormModule
+ * @desc Abstract class representing a form control.
  * @abstract
  * @access public
- * @desc Abstract class representing a form control.
  * @example
  * let myClass = new MyClass();
  * let result = myClass.foo();

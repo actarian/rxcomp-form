@@ -5,10 +5,9 @@ import FormControl from './form-control';
 import FormStatus from './models/form-status';
 
 /**
- * @memberof FormModule
+ * @desc Abstract class representing a form collection.
  * @abstract
  * @access public
- * @desc Abstract class representing a form collection.
  */
 export default class FormAbstractCollection extends FormAbstract {
 	/**

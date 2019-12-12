@@ -11,44 +11,54 @@ export function RequiredTrueValidator(value) {
 	return value === true ? null : { required: true };
 }
 
-export function MinValidator(value, min) {
-	if (!value || !min) {
-		return null;
-	}
-	value = parseFloat(value);
-	return !isNaN(value) && value < min ? { min: { min: min, actual: value } } : null;
+export function MinValidator(min) {
+	return function(value) {
+		if (!value || !min) {
+			return null;
+		}
+		value = parseFloat(value);
+		return !isNaN(value) && value < min ? { min: { min: min, actual: value } } : null;
+	};
 }
 
-export function MaxValidator(value, max) {
-	if (!value || !max) {
-		return null;
-	}
-	value = parseFloat(value);
-	return !isNaN(value) && value > max ? { max: { max: max, actual: value } } : null;
+export function MaxValidator(max) {
+	return function(value) {
+		if (!value || !max) {
+			return null;
+		}
+		value = parseFloat(value);
+		return !isNaN(value) && value > max ? { max: { max: max, actual: value } } : null;
+	};
 }
 
-export function MinLengthValidator(value, minLength) {
-	if (!value || !minLength) {
-		return null;
-	}
-	const length = value ? value.length : 0;
-	return length < minLength ? { minlength: { requiredLength: minLength, actualLength: length } } : null;
+export function MinLengthValidator(minlength) {
+	return function(value) {
+		if (!value || !minlength) {
+			return null;
+		}
+		const length = value ? value.length : 0;
+		return length < minlength ? { minlength: { requiredLength: minlength, actualLength: length } } : null;
+	};
 }
 
-export function MaxLengthValidator(value, maxLength) {
-	if (!value || !maxLength) {
-		return null;
-	}
-	const length = value ? value.length : 0;
-	return length > maxLength ? { minlength: { requiredLength: maxLength, actualLength: length } } : null;
+export function MaxLengthValidator(maxlength) {
+	return function(value) {
+		if (!value || !maxlength) {
+			return null;
+		}
+		const length = value ? value.length : 0;
+		return length > maxlength ? { minlength: { requiredLength: maxlength, actualLength: length } } : null;
+	};
 }
 
-export function PatternValidator(value, pattern) {
-	if (!value || !pattern) {
-		return null;
-	}
-	const regex = patternToRegEx(pattern);
-	return regex.test(value) ? null : { pattern: { requiredPattern: regex.toString(), actualValue: value } };
+export function PatternValidator(pattern) {
+	return function(value) {
+		if (!value || !pattern) {
+			return null;
+		}
+		const regex = patternToRegEx(pattern);
+		return regex.test(value) ? null : { pattern: { requiredPattern: regex.toString(), actualValue: value } };
+	};
 }
 
 export function EmailValidator(value) {
