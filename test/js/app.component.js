@@ -11,8 +11,8 @@ export default class AppComponent extends Component {
 			country: null,
 			evaluate: null,
 			privacy: null,
-			items: new FormArray([null, null, null], [RequiredValidator]),
-		}, [RequiredValidator]);
+			items: new FormArray([null, null, null], [RequiredValidator()]),
+		});
 
 		form.patch({
 			firstName: 'Jhon',

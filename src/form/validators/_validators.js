@@ -11,7 +11,7 @@ export default class RequiredValidator extends FormValidator {
 	/**
 	 * validate a value
 	 * @param {any} value - the value to validate
-	 * @return {null|FormError}
+	 * @return {null|FormValidationError}
 	 */
 	validate(value) {
 		return (value == null || value.length === 0) ? { required: true } : null;

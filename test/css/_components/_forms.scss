@@ -279,3 +279,14 @@ input.valid+.icon--check {
 		color: white;
 	}
 }
+
+errors-component {
+	display: block;
+
+	.inner {
+		font-size: 13px;
+		font-family: SFMono-Regular, Consolas, Liberation Mono, Menlo, monospace;
+		padding: 5px 20px;
+		background: #eee;
+	}
+}

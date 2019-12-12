@@ -7,7 +7,7 @@ export default class FormArray extends FormAbstractCollection {
 	 * Create a FormArray.
 	 * @class FormArray
 	 * @param {any|FormControl[]} controls - An array containing controls.
-	 * @param {Validator[]} validators - A list of validators.
+	 * @param {FormValidator[]} validators - A list of validators.
 	 * @example
 	 * const form = new FormArray([null, null, null]);
 	 *
@@ -126,7 +126,7 @@ export default class FormArray extends FormAbstractCollection {
 /**
  * @desc Shortcut for new FormArray
  * @param {any|FormControl[]} controls
- * @param {Validator[]} validators
+ * @param {FormValidator[]} validators
  */
 export function formArray(controls, validators) {
 	return new FormArray(controls, validators);

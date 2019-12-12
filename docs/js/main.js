@@ -485,123 +485,6 @@
     }
   };
 
-  function RequiredValidator(value) {
-    return value == null || value.length === 0 ? {
-      required: true
-    } : null; // return (value == null || value.length === 0) ? 'required' : null;
-  }
-  function MinLengthValidator(minlength) {
-    return function (value) {
-      if (!value || !minlength) {
-        return null;
-      }
-
-      var length = value ? value.length : 0;
-      return length < minlength ? {
-        minlength: {
-          requiredLength: minlength,
-          actualLength: length
-        }
-      } : null;
-    };
-  }
-  /*
-  export function compose(validators) {
-  	if (!validators) {
-  		return null;
-  	}
-  	const presentValidators = validators.filter(isPresent);
-  	if (presentValidators.length == 0) {
-  		return null;
-  	}
-  	return function(control) {
-  		return _mergeErrors(_executeValidators(control, presentValidators));
-  	};
-  }
-
-  export function composeAsync(validators) {
-  	if (!validators) {
-  		return null;
-  	}
-  	const presentValidators = validators.filter(isPresent);
-  	if (presentValidators.length == 0) {
-  		return null;
-  	}
-  	return function(control) {
-  		const observables = _executeAsyncValidators(control, presentValidators).map(toObservable);
-  		return forkJoin(observables).pipe(map(_mergeErrors));
-  	};
-  }
-
-  function isPresent(o) {
-  	return o != null;
-  }
-
-  export function toObservable(r) {
-  	const obs = isPromise(r) ? from(r) : r;
-  	if (!(isObservable(obs))) {
-  		throw new Error(`Expected validator to return Promise or Observable.`);
-  	}
-  	return obs;
-  }
-
-  function _executeValidators(control, validators) {
-  	return validators.map(v => v(control));
-  }
-
-  function _executeAsyncValidators(control, validators) {
-  	return validators.map(v => v(control));
-  }
-
-  function _mergeErrors(arrayOfErrors) {
-  	const res = arrayOfErrors.reduce((res, errors) => {
-  		return errors != null ? { ...res, ...errors } : res;
-  	}, {});
-  	return Object.keys(res).length === 0 ? null : res;
-  }
-  */
-
-  var FormMinLengthDirective =
-  /*#__PURE__*/
-  function (_Directive) {
-    _inheritsLoose(FormMinLengthDirective, _Directive);
-
-    function FormMinLengthDirective() {
-      return _Directive.apply(this, arguments) || this;
-    }
-
-    var _proto2 = FormMinLengthDirective.prototype;
-
-    _proto2.onInit = function onInit() {
-      console.log('FormMinLengthDirective', this.host.control, this.minlength);
-      var validator = this.validator = MinLengthValidator(this.minlength);
-      this.host.control.validators.push(this.validator);
-    };
-
-    _proto2.onChanges = function onChanges(changes) {
-      var validator = MinLengthValidator(this.minlength);
-      this.host.control.validators.push(this.validator);
-      var index = this.host.control.validators.indexOf(this.validator);
-
-      if (index !== -1) {
-        this.host.control.validators.splice(index, 1, validator);
-      } else {
-        this.host.control.validators.push(validator);
-      }
-
-      this.validator = validator;
-    };
-
-    return FormMinLengthDirective;
-  }(rxcomp.Directive);
-  FormMinLengthDirective.meta = {
-    selector: '[minlength][formControl],[minlength][formControlName]',
-    inputs: ['minlength'],
-    hosts: {
-      host: FormAbstractDirective
-    }
-  };
-
   var FormPlaceholderDirective =
   /*#__PURE__*/
   function (_Directive) {
@@ -687,32 +570,6 @@
     inputs: ['formControl', 'formControlName'],
     hosts: {
       host: FormAbstractCollectionDirective
-    }
-  };
-
-  var FormRequiredDirective =
-  /*#__PURE__*/
-  function (_Directive) {
-    _inheritsLoose(FormRequiredDirective, _Directive);
-
-    function FormRequiredDirective() {
-      return _Directive.apply(this, arguments) || this;
-    }
-
-    var _proto = FormRequiredDirective.prototype;
-
-    _proto.onInit = function onInit() {
-      console.log('FormRequiredDirective', this.host.control);
-      this.host.control.validators.push(RequiredValidator);
-    };
-
-    return FormRequiredDirective;
-  }(rxcomp.Directive);
-  FormRequiredDirective.meta = {
-    selector: '[required][formControl],[required][formControlName]',
-    inputs: ['required'],
-    hosts: {
-      host: FormAbstractDirective
     }
   };
 
@@ -804,6 +661,451 @@
     selector: "[(submit)]"
   };
 
+  var FormValidator =
+  /*#__PURE__*/
+  function () {
+    _createClass(FormValidator, [{
+      key: "params",
+
+      /**
+       * params getter
+       * @return {any} params
+       */
+      get: function get() {
+        return this.params$.getValue();
+      }
+      /**
+       * params setter
+       * @param {any} params
+       */
+      ,
+      set: function set(params) {
+        if (params) {
+          var current = this.params;
+          var differs = Object.keys(params).reduce(function (flag, key) {
+            return flag || !current || current[key] !== params[key];
+          }, false);
+
+          if (differs) {
+            // if (JSON.stringify(params) !== JSON.stringify(this.params)) {
+            this.params$.next(params);
+          }
+        }
+      }
+      /**
+       * Create a FormValidator.
+       * @abstract
+       */
+
+    }]);
+
+    function FormValidator(validator, params) {
+      this.validator = validator.bind(this);
+      this.params$ = new rxjs.BehaviorSubject(params);
+    }
+    /**
+     * validate a value
+     * @param {any} value - the value to validate
+     * @return {null|FormValidationError}
+     */
+
+
+    var _proto = FormValidator.prototype;
+
+    _proto.validate = function validate(value) {
+      return this.validator(value);
+    };
+
+    return FormValidator;
+  }();
+
+  function RequiredValidator() {
+    return new FormValidator(function (value) {
+      return value == null || value.length === 0 ? {
+        required: true
+      } : null;
+    }); // return (value == null || value.length === 0) ? 'required' : null;
+  }
+  function RequiredTrueValidator(value) {
+    return new FormValidator(function (value) {
+      return value === true ? null : {
+        required: true
+      };
+    });
+  }
+  function MinValidator(min) {
+    return new FormValidator(function (value) {
+      var min = this.params.min;
+
+      if (!value || !min) {
+        return null;
+      }
+
+      value = parseFloat(value);
+      return !isNaN(value) && value < min ? {
+        min: {
+          min: min,
+          actual: value
+        }
+      } : null;
+    }, {
+      min: min
+    });
+  }
+  function MaxValidator(max) {
+    return new FormValidator(function (value) {
+      var max = this.params.max;
+
+      if (!value || !max) {
+        return null;
+      }
+
+      value = parseFloat(value);
+      return !isNaN(value) && value > max ? {
+        max: {
+          max: max,
+          actual: value
+        }
+      } : null;
+    }, {
+      max: max
+    });
+  }
+  function MinLengthValidator(minlength) {
+    return new FormValidator(function (value) {
+      var minlength = this.params.minlength;
+
+      if (!value || !minlength) {
+        return null;
+      }
+
+      var length = value ? value.length : 0;
+      return length < minlength ? {
+        minlength: {
+          requiredLength: minlength,
+          actualLength: length
+        }
+      } : null;
+    }, {
+      minlength: minlength
+    });
+  }
+  function MaxLengthValidator(maxlength) {
+    return new FormValidator(function (value) {
+      var maxlength = this.params.maxlength;
+
+      if (!value || !maxlength) {
+        return null;
+      }
+
+      var length = value ? value.length : 0;
+      return length > maxlength ? {
+        minlength: {
+          requiredLength: maxlength,
+          actualLength: length
+        }
+      } : null;
+    }, {
+      maxlength: maxlength
+    });
+  }
+  function PatternValidator(pattern) {
+    return new FormValidator(function (value) {
+      var pattern = this.params.pattern;
+
+      if (!value || !pattern) {
+        return null;
+      }
+
+      var regex = patternToRegEx(pattern);
+      return regex.test(value) ? null : {
+        pattern: {
+          requiredPattern: regex.toString(),
+          actualValue: value
+        }
+      };
+    }, {
+      pattern: pattern
+    });
+  }
+  function EmailValidator(value) {
+    var regex = /^(?=.{1,254}$)(?=.{1,64}@)[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+)*@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
+    return new FormValidator(function (value) {
+      if (!value) {
+        return null;
+      }
+
+      return regex.test(value) ? null : {
+        email: true
+      };
+    });
+  }
+
+  function patternToRegEx(pattern) {
+    var regex;
+
+    if (pattern instanceof RegExp) {
+      regex = pattern;
+    } else if (typeof pattern === 'string') {
+      pattern = pattern.charAt(0) === '^' ? pattern : "^" + pattern;
+      pattern = pattern.charAt(pattern.length - 1) === '$' ? pattern : pattern + "$";
+      regex = new RegExp(pattern);
+    }
+
+    return regex;
+  }
+
+  var FormEmailDirective =
+  /*#__PURE__*/
+  function (_Directive) {
+    _inheritsLoose(FormEmailDirective, _Directive);
+
+    function FormEmailDirective() {
+      return _Directive.apply(this, arguments) || this;
+    }
+
+    var _proto = FormEmailDirective.prototype;
+
+    _proto.onInit = function onInit() {
+      // console.log('FormEmailDirective', this.host.control);
+      var validator = this.validator = EmailValidator();
+      this.host.control.addValidators(validator);
+    };
+
+    return FormEmailDirective;
+  }(rxcomp.Directive);
+  FormEmailDirective.meta = {
+    selector: '[email][formControl],[email][formControlName]',
+    inputs: ['email'],
+    hosts: {
+      host: FormAbstractDirective
+    }
+  };
+
+  var FormMaxLengthDirective =
+  /*#__PURE__*/
+  function (_Directive) {
+    _inheritsLoose(FormMaxLengthDirective, _Directive);
+
+    function FormMaxLengthDirective() {
+      return _Directive.apply(this, arguments) || this;
+    }
+
+    var _proto = FormMaxLengthDirective.prototype;
+
+    _proto.onInit = function onInit() {
+      // console.log('FormMaxLengthDirective.onInit', this.maxlength);
+      var validator = this.validator = MaxLengthValidator(this.maxlength);
+      this.host.control.addValidators(this.validator);
+    };
+
+    _proto.onChanges = function onChanges(changes) {
+      // console.log('FormMaxLengthDirective.onChanges', this.maxlength);
+      this.validator.params = {
+        maxlength: this.maxlength
+      };
+    };
+
+    return FormMaxLengthDirective;
+  }(rxcomp.Directive);
+  FormMaxLengthDirective.meta = {
+    selector: '[maxlength][formControl],[maxlength][formControlName]',
+    inputs: ['maxlength'],
+    hosts: {
+      host: FormAbstractDirective
+    }
+  };
+
+  var FormMaxDirective =
+  /*#__PURE__*/
+  function (_Directive) {
+    _inheritsLoose(FormMaxDirective, _Directive);
+
+    function FormMaxDirective() {
+      return _Directive.apply(this, arguments) || this;
+    }
+
+    var _proto = FormMaxDirective.prototype;
+
+    _proto.onInit = function onInit() {
+      // console.log('FormMaxDirective.onInit', this.max);
+      var validator = this.validator = MaxValidator(this.max);
+      this.host.control.addValidators(this.validator);
+    };
+
+    _proto.onChanges = function onChanges(changes) {
+      // console.log('FormMaxDirective.onChanges', this.max);
+      this.validator.params = {
+        max: this.max
+      };
+    };
+
+    return FormMaxDirective;
+  }(rxcomp.Directive);
+  FormMaxDirective.meta = {
+    selector: '[max][formControl],[max][formControlName]',
+    inputs: ['max'],
+    hosts: {
+      host: FormAbstractDirective
+    }
+  };
+
+  var FormMinLengthDirective =
+  /*#__PURE__*/
+  function (_Directive) {
+    _inheritsLoose(FormMinLengthDirective, _Directive);
+
+    function FormMinLengthDirective() {
+      return _Directive.apply(this, arguments) || this;
+    }
+
+    var _proto = FormMinLengthDirective.prototype;
+
+    _proto.onInit = function onInit() {
+      // console.log('FormMinLengthDirective.onInit', this.minlength);
+      var validator = this.validator = MinLengthValidator(this.minlength);
+      this.host.control.addValidators(this.validator);
+    };
+
+    _proto.onChanges = function onChanges(changes) {
+      // console.log('FormMinLengthDirective.onChanges', this.minlength);
+      this.validator.params = {
+        minlength: this.minlength
+      };
+    };
+
+    return FormMinLengthDirective;
+  }(rxcomp.Directive);
+  FormMinLengthDirective.meta = {
+    selector: '[minlength][formControl],[minlength][formControlName]',
+    inputs: ['minlength'],
+    hosts: {
+      host: FormAbstractDirective
+    }
+  };
+
+  var FormMinDirective =
+  /*#__PURE__*/
+  function (_Directive) {
+    _inheritsLoose(FormMinDirective, _Directive);
+
+    function FormMinDirective() {
+      return _Directive.apply(this, arguments) || this;
+    }
+
+    var _proto = FormMinDirective.prototype;
+
+    _proto.onInit = function onInit() {
+      // console.log('FormMinDirective.onInit', this.min);
+      var validator = this.validator = MinValidator(this.min);
+      this.host.control.addValidators(this.validator);
+    };
+
+    _proto.onChanges = function onChanges(changes) {
+      // console.log('FormMinDirective.onChanges', this.min);
+      this.validator.params = {
+        min: this.min
+      };
+    };
+
+    return FormMinDirective;
+  }(rxcomp.Directive);
+  FormMinDirective.meta = {
+    selector: '[min][formControl],[min][formControlName]',
+    inputs: ['min'],
+    hosts: {
+      host: FormAbstractDirective
+    }
+  };
+
+  var FormPatternDirective =
+  /*#__PURE__*/
+  function (_Directive) {
+    _inheritsLoose(FormPatternDirective, _Directive);
+
+    function FormPatternDirective() {
+      return _Directive.apply(this, arguments) || this;
+    }
+
+    var _proto = FormPatternDirective.prototype;
+
+    _proto.onInit = function onInit() {
+      // console.log('FormPatternDirective.onInit', this.pattern);
+      var validator = this.validator = PatternValidator(this.pattern);
+      this.host.control.addValidators(this.validator);
+    };
+
+    _proto.onChanges = function onChanges(changes) {
+      // console.log('FormPatternDirective.onChanges', this.pattern);
+      this.validator.params = {
+        pattern: this.pattern
+      };
+    };
+
+    return FormPatternDirective;
+  }(rxcomp.Directive);
+  FormPatternDirective.meta = {
+    selector: '[pattern][formControl],[pattern][formControlName]',
+    inputs: ['pattern'],
+    hosts: {
+      host: FormAbstractDirective
+    }
+  };
+
+  var FormRequiredTrueDirective =
+  /*#__PURE__*/
+  function (_Directive) {
+    _inheritsLoose(FormRequiredTrueDirective, _Directive);
+
+    function FormRequiredTrueDirective() {
+      return _Directive.apply(this, arguments) || this;
+    }
+
+    var _proto = FormRequiredTrueDirective.prototype;
+
+    _proto.onInit = function onInit() {
+      // console.log('FormRequiredTrueDirective', this.host.control);
+      var validator = this.validator = RequiredTrueValidator();
+      this.host.control.addValidators(validator);
+    };
+
+    return FormRequiredTrueDirective;
+  }(rxcomp.Directive);
+  FormRequiredTrueDirective.meta = {
+    selector: '[requiredTrue][formControl],[requiredTrue][formControlName]',
+    inputs: ['requiredTrue'],
+    hosts: {
+      host: FormAbstractDirective
+    }
+  };
+
+  var FormRequiredDirective =
+  /*#__PURE__*/
+  function (_Directive) {
+    _inheritsLoose(FormRequiredDirective, _Directive);
+
+    function FormRequiredDirective() {
+      return _Directive.apply(this, arguments) || this;
+    }
+
+    var _proto = FormRequiredDirective.prototype;
+
+    _proto.onInit = function onInit() {
+      // console.log('FormRequiredDirective', this.host.control);
+      var validator = this.validator = RequiredValidator();
+      this.host.control.addValidators(validator);
+    };
+
+    return FormRequiredDirective;
+  }(rxcomp.Directive);
+  FormRequiredDirective.meta = {
+    selector: '[required][formControl],[required][formControlName]',
+    inputs: ['required'],
+    hosts: {
+      host: FormAbstractDirective
+    }
+  };
+
   /**
    * FormModule Class.
    * @extends Module
@@ -820,7 +1122,7 @@
 
     return FormModule;
   }(rxcomp.Module);
-  var factories = [FormArrayDirective, FormCheckboxDirective, FormFieldComponent, FormInputDirective, FormMinLengthDirective, FormRadioDirective, FormSelectDirective, FormGroupDirective, FormPlaceholderDirective, FormRequiredDirective, FormSubmitDirective];
+  var factories = [FormArrayDirective, FormCheckboxDirective, FormFieldComponent, FormGroupDirective, FormInputDirective, FormPlaceholderDirective, FormRadioDirective, FormSelectDirective, FormSubmitDirective, FormEmailDirective, FormMaxDirective, FormMaxLengthDirective, FormMinDirective, FormMinLengthDirective, FormPatternDirective, FormRequiredDirective, FormRequiredTrueDirective];
   var pipes = [];
   FormModule.meta = {
     declarations: [].concat(factories, pipes),
@@ -846,7 +1148,7 @@
   function () {
     /**
      * Create a FormAbstract.
-     * @param {Validator[]} validators - A list of validators.
+     * @param {FormValidator[]} validators - A list of validators.
      */
     function FormAbstract(validators) {
       if (validators === void 0) {
@@ -866,18 +1168,33 @@
     var _proto = FormAbstract.prototype;
 
     _proto.initSubjects_ = function initSubjects_() {
+      /**
+       * @private
+       */
       this.valueSubject = new rxjs.BehaviorSubject(null);
       /**
        * @private
        */
 
-      this.valueChildren = new rxjs.Subject();
       this.statusSubject = new rxjs.BehaviorSubject(this);
       /**
        * @private
        */
 
-      this.statusChildren = new rxjs.Subject();
+      this.validatorsSubject = new rxjs.BehaviorSubject().pipe(operators.switchAll());
+      this.switchValidators_();
+    }
+    /**
+     * @private
+     */
+    ;
+
+    _proto.switchValidators_ = function switchValidators_() {
+      var validators = this.validators.map(function (x) {
+        return x.params$;
+      });
+      var validators$ = validators.length ? rxjs.combineLatest(validators) : rxjs.of(validators);
+      this.validatorsSubject.next(validators$);
     }
     /**
      * @private initialize observables
@@ -888,7 +1205,7 @@
     _proto.initObservables_ = function initObservables_() {
       var _this = this;
 
-      this.value$ = rxjs.merge(this.valueSubject, this.valueChildren).pipe(operators.distinctUntilChanged(), operators.skip(1), operators.tap(function () {
+      this.value$ = this.valueSubject.pipe(operators.distinctUntilChanged(), operators.skip(1), operators.tap(function () {
         /**
          * @private
          */
@@ -901,7 +1218,7 @@
 
         _this.statusSubject.next(_this);
       }), operators.shareReplay(1));
-      this.status$ = rxjs.merge(this.statusSubject, this.statusChildren).pipe( // auditTime(1),
+      this.status$ = rxjs.merge(this.statusSubject, this.validatorsSubject).pipe( // auditTime(1),
       operators.tap(function () {
         _this.reduceValidators_();
       }), operators.shareReplay(1));
@@ -929,7 +1246,7 @@
         this.errors = {};
       } else {
         this.errors = Object.assign.apply(Object, [{}].concat(this.validators.map(function (x) {
-          return x(value);
+          return x.validate(value);
         })));
         this.status = Object.keys(this.errors).length === 0 ? FormStatus.Valid : FormStatus.Invalid; // this.errors = this.validators.map(x => x(value)).filter(x => x !== null);
         // this.status = this.errors.length === 0 ? FormStatus.Valid : FormStatus.Invalid;
@@ -964,6 +1281,19 @@
       this.dirty_ = true;
       this.submitted_ = false;
       this.statusSubject.next(this);
+    }
+    /**
+     * Create a FormAbstract.
+     * @param {...FormValidator[]} validators - A list of validators.
+     */
+    ;
+
+    _proto.addValidators = function addValidators() {
+      var _this$validators;
+
+      (_this$validators = this.validators).push.apply(_this$validators, arguments);
+
+      this.switchValidators_();
     };
 
     _createClass(FormAbstract, [{
@@ -1125,7 +1455,7 @@
     /**
      * Create a FormControl.
      * @param {null | string | FormControl} value - The value of the control.
-     * @param {Validator[]} validators - A list of validators.
+     * @param {FormValidator[]} validators - A list of validators.
      * @example
      * const form = new FormControl(null);
      *
@@ -1173,7 +1503,7 @@
     /**
      * Create a FormAbstract.
      * @param {Map<string, any|FormAbstract>} controls - An object containing controls.
-     * @param {Validator[]} validators - A list of validators.
+     * @param {FormValidator[]} validators - A list of validators.
      */
     function FormAbstractCollection(controls, validators) {
       var _this;
@@ -1185,8 +1515,7 @@
 
       _this.initSubjects_();
 
-      _this.initObservables_(); // this.statusSubject.next(this);
-
+      _this.initObservables_();
 
       return _this;
     }
@@ -1219,35 +1548,6 @@
     ;
 
     _proto.initSubjects_ = function initSubjects_() {
-      /*
-      this.valueSubject = new BehaviorSubject(null);
-      const valueChildren = this.reduce_((result, control) => {
-      	result.push(control.value$);
-      	return result;
-      }, []);
-      this.valueChildren = combineLatest(valueChildren).pipe(
-      	map(latest => this.value),
-      	shareReplay(1)
-      );
-      this.statusSubject = new BehaviorSubject(this);
-      const statusChildren = this.reduce_((result, control) => {
-      	result.push(control.status$);
-      	return result;
-      }, []);
-      this.statusChildren = combineLatest(statusChildren).pipe(
-      	shareReplay(1)
-      );
-      */
-
-      /*
-      const changesChildren = this.reduce_((result, control) => {
-      	result.push(control.changes$);
-      	return result;
-      }, []);
-      this.changesChildren = combineLatest(changesChildren).pipe(
-      	shareReplay(1)
-      );
-      */
       this.changesChildren = new rxjs.BehaviorSubject().pipe(operators.switchAll());
       this.switchSubjects_();
     }
@@ -1272,22 +1572,6 @@
     _proto.initObservables_ = function initObservables_() {
       var _this3 = this;
 
-      /*
-      this.value$ = merge(this.valueSubject, this.valueChildren).pipe(
-      	distinctUntilChanged(),
-      	skip(1),
-      	tap(() => {
-      		this.statusSubject.next(this);
-      	}),
-      	shareReplay(1)
-      );
-      this.status$ = merge(this.statusSubject, this.statusChildren).pipe(
-      	tap(() => {
-      		this.reduceValidators_();
-      	}),
-      	shareReplay(1)
-      );
-      */
       this.changes$ = this.changesChildren.pipe(operators.map(function () {
         return _this3.value;
       }), operators.shareReplay(1));
@@ -1504,7 +1788,7 @@
      * Create a FormArray.
      * @class FormArray
      * @param {any|FormControl[]} controls - An array containing controls.
-     * @param {Validator[]} validators - A list of validators.
+     * @param {FormValidator[]} validators - A list of validators.
      * @example
      * const form = new FormArray([null, null, null]);
      *
@@ -1652,7 +1936,7 @@
     /**
      * Create a FormControl.
      * @param {Map<string, any|FormAbstract>} controls - An object containing controls.
-     * @param {Validator[]} validators - A list of validators.
+     * @param {FormValidator[]} validators - A list of validators.
      * @example
      * const form = new FormGroup({
      * 	firstName: null,
@@ -1695,8 +1979,8 @@
         country: null,
         evaluate: null,
         privacy: null,
-        items: new FormArray([null, null, null], [RequiredValidator])
-      }, [RequiredValidator]);
+        items: new FormArray([null, null, null], [RequiredValidator()])
+      });
       form.patch({
         firstName: 'Jhon',
         lastName: 'Appleseed',
@@ -1729,6 +2013,31 @@
     selector: '[app-component]'
   };
 
+  var ErrorsComponent =
+  /*#__PURE__*/
+  function (_Component) {
+    _inheritsLoose(ErrorsComponent, _Component);
+
+    function ErrorsComponent() {
+      return _Component.apply(this, arguments) || this;
+    }
+
+    var _proto = ErrorsComponent.prototype;
+
+    _proto.onChanges = function onChanges(changes) {
+      console.log(this.control.validators);
+    };
+
+    return ErrorsComponent;
+  }(rxcomp.Component);
+  ErrorsComponent.meta = {
+    selector: 'errors-component',
+    inputs: ['control'],
+    template:
+    /* html */
+    "\n\t<div class=\"inner\" *if=\"control.invalid\">\n\t\t<div class=\"error\" *for=\"let [key, value] of control.errors\">\n\t\t\t<span class=\"key\" [innerHTML]=\"key\"></span> <span class=\"value\" [innerHTML]=\"value | json\"></span>\n\t\t</div>\n\t</div>\n\t"
+  };
+
   var AppModule =
   /*#__PURE__*/
   function (_Module) {
@@ -1742,7 +2051,7 @@
   }(rxcomp.Module);
   AppModule.meta = {
     imports: [rxcomp.CoreModule, FormModule],
-    declarations: [],
+    declarations: [ErrorsComponent],
     bootstrap: AppComponent
   };
 

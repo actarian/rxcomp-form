@@ -1,5 +1,5 @@
-import { BehaviorSubject, merge, Subject } from "rxjs";
-import { distinctUntilChanged, map, shareReplay, skip, tap } from 'rxjs/operators';
+import { BehaviorSubject, combineLatest, merge, of } from "rxjs";
+import { distinctUntilChanged, map, shareReplay, skip, switchAll, tap } from 'rxjs/operators';
 import FormStatus from './models/form-status';
 
 /**
@@ -18,7 +18,7 @@ import FormStatus from './models/form-status';
 export default class FormAbstract {
 	/**
 	 * Create a FormAbstract.
-	 * @param {Validator[]} validators - A list of validators.
+	 * @param {FormValidator[]} validators - A list of validators.
 	 */
 	constructor(validators = []) {
 		this.status = FormStatus.Pending;
@@ -31,16 +31,30 @@ export default class FormAbstract {
 	 * @return {void}
 	 */
 	initSubjects_() {
+		/**
+		 * @private
+		 */
 		this.valueSubject = new BehaviorSubject(null);
 		/**
 		 * @private
 		 */
-		this.valueChildren = new Subject();
 		this.statusSubject = new BehaviorSubject(this);
 		/**
 		 * @private
 		 */
-		this.statusChildren = new Subject();
+		this.validatorsSubject = new BehaviorSubject().pipe(
+			switchAll()
+		);
+		this.switchValidators_();
+	}
+
+	/**
+	 * @private
+	 */
+	switchValidators_() {
+		const validators = this.validators.map(x => x.params$);
+		let validators$ = validators.length ? combineLatest(validators) : of (validators);
+		this.validatorsSubject.next(validators$);
 	}
 
 	/**
@@ -48,7 +62,7 @@ export default class FormAbstract {
 	 * @return {void}
 	 */
 	initObservables_() {
-		this.value$ = merge(this.valueSubject, this.valueChildren).pipe(
+		this.value$ = this.valueSubject.pipe(
 			distinctUntilChanged(),
 			skip(1),
 			tap(() => {
@@ -64,13 +78,14 @@ export default class FormAbstract {
 			}),
 			shareReplay(1)
 		);
-		this.status$ = merge(this.statusSubject, this.statusChildren).pipe(
+		this.status$ = merge(this.statusSubject, this.validatorsSubject).pipe(
 			// auditTime(1),
 			tap(() => {
 				this.reduceValidators_();
 			}),
 			shareReplay(1)
 		);
+		const changes = {};
 		this.changes$ = merge(this.value$, this.status$).pipe(
 			map(() => this.value),
 			shareReplay(1)
@@ -93,7 +108,7 @@ export default class FormAbstract {
 		if (this.status === FormStatus.Disabled || this.submitted_) {
 			this.errors = {};
 		} else {
-			this.errors = Object.assign({}, ...this.validators.map(x => x(value)));
+			this.errors = Object.assign({}, ...this.validators.map(x => x.validate(value)));
 			this.status = Object.keys(this.errors).length === 0 ? FormStatus.Valid : FormStatus.Invalid;
 			// this.errors = this.validators.map(x => x(value)).filter(x => x !== null);
 			// this.status = this.errors.length === 0 ? FormStatus.Valid : FormStatus.Invalid;
@@ -224,6 +239,15 @@ export default class FormAbstract {
 		this.dirty_ = true;
 		this.submitted_ = false;
 		this.statusSubject.next(this);
+	}
+
+	/**
+	 * Create a FormAbstract.
+	 * @param {...FormValidator[]} validators - A list of validators.
+	 */
+	addValidators(...validators) {
+		this.validators.push(...validators);
+		this.switchValidators_();
 	}
 
 }

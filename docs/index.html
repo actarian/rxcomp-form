@@ -51,16 +51,19 @@
 					<input type="text" class="control--text" formControlName="firstName" placeholder="firstName" name="firstName" required minlength="20" />
 					<i class="icon--check"></i>
 				</div>
+				<errors-component [control]="form.get('firstName')"></errors-component>
 				<div class="group--form" [formFieldName]="'lastName'">
 					<i class="icon--remove" (click)="control.reset()"></i>
 					<input type="text" class="control--text" [formControl]="control" placeholder="lastName" name="lastName" />
 					<i class="icon--check"></i>
 				</div>
+				<errors-component [control]="form.get('lastName')"></errors-component>
 				<div class="group--form" [formField]="form.get('email')">
 					<i class="icon--remove" (click)="control.reset()"></i>
-					<input type="email" class="control--text" [formControl]="control" placeholder="email" name="email" pattern="[A-Za-z]{3}" title="Three letter country code" />
+					<input type="email" class="control--text" [formControl]="control" placeholder="email" name="email" />
 					<i class="icon--check"></i>
 				</div>
+				<errors-component [control]="form.get('email')" email></errors-component>
 				<div class="group--form group--form--select" formFieldName="country">
 					<select class="control--select" [formControl]="control">
 						<option value="">select</option>
@@ -69,14 +72,17 @@
 					</select>
 					<i class="icon--chevron-down"></i>
 				</div>
+				<errors-component [control]="form.get('country')"></errors-component>
 				<div class="group--form group--radio" [formField]="form.get('evaluate')">
-					<label><input type="radio" class="control--radio" [formControl]="control" name="evaluate" value="free" /><span>free</span></label>
-					<label><input type="radio" class="control--radio" [formControl]="control" name="evaluate" value="pro" /><span>pro</span></label>
-					<label><input type="radio" class="control--radio" [formControl]="control" name="evaluate" value="enterprise" /><span>enterprise</span></label>
+					<label><input type="radio" class="control--radio" [formControl]="control" name="evaluate" value="free" required /><span>free</span></label>
+					<label><input type="radio" class="control--radio" [formControl]="control" name="evaluate" value="pro" required /><span>pro</span></label>
+					<label><input type="radio" class="control--radio" [formControl]="control" name="evaluate" value="enterprise" required /><span>enterprise</span></label>
 				</div>
+				<errors-component [control]="form.get('evaluate')"></errors-component>
 				<div class="group--form group--checkbox" formFieldName="privacy">
-					<label><input type="checkbox" class="control--checkbox" [formControl]="control" [value]="true" /><span>accept privacy</span></label>
+					<label><input type="checkbox" class="control--checkbox" [formControl]="control" [value]="true" requiredTrue /><span>accept privacy</span></label>
 				</div>
+				<errors-component [control]="form.get('privacy')"></errors-component>
 				<div class="group--form" *for="let item of form.get('items').controls">
 					<i class="icon--remove active" (click)="form.get('items').remove(item)"></i>
 					<input type="text" class="control--text" [formControl]="item" [placeholder]="'item-' + index" />

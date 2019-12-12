@@ -13,7 +13,7 @@ export default class FormAbstractCollection extends FormAbstract {
 	/**
 	 * Create a FormAbstract.
 	 * @param {Map<string, any|FormAbstract>} controls - An object containing controls.
-	 * @param {Validator[]} validators - A list of validators.
+	 * @param {FormValidator[]} validators - A list of validators.
 	 */
 	constructor(controls, validators) {
 		super(validators);
@@ -21,7 +21,6 @@ export default class FormAbstractCollection extends FormAbstract {
 		this.initControls_(controls);
 		this.initSubjects_();
 		this.initObservables_();
-		// this.statusSubject.next(this);
 	}
 
 	/**
@@ -45,34 +44,6 @@ export default class FormAbstractCollection extends FormAbstract {
 	 * @private
 	 */
 	initSubjects_() {
-		/*
-		this.valueSubject = new BehaviorSubject(null);
-		const valueChildren = this.reduce_((result, control) => {
-			result.push(control.value$);
-			return result;
-		}, []);
-		this.valueChildren = combineLatest(valueChildren).pipe(
-			map(latest => this.value),
-			shareReplay(1)
-		);
-		this.statusSubject = new BehaviorSubject(this);
-		const statusChildren = this.reduce_((result, control) => {
-			result.push(control.status$);
-			return result;
-		}, []);
-		this.statusChildren = combineLatest(statusChildren).pipe(
-			shareReplay(1)
-		);
-		*/
-		/*
-		const changesChildren = this.reduce_((result, control) => {
-			result.push(control.changes$);
-			return result;
-		}, []);
-		this.changesChildren = combineLatest(changesChildren).pipe(
-			shareReplay(1)
-		);
-		*/
 		this.changesChildren = new BehaviorSubject().pipe(
 			switchAll()
 		);
@@ -95,22 +66,6 @@ export default class FormAbstractCollection extends FormAbstract {
 	 * @private
 	 */
 	initObservables_() {
-		/*
-		this.value$ = merge(this.valueSubject, this.valueChildren).pipe(
-			distinctUntilChanged(),
-			skip(1),
-			tap(() => {
-				this.statusSubject.next(this);
-			}),
-			shareReplay(1)
-		);
-		this.status$ = merge(this.statusSubject, this.statusChildren).pipe(
-			tap(() => {
-				this.reduceValidators_();
-			}),
-			shareReplay(1)
-		);
-		*/
 		this.changes$ = this.changesChildren.pipe(
 			map(() => this.value),
 			shareReplay(1)

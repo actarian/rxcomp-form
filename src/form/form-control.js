@@ -6,7 +6,7 @@ export default class FormControl extends FormAbstract {
 	/**
 	 * Create a FormControl.
 	 * @param {null | string | FormControl} value - The value of the control.
-	 * @param {Validator[]} validators - A list of validators.
+	 * @param {FormValidator[]} validators - A list of validators.
 	 * @example
 	 * const form = new FormControl(null);
 	 *

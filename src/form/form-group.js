@@ -5,7 +5,7 @@ export default class FormGroup extends FormAbstractCollection {
 	/**
 	 * Create a FormControl.
 	 * @param {Map<string, any|FormAbstract>} controls - An object containing controls.
-	 * @param {Validator[]} validators - A list of validators.
+	 * @param {FormValidator[]} validators - A list of validators.
 	 * @example
 	 * const form = new FormGroup({
 	 * 	firstName: null,
@@ -25,7 +25,7 @@ export default class FormGroup extends FormAbstractCollection {
 /**
  * @desc Shortcut for new FormGroup
  * @param {Map<string, any|FormAbstract>} controls
- * @param {Validator[]} validators
+ * @param {FormValidator[]} validators
  */
 export function formGroup(controls, validators) {
 	return new FormGroup(controls, validators);

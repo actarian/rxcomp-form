@@ -513,6 +513,14 @@ input.valid + .icon--check {
     background: #d3833c;
     color: white; }
 
+errors-component {
+  display: block; }
+  errors-component .inner {
+    font-size: 13px;
+    font-family: SFMono-Regular, Consolas, Liberation Mono, Menlo, monospace;
+    padding: 5px 20px;
+    background: #eee; }
+
 .page--test {
   display: -webkit-box;
   display: -ms-flexbox;
