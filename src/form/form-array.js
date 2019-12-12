@@ -1,19 +1,21 @@
 import FormAbstract from './form-abstract';
 import FormAbstractCollection from './form-abstract-collection';
 
+/**
+ * @desc Class representing a FormArray.
+ */
 export default class FormArray extends FormAbstractCollection {
 
 	/**
-	 * Create a FormArray.
-	 * @class FormArray
-	 * @param {any|FormControl[]} controls - An array containing controls.
-	 * @param {FormValidator[]} validators - A list of validators.
+	 * @desc Create a FormArray.
 	 * @example
 	 * const form = new FormArray([null, null, null]);
 	 *
 	 * form.changes$.subscribe(changes => {
 	 * 	console.log(changes);
 	 * });
+	 * @param {any|FormControl[]} controls - An array containing controls.
+	 * @param {FormValidator[]} validators - A list of validators.
 	 */
 	constructor(controls = [], validators) {
 		super(controls, validators);

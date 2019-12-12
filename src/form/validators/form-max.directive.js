@@ -2,6 +2,9 @@ import { Directive } from 'rxcomp';
 import FormAbstractDirective from '../directives/form-abstract.directive';
 import { MaxValidator } from './validators';
 
+/**
+ * @desc FormMaxDirective attribute for injecting MaxValidator.
+ */
 export default class FormMaxDirective extends Directive {
 
 	onInit() {

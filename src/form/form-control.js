@@ -1,19 +1,21 @@
 import FormAbstract from "./form-abstract";
 import FormStatus from './models/form-status';
 
-/** Class representing a FormControl. */
+/**
+ * @desc Class representing a FormControl.
+ */
 export default class FormControl extends FormAbstract {
 
 	/**
-	 * Create a FormControl.
-	 * @param {null | string | FormControl} value - The value of the control.
-	 * @param {FormValidator[]} validators - A list of validators.
+	 * @desc Create a FormControl.
 	 * @example
 	 * const form = new FormControl(null);
 	 *
 	 * form.changes$.subscribe(changes => {
 	 * 	console.log(changes);
 	 * });
+	 * @param {null | string | FormControl} value - The value of the control.
+	 * @param {FormValidator[]} validators - A list of validators.
 	 */
 	constructor(value = null, validators) {
 		super(validators);

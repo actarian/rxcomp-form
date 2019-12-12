@@ -1,11 +1,19 @@
 import FormValidator from './form-validator';
 
+/**
+ * a null validator
+ * @return {null}
+ */
 export function NullValidator() {
 	return new FormValidator(function(value) {
 		return null;
 	});
 }
 
+/**
+ * a required validator
+ * @return {null|FormValidationError}
+ */
 export function RequiredValidator() {
 	return new FormValidator(function(value) {
 		return (value == null || value.length === 0) ? { required: true } : null;
@@ -13,12 +21,20 @@ export function RequiredValidator() {
 	// return (value == null || value.length === 0) ? 'required' : null;
 }
 
+/**
+ * a required and true validator
+ * @return {null|FormValidationError}
+ */
 export function RequiredTrueValidator(value) {
 	return new FormValidator(function(value) {
 		return value === true ? null : { required: true };
 	});
 }
 
+/**
+ * a min number value validator
+ * @return {null|FormValidationError}
+ */
 export function MinValidator(min) {
 	return new FormValidator(function(value) {
 		const min = this.params.min;
@@ -30,6 +46,10 @@ export function MinValidator(min) {
 	}, { min });
 }
 
+/**
+ * a max number value validator
+ * @return {null|FormValidationError}
+ */
 export function MaxValidator(max) {
 	return new FormValidator(function(value) {
 		const max = this.params.max;
@@ -41,6 +61,10 @@ export function MaxValidator(max) {
 	}, { max });
 }
 
+/**
+ * a min string length validator
+ * @return {null|FormValidationError}
+ */
 export function MinLengthValidator(minlength) {
 	return new FormValidator(function(value) {
 		const minlength = this.params.minlength;
@@ -52,6 +76,10 @@ export function MinLengthValidator(minlength) {
 	}, { minlength });
 }
 
+/**
+ * a max string length validator
+ * @return {null|FormValidationError}
+ */
 export function MaxLengthValidator(maxlength) {
 	return new FormValidator(function(value) {
 		const maxlength = this.params.maxlength;
@@ -63,6 +91,10 @@ export function MaxLengthValidator(maxlength) {
 	}, { maxlength });
 }
 
+/**
+ * a regex pattern validator
+ * @return {null|FormValidationError}
+ */
 export function PatternValidator(pattern) {
 	return new FormValidator(function(value) {
 		const pattern = this.params.pattern;
@@ -74,6 +106,10 @@ export function PatternValidator(pattern) {
 	}, { pattern });
 }
 
+/**
+ * an email pattern validator
+ * @return {null|FormValidationError}
+ */
 export function EmailValidator(value) {
 	const regex = /^(?=.{1,254}$)(?=.{1,64}@)[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+)*@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
 	return new FormValidator(function(value) {

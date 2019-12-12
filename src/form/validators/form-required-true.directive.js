@@ -2,6 +2,9 @@ import { Directive } from 'rxcomp';
 import FormAbstractDirective from '../directives/form-abstract.directive';
 import { RequiredTrueValidator } from './validators';
 
+/**
+ * @desc FormRequiredTrueDirective attribute for injecting RequiredTrueValidator.
+ */
 export default class FormRequiredTrueDirective extends Directive {
 
 	onInit() {

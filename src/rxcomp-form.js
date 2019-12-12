@@ -24,3 +24,5 @@ export { default as FormRequiredTrueDirective } from './form/validators/form-req
 export { default as FormRequiredDirective } from './form/validators/form-required.directive';
 export { default as FormValidator } from './form/validators/form-validator';
 export { EmailValidator, MaxLengthValidator, MaxValidator, MinLengthValidator, MinValidator, NullValidator, PatternValidator, RequiredTrueValidator, RequiredValidator } from './form/validators/validators';
+export { Validators };
+import * as Validators from './form/validators/validators';

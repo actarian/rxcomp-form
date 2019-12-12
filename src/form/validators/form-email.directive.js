@@ -2,6 +2,9 @@ import { Directive } from 'rxcomp';
 import FormAbstractDirective from '../directives/form-abstract.directive';
 import { EmailValidator } from './validators';
 
+/**
+ * @desc FormEmailDirective attribute for injecting EmailValidator.
+ */
 export default class FormEmailDirective extends Directive {
 
 	onInit() {

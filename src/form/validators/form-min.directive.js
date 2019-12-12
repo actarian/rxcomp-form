@@ -2,6 +2,9 @@ import { Directive } from 'rxcomp';
 import FormAbstractDirective from '../directives/form-abstract.directive';
 import { MinValidator } from './validators';
 
+/**
+ * @desc FormMinDirective attribute for injecting MinValidator.
+ */
 export default class FormMinDirective extends Directive {
 
 	onInit() {

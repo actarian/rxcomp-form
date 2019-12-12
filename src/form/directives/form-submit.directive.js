@@ -2,6 +2,9 @@ import { Directive, getContext } from 'rxcomp';
 import { fromEvent } from 'rxjs';
 import { shareReplay, takeUntil, tap } from 'rxjs/operators';
 
+/**
+ * @desc FormSubmitDirective.
+ */
 export default class FormSubmitDirective extends Directive {
 
 	onInit() {

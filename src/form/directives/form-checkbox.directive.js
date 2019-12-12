@@ -2,6 +2,9 @@ import { getContext } from 'rxcomp';
 import FormAbstractCollectionDirective from './form-abstract-collection.directive';
 import FormAbstractDirective from './form-abstract.directive';
 
+/**
+ * @desc FormCheckboxDirective.
+ */
 export default class FormCheckboxDirective extends FormAbstractDirective {
 
 	onInit() {

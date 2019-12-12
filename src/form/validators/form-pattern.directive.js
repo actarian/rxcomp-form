@@ -2,6 +2,9 @@ import { Directive } from 'rxcomp';
 import FormAbstractDirective from '../directives/form-abstract.directive';
 import { PatternValidator } from './validators';
 
+/**
+ * @desc FormPatternDirective attribute for injecting PatternValidator.
+ */
 export default class FormPatternDirective extends Directive {
 
 	onInit() {

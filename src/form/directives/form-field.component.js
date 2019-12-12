@@ -2,6 +2,9 @@ import { Component, getContext } from "rxcomp";
 import { FormAttributes } from '../models/form-status';
 import FormAbstractCollectionDirective from './form-abstract-collection.directive';
 
+/**
+ * @desc FormFieldComponent.
+ */
 export default class FormFieldComponent extends Component {
 
 	get control() {

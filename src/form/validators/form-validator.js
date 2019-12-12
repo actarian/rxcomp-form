@@ -1,5 +1,8 @@
 import { BehaviorSubject } from "rxjs";
 
+/**
+ * @desc FormValidator class representing a form validator.
+ */
 export default class FormValidator {
 
 	/**

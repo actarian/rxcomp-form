@@ -18,7 +18,20 @@ import FormRequiredTrueDirective from './form/validators/form-required-true.dire
 import FormRequiredDirective from './form/validators/form-required.directive';
 
 /**
- * FormModule Class.
+ * @desc FormModule Class.
+ * @example
+ * export default class AppModule extends Module {}
+ *
+ * AppModule.meta = {
+ *  imports: [
+ *   CoreModule,
+ *   FormModule
+ *  ],
+ *  declarations: [
+ *   ErrorsComponent
+ *  ],
+ *  bootstrap: AppComponent,
+ * };
  * @extends Module
  */
 export default class FormModule extends Module {}

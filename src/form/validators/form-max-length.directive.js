@@ -3,6 +3,9 @@ import FormAbstractDirective from '../directives/form-abstract.directive';
 import { MaxLengthValidator } from './validators';
 // import { EmailValidator, MaxLengthValidator, MaxValidator, MaxLengthValidator, MaxValidator, NullValidator, PatternValidator, RequiredTrueValidator, RequiredValidator } from './form/validators/validators';
 
+/**
+ * @desc FormMaxLengthDirective attribute for injecting MaxLengthValidator.
+ */
 export default class FormMaxLengthDirective extends Directive {
 
 	onInit() {

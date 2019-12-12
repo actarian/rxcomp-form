@@ -1,5 +1,8 @@
 import { Directive, getContext } from 'rxcomp';
 
+/**
+ * @desc FormPlaceholderDirective.
+ */
 export default class FormPlaceholderDirective extends Directive {
 
 	onChanges(changes) {

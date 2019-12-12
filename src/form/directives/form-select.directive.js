@@ -2,6 +2,9 @@ import { getContext } from 'rxcomp';
 import FormAbstractCollectionDirective from './form-abstract-collection.directive';
 import FormAbstractDirective from './form-abstract.directive';
 
+/**
+ * @desc FormSelectDirective.
+ */
 export default class FormSelectDirective extends FormAbstractDirective {
 
 	writeValue(value) {

@@ -6,14 +6,6 @@ import FormStatus from './models/form-status';
  * @desc Abstract class representing a form control.
  * @abstract
  * @access public
- * @example
- * let myClass = new MyClass();
- * let result = myClass.foo();
- * console.log(result);
- *
- * @example
- * let result = MyClass.bar();
- * console.log(result);
  */
 export default class FormAbstract {
 	/**

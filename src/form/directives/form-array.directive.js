@@ -1,5 +1,8 @@
 import FormAbstractCollectionDirective from './form-abstract-collection.directive';
 
+/**
+ * @desc FormArrayDirective.
+ */
 export default class FormArrayDirective extends FormAbstractCollectionDirective {
 
 	get control() {

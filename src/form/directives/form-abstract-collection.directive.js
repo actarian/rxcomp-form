@@ -1,6 +1,11 @@
 import { Directive, getContext } from 'rxcomp';
 import { FormAttributes } from '../models/form-status';
 
+/**
+ * @desc Abstract class representing a FormAbstractCollectionDirective.
+ * @abstract
+ * @access public
+ */
 export default class FormAbstractCollectionDirective extends Directive {
 
 	get control() {
