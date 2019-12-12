@@ -50,7 +50,7 @@ export default class FormArray extends FormAbstractCollection {
 	 */
 	init(control, key) {
 		this.controls.length = Math.max(this.controls.length, key);
-		this.controls[key] = this.initControl_(control);
+		this.controls[key] = this.initControl_(control, key);
 	}
 
 	/**
@@ -60,7 +60,7 @@ export default class FormArray extends FormAbstractCollection {
 	set(control, key) {
 		// this.controls.length = Math.max(this.controls.length, key);
 		// this.controls[key] = this.initControl_(control);
-		this.controls.splice(key, 1, this.initControl_(control));
+		this.controls.splice(key, 1, this.initControl_(control, key));
 		this.switchSubjects_();
 	}
 
@@ -71,7 +71,7 @@ export default class FormArray extends FormAbstractCollection {
 	 */
 	add(control, key) {
 		this.controls.length = Math.max(this.controls.length, key);
-		this.controls[key] = this.initControl_(control);
+		this.controls[key] = this.initControl_(control, key);
 		this.switchSubjects_();
 	}
 
@@ -81,7 +81,7 @@ export default class FormArray extends FormAbstractCollection {
 	push(control) {
 		// this.controls.length = Math.max(this.controls.length, key);
 		// this.controls[key] = this.initControl_(control);
-		this.controls.push(this.initControl_(control));
+		this.controls.push(this.initControl_(control, this.controls.length));
 		this.switchSubjects_();
 	}
 
@@ -90,7 +90,7 @@ export default class FormArray extends FormAbstractCollection {
 	 * @param {number} key
 	 */
 	insert(control, key) {
-		this.controls.splice(key, 0, this.initControl_(control));
+		this.controls.splice(key, 0, this.initControl_(control, key));
 		this.switchSubjects_();
 	}
 

@@ -26,8 +26,11 @@ export default class FormAbstractCollection extends FormAbstract {
 	/**
 	 * @private
 	 */
-	initControl_(control) {
-		return control instanceof FormAbstract ? control : new FormControl(control, this.validators);
+	initControl_(control, key) {
+		control = control instanceof FormAbstract ? control : new FormControl(control);
+		control.addValidators(...this.validators);
+		control.name = key;
+		return control;
 	}
 
 	/**
@@ -165,6 +168,12 @@ export default class FormAbstractCollection extends FormAbstract {
 		});
 	}
 
+	get errors() {
+		return this.reduce_((result, control) => {
+			return Object.assign(result, control.errors);
+		}, {});
+	}
+
 	reset() {
 		this.forEach_(control => control.reset());
 	}
@@ -178,7 +187,7 @@ export default class FormAbstractCollection extends FormAbstract {
 	}
 
 	init(control, key) {
-		this.controls[key] = this.initControl_(control);
+		this.controls[key] = this.initControl_(control, key);
 	}
 
 	get(key) {
@@ -187,13 +196,13 @@ export default class FormAbstractCollection extends FormAbstract {
 
 	set(control, key) {
 		delete(this.controls[key]);
-		this.controls[key] = this.initControl_(control);
+		this.controls[key] = this.initControl_(control, key);
 		this.switchSubjects_();
 	}
 
 	// !!! needed?
 	add(control, key) {
-		this.controls[key] = this.initControl_(control);
+		this.controls[key] = this.initControl_(control, key);
 		this.switchSubjects_();
 	}
 
@@ -210,6 +219,14 @@ export default class FormAbstractCollection extends FormAbstract {
 		if (changed) {
 			this.switchSubjects_();
 		}
+	}
+
+	/**
+	 * adds one or more FormValidator.
+	 * @param {...FormValidator[]} validators - A list of validators.
+	 */
+	addValidators(...validators) {
+		this.forEach_(control => control.addValidators(...validators));
 	}
 
 }

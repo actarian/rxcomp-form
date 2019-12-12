@@ -11,15 +11,17 @@ export default class AppComponent extends Component {
 			country: null,
 			evaluate: null,
 			privacy: null,
-			items: new FormArray([null, null, null], [RequiredValidator()]),
+			items: new FormArray([null, null, null], RequiredValidator()),
 		});
 
+		/*
 		form.patch({
 			firstName: 'Jhon',
 			lastName: 'Appleseed',
 			email: 'jhonappleseed@gmail.com',
 			country: 'en-US'
 		});
+		*/
 
 		form.changes$.subscribe((changes) => {
 			console.log('AppComponent.form.changes$', changes, form.valid);

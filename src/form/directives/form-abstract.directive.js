@@ -29,6 +29,9 @@ export default class FormAbstractDirective extends Directive {
 
 	onChanges(changes) {
 		const { node } = getContext(this);
+		if (this.formControlName) {
+			node.name = this.formControlName;
+		}
 		const control = this.control;
 		/*
 		// remove all invalids then

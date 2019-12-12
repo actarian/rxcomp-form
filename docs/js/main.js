@@ -152,6 +152,10 @@
       var _getContext2 = rxcomp.getContext(this),
           node = _getContext2.node;
 
+      if (this.formControlName) {
+        node.name = this.formControlName;
+      }
+
       var control = this.control;
       /*
       // remove all invalids then
@@ -1148,16 +1152,10 @@
   function () {
     /**
      * Create a FormAbstract.
-     * @param {FormValidator[]} validators - A list of validators.
+     * @param {FormValidator|FormValidator[]} validators - A list of validators.
      */
     function FormAbstract(validators) {
-      if (validators === void 0) {
-        validators = [];
-      }
-
-      this.status = FormStatus.Pending;
-      this.validators = validators;
-      this.errors = [];
+      this.validators = validators ? Array.isArray(validators) ? validators : [validators] : [];
     }
     /**
      * @private initialize subjects
@@ -1219,40 +1217,46 @@
         _this.statusSubject.next(_this);
       }), operators.shareReplay(1));
       this.status$ = rxjs.merge(this.statusSubject, this.validatorsSubject).pipe( // auditTime(1),
-      operators.tap(function () {
-        _this.reduceValidators_();
+      operators.switchMap(function () {
+        return _this.validate$(_this.value);
       }), operators.shareReplay(1));
       this.changes$ = rxjs.merge(this.value$, this.status$).pipe(operators.map(function () {
         return _this.value;
-      }), operators.shareReplay(1));
-    }
-    /**
-     * @private
-     * @return {errors} an object with key, value errors
-     */
-    ;
-
-    _proto.reduceValidators_ = function reduceValidators_() {
-      return this.validate(this.value);
+      }), operators.auditTime(1), operators.shareReplay(1));
     }
     /**
      * @param {null | string} value - the inner control value
-     * @return {errors} an object with key, value errors
+     * @return {Observable<errors>} an object with key, value errors
      */
     ;
 
-    _proto.validate = function validate(value) {
-      if (this.status === FormStatus.Disabled || this.submitted_) {
-        this.errors = {};
-      } else {
-        this.errors = Object.assign.apply(Object, [{}].concat(this.validators.map(function (x) {
-          return x.validate(value);
-        })));
-        this.status = Object.keys(this.errors).length === 0 ? FormStatus.Valid : FormStatus.Invalid; // this.errors = this.validators.map(x => x(value)).filter(x => x !== null);
-        // this.status = this.errors.length === 0 ? FormStatus.Valid : FormStatus.Invalid;
-      }
+    _proto.validate$ = function validate$(value) {
+      var _this2 = this;
 
+      if (this.status === FormStatus.Disabled || this.submitted_ || !this.validators.length) {
+        this.errors = {};
+        return rxjs.of(this.errors);
+      } else {
+        return rxjs.combineLatest(this.validators.map(function (x) {
+          var result$ = x.validate(value);
+          return rxjs.isObservable(result$) ? result$ : rxjs.of(result$);
+        })).pipe(operators.map(function (results) {
+          _this2.errors = Object.assign.apply(Object, [{}].concat(results));
+          _this2.status = Object.keys(_this2.errors).length === 0 ? FormStatus.Valid : FormStatus.Invalid;
+        }));
+      }
+      /*
+      if (this.status === FormStatus.Disabled || this.submitted_) {
+      	this.errors = {};
+      } else {
+      	this.errors = Object.assign({}, ...this.validators.map(x => x.validate$(value)));
+      	this.status = Object.keys(this.errors).length === 0 ? FormStatus.Valid : FormStatus.Invalid;
+      	// this.errors = this.validators.map(x => x(value)).filter(x => x !== null);
+      	// this.status = this.errors.length === 0 ? FormStatus.Valid : FormStatus.Invalid;
+      }
       return this.errors;
+      */
+
     }
     /**
      * @return {boolean} the pending status
@@ -1283,7 +1287,7 @@
       this.statusSubject.next(this);
     }
     /**
-     * Create a FormAbstract.
+     * adds one or more FormValidator.
      * @param {...FormValidator[]} validators - A list of validators.
      */
     ;
@@ -1340,8 +1344,6 @@
       set: function set(disabled) {
         if (disabled) {
           this.status = FormStatus.Disabled;
-        } else {
-          this.reduceValidators_();
         }
 
         this.statusSubject.next(this);
@@ -1476,6 +1478,12 @@
        */
 
       _this.value_ = value;
+      /**
+       * @private
+       */
+
+      _this.status = FormStatus.Pending;
+      _this.errors = {};
 
       _this.initSubjects_();
 
@@ -1526,8 +1534,15 @@
 
     var _proto = FormAbstractCollection.prototype;
 
-    _proto.initControl_ = function initControl_(control) {
-      return control instanceof FormAbstract ? control : new FormControl(control, this.validators);
+    _proto.initControl_ = function initControl_(control, key) {
+      var _control;
+
+      control = control instanceof FormAbstract ? control : new FormControl(control);
+
+      (_control = control).addValidators.apply(_control, this.validators);
+
+      control.name = key;
+      return control;
     }
     /**
      * @private
@@ -1656,7 +1671,7 @@
     };
 
     _proto.init = function init(control, key) {
-      this.controls[key] = this.initControl_(control);
+      this.controls[key] = this.initControl_(control, key);
     };
 
     _proto.get = function get(key) {
@@ -1665,13 +1680,13 @@
 
     _proto.set = function set(control, key) {
       delete this.controls[key];
-      this.controls[key] = this.initControl_(control);
+      this.controls[key] = this.initControl_(control, key);
       this.switchSubjects_();
     } // !!! needed?
     ;
 
     _proto.add = function add(control, key) {
-      this.controls[key] = this.initControl_(control);
+      this.controls[key] = this.initControl_(control, key);
       this.switchSubjects_();
     };
 
@@ -1694,6 +1709,21 @@
       if (changed) {
         this.switchSubjects_();
       }
+    }
+    /**
+     * adds one or more FormValidator.
+     * @param {...FormValidator[]} validators - A list of validators.
+     */
+    ;
+
+    _proto.addValidators = function addValidators() {
+      for (var _len = arguments.length, validators = new Array(_len), _key = 0; _key < _len; _key++) {
+        validators[_key] = arguments[_key];
+      }
+
+      this.forEach_(function (control) {
+        return control.addValidators.apply(control, validators);
+      });
     };
 
     _createClass(FormAbstractCollection, [{
@@ -1774,6 +1804,13 @@
           control.value = value[key];
         });
       }
+    }, {
+      key: "errors",
+      get: function get() {
+        return this.reduce_(function (result, control) {
+          return Object.assign(result, control.errors);
+        }, {});
+      }
     }]);
 
     return FormAbstractCollection;
@@ -1827,7 +1864,7 @@
      */
     _proto.init = function init(control, key) {
       this.controls.length = Math.max(this.controls.length, key);
-      this.controls[key] = this.initControl_(control);
+      this.controls[key] = this.initControl_(control, key);
     }
     /**
      * @param {FormAbstract} control
@@ -1838,7 +1875,7 @@
     _proto.set = function set(control, key) {
       // this.controls.length = Math.max(this.controls.length, key);
       // this.controls[key] = this.initControl_(control);
-      this.controls.splice(key, 1, this.initControl_(control));
+      this.controls.splice(key, 1, this.initControl_(control, key));
       this.switchSubjects_();
     } // !!! needed?
 
@@ -1850,7 +1887,7 @@
 
     _proto.add = function add(control, key) {
       this.controls.length = Math.max(this.controls.length, key);
-      this.controls[key] = this.initControl_(control);
+      this.controls[key] = this.initControl_(control, key);
       this.switchSubjects_();
     }
     /**
@@ -1861,7 +1898,7 @@
     _proto.push = function push(control) {
       // this.controls.length = Math.max(this.controls.length, key);
       // this.controls[key] = this.initControl_(control);
-      this.controls.push(this.initControl_(control));
+      this.controls.push(this.initControl_(control, this.controls.length));
       this.switchSubjects_();
     }
     /**
@@ -1871,7 +1908,7 @@
     ;
 
     _proto.insert = function insert(control, key) {
-      this.controls.splice(key, 0, this.initControl_(control));
+      this.controls.splice(key, 0, this.initControl_(control, key));
       this.switchSubjects_();
     }
     /**
@@ -1979,14 +2016,17 @@
         country: null,
         evaluate: null,
         privacy: null,
-        items: new FormArray([null, null, null], [RequiredValidator()])
+        items: new FormArray([null, null, null], RequiredValidator())
       });
+      /*
       form.patch({
-        firstName: 'Jhon',
-        lastName: 'Appleseed',
-        email: 'jhonappleseed@gmail.com',
-        country: 'en-US'
+      	firstName: 'Jhon',
+      	lastName: 'Appleseed',
+      	email: 'jhonappleseed@gmail.com',
+      	country: 'en-US'
       });
+      */
+
       form.changes$.subscribe(function (changes) {
         console.log('AppComponent.form.changes$', changes, form.valid);
 
@@ -2022,20 +2062,14 @@
       return _Component.apply(this, arguments) || this;
     }
 
-    var _proto = ErrorsComponent.prototype;
-
-    _proto.onChanges = function onChanges(changes) {
-      console.log(this.control.validators);
-    };
-
     return ErrorsComponent;
-  }(rxcomp.Component);
+  }(rxcomp.Component); // !!! rxcomp check *for in *if
   ErrorsComponent.meta = {
     selector: 'errors-component',
     inputs: ['control'],
     template:
     /* html */
-    "\n\t<div class=\"inner\" *if=\"control.invalid\">\n\t\t<div class=\"error\" *for=\"let [key, value] of control.errors\">\n\t\t\t<span class=\"key\" [innerHTML]=\"key\"></span> <span class=\"value\" [innerHTML]=\"value | json\"></span>\n\t\t</div>\n\t</div>\n\t"
+    "\n\t<div class=\"inner\" [style]=\"{ display: control.invalid ? 'block' : 'none' }\">\n\t\t<div class=\"error\" *for=\"let [key, value] of control.errors\">\n\t\t\t<span class=\"key\" [innerHTML]=\"key\"></span> <span class=\"value\" [innerHTML]=\"value | json\"></span>\n\t\t</div>\n\t</div>\n\t"
   };
 
   var AppModule =

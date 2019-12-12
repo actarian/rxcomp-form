@@ -1,4 +1,5 @@
 import FormAbstract from "./form-abstract";
+import FormStatus from './models/form-status';
 
 /** Class representing a FormControl. */
 export default class FormControl extends FormAbstract {
@@ -20,6 +21,11 @@ export default class FormControl extends FormAbstract {
 		 * @private
 		 */
 		this.value_ = value;
+		/**
+		 * @private
+		 */
+		this.status = FormStatus.Pending;
+		this.errors = {};
 		this.initSubjects_();
 		this.initObservables_();
 		this.statusSubject.next(this);

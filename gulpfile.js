@@ -360,7 +360,7 @@ function tfsCheckout(skip) {
 }
 
 const esdocOptions01 = {
-	destination: './docs2',
+	destination: './docs/api',
 	package: './package.json',
 	// access: ['public', 'protected'],
 	plugins: [
@@ -453,7 +453,7 @@ function compileEsDoc(options) {
 			return callback();
 		}
 		options.source = options.source || file.path;
-		const plugins = options.plugins.map(x => x.name);
+		// const plugins = options.plugins.map(x => x.name);
 		// logger.log('compileEsDoc', plugins);
 		ESDoc.generate(options, (results, config) => {
 			// console.log(results);

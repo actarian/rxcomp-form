@@ -1,18 +1,15 @@
 import { Component } from 'rxcomp';
 
-export default class ErrorsComponent extends Component {
+export default class ErrorsComponent extends Component {}
 
-	onChanges(changes) {
-		console.log(this.control.validators);
-	}
-
-}
+// !!! rxcomp check *for in *if
+// !!! rxcomp check [key,value] in componentless textNode
 
 ErrorsComponent.meta = {
 	selector: 'errors-component',
 	inputs: ['control'],
 	template: /* html */ `
-	<div class="inner" *if="control.invalid">
+	<div class="inner" [style]="{ display: control.invalid ? 'block' : 'none' }">
 		<div class="error" *for="let [key, value] of control.errors">
 			<span class="key" [innerHTML]="key"></span> <span class="value" [innerHTML]="value | json"></span>
 		</div>

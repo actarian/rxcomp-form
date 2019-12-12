@@ -1,5 +1,5 @@
-import { BehaviorSubject, combineLatest, merge, of } from "rxjs";
-import { distinctUntilChanged, map, shareReplay, skip, switchAll, tap } from 'rxjs/operators';
+import { BehaviorSubject, combineLatest, isObservable, merge, of } from "rxjs";
+import { auditTime, distinctUntilChanged, map, shareReplay, skip, switchAll, switchMap, tap } from 'rxjs/operators';
 import FormStatus from './models/form-status';
 
 /**
@@ -18,12 +18,10 @@ import FormStatus from './models/form-status';
 export default class FormAbstract {
 	/**
 	 * Create a FormAbstract.
-	 * @param {FormValidator[]} validators - A list of validators.
+	 * @param {FormValidator|FormValidator[]} validators - A list of validators.
 	 */
-	constructor(validators = []) {
-		this.status = FormStatus.Pending;
-		this.validators = validators;
-		this.errors = [];
+	constructor(validators) {
+		this.validators = validators ? (Array.isArray(validators) ? validators : [validators]) : [];
 	}
 
 	/**
@@ -80,40 +78,47 @@ export default class FormAbstract {
 		);
 		this.status$ = merge(this.statusSubject, this.validatorsSubject).pipe(
 			// auditTime(1),
-			tap(() => {
-				this.reduceValidators_();
-			}),
+			switchMap(() => this.validate$(this.value)),
 			shareReplay(1)
 		);
 		const changes = {};
 		this.changes$ = merge(this.value$, this.status$).pipe(
 			map(() => this.value),
+			auditTime(1),
 			shareReplay(1)
 		);
 	}
 
 	/**
-	 * @private
-	 * @return {errors} an object with key, value errors
-	 */
-	reduceValidators_() {
-		return this.validate(this.value);
-	}
-
-	/**
 	 * @param {null | string} value - the inner control value
-	 * @return {errors} an object with key, value errors
+	 * @return {Observable<errors>} an object with key, value errors
 	 */
-	validate(value) {
+	validate$(value) {
+		if (this.status === FormStatus.Disabled || this.submitted_ || !this.validators.length) {
+			this.errors = {};
+			return of(this.errors);
+		} else {
+			return combineLatest(this.validators.map(x => {
+				let result$ = x.validate(value);
+				return isObservable(result$) ? result$ : of (result$);
+			})).pipe(
+				map(results => {
+					this.errors = Object.assign({}, ...results);
+					this.status = Object.keys(this.errors).length === 0 ? FormStatus.Valid : FormStatus.Invalid;
+				})
+			);
+		}
+		/*
 		if (this.status === FormStatus.Disabled || this.submitted_) {
 			this.errors = {};
 		} else {
-			this.errors = Object.assign({}, ...this.validators.map(x => x.validate(value)));
+			this.errors = Object.assign({}, ...this.validators.map(x => x.validate$(value)));
 			this.status = Object.keys(this.errors).length === 0 ? FormStatus.Valid : FormStatus.Invalid;
 			// this.errors = this.validators.map(x => x(value)).filter(x => x !== null);
 			// this.status = this.errors.length === 0 ? FormStatus.Valid : FormStatus.Invalid;
 		}
 		return this.errors;
+		*/
 	}
 
 	/**
@@ -173,8 +178,6 @@ export default class FormAbstract {
 	set disabled(disabled) {
 		if (disabled) {
 			this.status = FormStatus.Disabled;
-		} else {
-			this.reduceValidators_();
 		}
 		this.statusSubject.next(this);
 	}
@@ -242,7 +245,7 @@ export default class FormAbstract {
 	}
 
 	/**
-	 * Create a FormAbstract.
+	 * adds one or more FormValidator.
 	 * @param {...FormValidator[]} validators - A list of validators.
 	 */
 	addValidators(...validators) {

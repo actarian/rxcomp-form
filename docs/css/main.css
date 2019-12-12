@@ -599,7 +599,7 @@ errors-component {
             -ms-flex-direction: column;
                 flex-direction: column;
         max-width: 375px;
-        height: 70vh;
+        height: 77vh;
         border-radius: 3px;
         -webkit-box-shadow: 0 10px 20px -5px rgba(0, 0, 0, 0.2);
                 box-shadow: 0 10px 20px -5px rgba(0, 0, 0, 0.2);
