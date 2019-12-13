@@ -48,6 +48,12 @@
   };
   var FormAttributes = ['untouched', 'touched', 'pristine', 'dirty', 'pending', 'enabled', 'disabled', 'valid', 'invalid', 'submitted'];
 
+  /**
+   * @desc Abstract class representing a FormAbstractCollectionDirective.
+   * @abstract
+   * @access public
+   */
+
   var FormAbstractCollectionDirective =
   /*#__PURE__*/
   function (_Directive) {
@@ -89,6 +95,10 @@
     }
   };
 
+  /**
+   * @desc FormArrayDirective.
+   */
+
   var FormArrayDirective =
   /*#__PURE__*/
   function (_FormAbstractCollecti) {
@@ -123,6 +133,12 @@
       host: FormAbstractCollectionDirective
     }
   };
+
+  /**
+   * @desc Abstract class representing a FormAbstractDirective.
+   * @abstract
+   * @access public
+   */
 
   var FormAbstractDirective =
   /*#__PURE__*/
@@ -280,6 +296,10 @@
 
   */
 
+  /**
+   * @desc FormCheckboxDirective.
+   */
+
   var FormCheckboxDirective =
   /*#__PURE__*/
   function (_FormAbstractDirectiv) {
@@ -364,6 +384,10 @@
 
   */
 
+  /**
+   * @desc FormFieldComponent.
+   */
+
   var FormFieldComponent =
   /*#__PURE__*/
   function (_Component) {
@@ -415,6 +439,10 @@
     }
   };
 
+  /**
+   * @desc FormGroupDirective.
+   */
+
   var FormGroupDirective =
   /*#__PURE__*/
   function (_FormAbstractCollecti) {
@@ -449,6 +477,10 @@
       host: FormAbstractCollectionDirective
     }
   };
+
+  /**
+   * @desc FormInputDirective.
+   */
 
   var FormInputDirective =
   /*#__PURE__*/
@@ -489,6 +521,10 @@
     }
   };
 
+  /**
+   * @desc FormPlaceholderDirective.
+   */
+
   var FormPlaceholderDirective =
   /*#__PURE__*/
   function (_Directive) {
@@ -513,6 +549,10 @@
     selector: 'input[placeholder],textarea[placeholder]',
     inputs: ['placeholder']
   };
+
+  /**
+   * @desc FormRadioDirective.
+   */
 
   var FormRadioDirective =
   /*#__PURE__*/
@@ -577,6 +617,10 @@
     }
   };
 
+  /**
+   * @desc FormSelectDirective.
+   */
+
   var FormSelectDirective =
   /*#__PURE__*/
   function (_FormAbstractDirectiv) {
@@ -623,6 +667,10 @@
     }
   };
 
+  /**
+   * @desc FormSubmitDirective.
+   */
+
   var FormSubmitDirective =
   /*#__PURE__*/
   function (_Directive) {
@@ -664,6 +712,10 @@
   FormSubmitDirective.meta = {
     selector: "[(submit)]"
   };
+
+  /**
+   * @desc FormValidator class representing a form validator.
+   */
 
   var FormValidator =
   /*#__PURE__*/
@@ -723,6 +775,11 @@
     return FormValidator;
   }();
 
+  /**
+   * a required validator
+   * @return {null|FormValidationError}
+   */
+
   function RequiredValidator() {
     return new FormValidator(function (value) {
       return value == null || value.length === 0 ? {
@@ -730,6 +787,11 @@
       } : null;
     }); // return (value == null || value.length === 0) ? 'required' : null;
   }
+  /**
+   * a required and true validator
+   * @return {null|FormValidationError}
+   */
+
   function RequiredTrueValidator(value) {
     return new FormValidator(function (value) {
       return value === true ? null : {
@@ -737,6 +799,11 @@
       };
     });
   }
+  /**
+   * a min number value validator
+   * @return {null|FormValidationError}
+   */
+
   function MinValidator(min) {
     return new FormValidator(function (value) {
       var min = this.params.min;
@@ -756,6 +823,11 @@
       min: min
     });
   }
+  /**
+   * a max number value validator
+   * @return {null|FormValidationError}
+   */
+
   function MaxValidator(max) {
     return new FormValidator(function (value) {
       var max = this.params.max;
@@ -775,6 +847,11 @@
       max: max
     });
   }
+  /**
+   * a min string length validator
+   * @return {null|FormValidationError}
+   */
+
   function MinLengthValidator(minlength) {
     return new FormValidator(function (value) {
       var minlength = this.params.minlength;
@@ -794,6 +871,11 @@
       minlength: minlength
     });
   }
+  /**
+   * a max string length validator
+   * @return {null|FormValidationError}
+   */
+
   function MaxLengthValidator(maxlength) {
     return new FormValidator(function (value) {
       var maxlength = this.params.maxlength;
@@ -813,6 +895,11 @@
       maxlength: maxlength
     });
   }
+  /**
+   * a regex pattern validator
+   * @return {null|FormValidationError}
+   */
+
   function PatternValidator(pattern) {
     return new FormValidator(function (value) {
       var pattern = this.params.pattern;
@@ -832,6 +919,11 @@
       pattern: pattern
     });
   }
+  /**
+   * an email pattern validator
+   * @return {null|FormValidationError}
+   */
+
   function EmailValidator(value) {
     var regex = /^(?=.{1,254}$)(?=.{1,64}@)[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+)*@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
     return new FormValidator(function (value) {
@@ -859,6 +951,10 @@
     return regex;
   }
 
+  /**
+   * @desc FormEmailDirective attribute for injecting EmailValidator.
+   */
+
   var FormEmailDirective =
   /*#__PURE__*/
   function (_Directive) {
@@ -885,6 +981,10 @@
       host: FormAbstractDirective
     }
   };
+
+  /**
+   * @desc FormMaxLengthDirective attribute for injecting MaxLengthValidator.
+   */
 
   var FormMaxLengthDirective =
   /*#__PURE__*/
@@ -920,6 +1020,10 @@
     }
   };
 
+  /**
+   * @desc FormMaxDirective attribute for injecting MaxValidator.
+   */
+
   var FormMaxDirective =
   /*#__PURE__*/
   function (_Directive) {
@@ -953,6 +1057,10 @@
       host: FormAbstractDirective
     }
   };
+
+  /**
+   * @desc FormMinLengthDirective attribute for injecting MinLengthValidator.
+   */
 
   var FormMinLengthDirective =
   /*#__PURE__*/
@@ -988,6 +1096,10 @@
     }
   };
 
+  /**
+   * @desc FormMinDirective attribute for injecting MinValidator.
+   */
+
   var FormMinDirective =
   /*#__PURE__*/
   function (_Directive) {
@@ -1021,6 +1133,10 @@
       host: FormAbstractDirective
     }
   };
+
+  /**
+   * @desc FormPatternDirective attribute for injecting PatternValidator.
+   */
 
   var FormPatternDirective =
   /*#__PURE__*/
@@ -1056,6 +1172,10 @@
     }
   };
 
+  /**
+   * @desc FormRequiredTrueDirective attribute for injecting RequiredTrueValidator.
+   */
+
   var FormRequiredTrueDirective =
   /*#__PURE__*/
   function (_Directive) {
@@ -1082,6 +1202,10 @@
       host: FormAbstractDirective
     }
   };
+
+  /**
+   * @desc FormRequiredDirective attribute for injecting RequiredValidator.
+   */
 
   var FormRequiredDirective =
   /*#__PURE__*/
@@ -1111,7 +1235,20 @@
   };
 
   /**
-   * FormModule Class.
+   * @desc FormModule Class.
+   * @example
+   * export default class AppModule extends Module {}
+   *
+   * AppModule.meta = {
+   *  imports: [
+   *   CoreModule,
+   *   FormModule
+   *  ],
+   *  declarations: [
+   *   ErrorsComponent
+   *  ],
+   *  bootstrap: AppComponent,
+   * };
    * @extends Module
    */
 
@@ -1137,14 +1274,6 @@
    * @desc Abstract class representing a form control.
    * @abstract
    * @access public
-   * @example
-   * let myClass = new MyClass();
-   * let result = myClass.foo();
-   * console.log(result);
-   *
-   * @example
-   * let result = MyClass.bar();
-   * console.log(result);
    */
 
   var FormAbstract =
@@ -1447,7 +1576,9 @@
     return FormAbstract;
   }();
 
-  /** Class representing a FormControl. */
+  /**
+   * @desc Class representing a FormControl.
+   */
 
   var FormControl =
   /*#__PURE__*/
@@ -1455,15 +1586,15 @@
     _inheritsLoose(FormControl, _FormAbstract);
 
     /**
-     * Create a FormControl.
-     * @param {null | string | FormControl} value - The value of the control.
-     * @param {FormValidator[]} validators - A list of validators.
+     * @desc Create a FormControl.
      * @example
      * const form = new FormControl(null);
      *
      * form.changes$.subscribe(changes => {
      * 	console.log(changes);
      * });
+     * @param {null | string | FormControl} value - The value of the control.
+     * @param {FormValidator[]} validators - A list of validators.
      */
     function FormControl(value, validators) {
       var _this;
@@ -1816,22 +1947,25 @@
     return FormAbstractCollection;
   }(FormAbstract);
 
+  /**
+   * @desc Class representing a FormArray.
+   */
+
   var FormArray =
   /*#__PURE__*/
   function (_FormAbstractCollecti) {
     _inheritsLoose(FormArray, _FormAbstractCollecti);
 
     /**
-     * Create a FormArray.
-     * @class FormArray
-     * @param {any|FormControl[]} controls - An array containing controls.
-     * @param {FormValidator[]} validators - A list of validators.
+     * @desc Create a FormArray.
      * @example
      * const form = new FormArray([null, null, null]);
      *
      * form.changes$.subscribe(changes => {
      * 	console.log(changes);
      * });
+     * @param {any|FormControl[]} controls - An array containing controls.
+     * @param {FormValidator[]} validators - A list of validators.
      */
     function FormArray(controls, validators) {
       if (controls === void 0) {
@@ -1965,15 +2099,17 @@
     return FormArray;
   }(FormAbstractCollection);
 
+  /**
+   * @desc Class representing a FormGroup.
+   */
+
   var FormGroup =
   /*#__PURE__*/
   function (_FormAbstractCollecti) {
     _inheritsLoose(FormGroup, _FormAbstractCollecti);
 
     /**
-     * Create a FormControl.
-     * @param {Map<string, any|FormAbstract>} controls - An object containing controls.
-     * @param {FormValidator[]} validators - A list of validators.
+     * @desc Create a FormControl.
      * @example
      * const form = new FormGroup({
      * 	firstName: null,
@@ -1983,6 +2119,8 @@
      * form.changes$.subscribe(changes => {
      * 	console.log(changes);
      * });
+     * @param {Map<string, any|FormAbstract>} controls - An object containing controls.
+     * @param {FormValidator[]} validators - A list of validators.
      */
     function FormGroup(controls, validators) {
       if (controls === void 0) {
