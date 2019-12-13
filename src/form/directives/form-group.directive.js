@@ -2,6 +2,10 @@ import FormAbstractCollectionDirective from './form-abstract-collection.directiv
 
 /**
  * @desc FormGroupDirective.
+ * @example
+ * <form [formGroup]="form" (submit)="onSubmit()" role="form" novalidate autocomplete="off">
+ * 	...
+ * </form>
  */
 export default class FormGroupDirective extends FormAbstractCollectionDirective {
 

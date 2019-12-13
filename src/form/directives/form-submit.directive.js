@@ -4,6 +4,10 @@ import { shareReplay, takeUntil, tap } from 'rxjs/operators';
 
 /**
  * @desc FormSubmitDirective.
+ * @example
+ * <form (submit)="onSubmit()" [formGroup]="form" role="form" novalidate autocomplete="off">
+ * 	...
+ * </form>
  */
 export default class FormSubmitDirective extends Directive {
 

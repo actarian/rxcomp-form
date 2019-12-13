@@ -4,6 +4,8 @@ import { EmailValidator } from './validators';
 
 /**
  * @desc FormEmailDirective attribute for injecting EmailValidator.
+ * @example
+ * <input type="text" formControlName="email" email />
  */
 export default class FormEmailDirective extends Directive {
 

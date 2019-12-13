@@ -97,6 +97,10 @@
 
   /**
    * @desc FormArrayDirective.
+   * @example
+   * <form [formArray]="form" (submit)="onSubmit()" role="form" novalidate autocomplete="off">
+   * 	...
+   * </form>
    */
 
   var FormArrayDirective =
@@ -298,6 +302,10 @@
 
   /**
    * @desc FormCheckboxDirective.
+   * @example
+   * <input type="checkbox" formControlName="privacy" [value]="true" requiredTrue />
+   * @example
+   * <input type="checkbox" [formControl]="control" [value]="true" requiredTrue />
    */
 
   var FormCheckboxDirective =
@@ -386,6 +394,10 @@
 
   /**
    * @desc FormFieldComponent.
+   * @example
+   * <div formFieldName="firstName">
+   *	<input type="text" [formControl]="control" />
+   * </div>
    */
 
   var FormFieldComponent =
@@ -441,6 +453,10 @@
 
   /**
    * @desc FormGroupDirective.
+   * @example
+   * <form [formGroup]="form" (submit)="onSubmit()" role="form" novalidate autocomplete="off">
+   * 	...
+   * </form>
    */
 
   var FormGroupDirective =
@@ -479,7 +495,11 @@
   };
 
   /**
-   * @desc FormInputDirective.
+   * @desc FormInputDirective to handle input text FormControl value.
+   * @example
+   * <input type="text" formControlName="firstName" />
+   * @example
+   * <input type="text" [formControl]="form.get('firstName')" />
    */
 
   var FormInputDirective =
@@ -523,6 +543,8 @@
 
   /**
    * @desc FormPlaceholderDirective.
+   * @example
+   * <input type="text" [placeholder]="'item-' + index" />
    */
 
   var FormPlaceholderDirective =
@@ -552,6 +574,10 @@
 
   /**
    * @desc FormRadioDirective.
+   * @example
+   * <input type="radio" [formControl]="control" name="radioGroup" value="one" />
+   * <input type="radio" [formControl]="control" name="radioGroup" value="two" />
+   * <input type="radio" [formControl]="control" name="radioGroup" value="three" />
    */
 
   var FormRadioDirective =
@@ -619,6 +645,18 @@
 
   /**
    * @desc FormSelectDirective.
+   * @example
+   * <select formControlName="country">
+   * 	<option value="">select</option>
+   * 	<option value="en-US">English</option>
+   * 	<option value="it-IT">Italiano</option>
+   * </select>
+   * @example
+   * <select [formControl]="control">
+   * 	<option value="">select</option>
+   * 	<option value="en-US">English</option>
+   * 	<option value="it-IT">Italiano</option>
+   * </select>
    */
 
   var FormSelectDirective =
@@ -669,6 +707,10 @@
 
   /**
    * @desc FormSubmitDirective.
+   * @example
+   * <form (submit)="onSubmit()" [formGroup]="form" role="form" novalidate autocomplete="off">
+   * 	...
+   * </form>
    */
 
   var FormSubmitDirective =
@@ -715,6 +757,16 @@
 
   /**
    * @desc FormValidator class representing a form validator.
+   * @example
+   * export function EqualValidator(equal) {
+   * 	return new FormValidator(function(value) {
+   * 		const equal = this.params.equal;
+   * 		if (!value || !equal) {
+   * 			return null;
+   * 		}
+   * 		return value !== equal ? { equal: { equal: equal, actual: value } } : null;
+   * 	}, { equal });
+   * }
    */
 
   var FormValidator =
@@ -792,7 +844,7 @@
    * @return {null|FormValidationError}
    */
 
-  function RequiredTrueValidator(value) {
+  function RequiredTrueValidator() {
     return new FormValidator(function (value) {
       return value === true ? null : {
         required: true
@@ -953,6 +1005,8 @@
 
   /**
    * @desc FormEmailDirective attribute for injecting EmailValidator.
+   * @example
+   * <input type="text" formControlName="email" email />
    */
 
   var FormEmailDirective =
@@ -984,6 +1038,8 @@
 
   /**
    * @desc FormMaxLengthDirective attribute for injecting MaxLengthValidator.
+   * @example
+   * <input type="text" formControlName="card" maxlength="12" />
    */
 
   var FormMaxLengthDirective =
@@ -1022,6 +1078,8 @@
 
   /**
    * @desc FormMaxDirective attribute for injecting MaxValidator.
+   * @example
+   * <input type="number" formControlName="qty" max="12" />
    */
 
   var FormMaxDirective =
@@ -1060,6 +1118,8 @@
 
   /**
    * @desc FormMinLengthDirective attribute for injecting MinLengthValidator.
+   * @example
+   * <input type="text" formControlName="card" minlength="12" />
    */
 
   var FormMinLengthDirective =
@@ -1098,6 +1158,8 @@
 
   /**
    * @desc FormMinDirective attribute for injecting MinValidator.
+   * @example
+   * <input type="number" formControlName="qty" min="1" />
    */
 
   var FormMinDirective =
@@ -1136,6 +1198,8 @@
 
   /**
    * @desc FormPatternDirective attribute for injecting PatternValidator.
+   * @example
+   * <input type="text" formControlName="visa" pattern="^4[0-9]{12}(?:[0-9]{3})?$" />
    */
 
   var FormPatternDirective =
@@ -1174,6 +1238,8 @@
 
   /**
    * @desc FormRequiredTrueDirective attribute for injecting RequiredTrueValidator.
+   * @example
+   * <input type="checkbox" formControlName="privacy" requiredTrue />
    */
 
   var FormRequiredTrueDirective =
@@ -1205,6 +1271,8 @@
 
   /**
    * @desc FormRequiredDirective attribute for injecting RequiredValidator.
+   * @example
+   * <input type="text" formControlName="firstName" required />
    */
 
   var FormRequiredDirective =
@@ -2171,11 +2239,6 @@
         _this.pushChanges();
       });
       this.form = form;
-    };
-
-    _proto.onValidate = function onValidate() {
-      // console.log('AppComponent.onValidate', this.form.valid);
-      return this.form.valid;
     };
 
     _proto.onSubmit = function onSubmit() {

@@ -4,6 +4,10 @@ import FormAbstractCollectionDirective from './form-abstract-collection.directiv
 
 /**
  * @desc FormFieldComponent.
+ * @example
+ * <div formFieldName="firstName">
+ *	<input type="text" [formControl]="control" />
+ * </div>
  */
 export default class FormFieldComponent extends Component {
 

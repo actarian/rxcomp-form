@@ -31,11 +31,6 @@ export default class AppComponent extends Component {
 		this.form = form;
 	}
 
-	onValidate() {
-		// console.log('AppComponent.onValidate', this.form.valid);
-		return this.form.valid;
-	}
-
 	onSubmit() {
 		if (this.form.valid) {
 			console.log('AppComponent.onSubmit', this.form.value);

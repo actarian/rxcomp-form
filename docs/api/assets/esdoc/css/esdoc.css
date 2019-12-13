@@ -83,3 +83,7 @@ table.summary td {
 .github-markdown img:not([src*=".svg"]) {
   -webkit-box-shadow: none;
           box-shadow: none; }
+
+.github-markdown code {
+  color: #f28732;
+  font-size: 15px; }

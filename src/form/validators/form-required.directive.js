@@ -4,6 +4,8 @@ import { RequiredValidator } from './validators';
 
 /**
  * @desc FormRequiredDirective attribute for injecting RequiredValidator.
+ * @example
+ * <input type="text" formControlName="firstName" required />
  */
 export default class FormRequiredDirective extends Directive {
 

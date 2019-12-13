@@ -4,6 +4,8 @@ import { RequiredTrueValidator } from './validators';
 
 /**
  * @desc FormRequiredTrueDirective attribute for injecting RequiredTrueValidator.
+ * @example
+ * <input type="checkbox" formControlName="privacy" requiredTrue />
  */
 export default class FormRequiredTrueDirective extends Directive {
 

@@ -128,20 +128,24 @@
 </tbody>
 </table>
 <blockquote>
-<p><a href="https://actarian.github.io/rxcomp-form/">RxComp Form demo</a>  </p>
+<p><a href="https://actarian.github.io/rxcomp-form/">RxComp Form demo</a><br><a href="https://actarian.github.io/rxcomp-form/api/">RxComp Form api</a>  </p>
 </blockquote>
 <hr>
 <h3 id="what-is-included">What is included</h3><ul>
-<li>Models <em><code>FormControl</code>, <code>FormGroup</code>, <code>FormArray</code></em></li>
-<li>Directives <em><code>FormInput</code>, <code>FormTextarea</code>, <code>FormSelect</code>, <code>FormCheckbox</code>, <code>FormRadio</code>, <code>FormSubmit</code></em></li>
-<li>Component Template</li>
+<li><p>Models<br><em><code>FormControl</code>, <code>FormGroup</code>, <code>FormArray</code></em>  </p>
+</li>
+<li><p>Directives<br><em><code>FormInput</code>, <code>FormTextarea</code>, <code>FormSelect</code>, <code>FormCheckbox</code>, <code>FormRadio</code>, <code>FormSubmit</code></em>  </p>
+</li>
+<li><p>Validators<br><em><code>EmailValidator</code>, <code>MaxLengthValidator</code>, <code>MaxValidator</code>, <code>MinLengthValidator</code>, <code>MinValidator</code>, <code>NullValidator</code>, <code>PatternValidator</code>, <code>RequiredTrueValidator</code>, <code>RequiredValidator</code></em> </p>
+</li>
 </ul>
 <hr>
-<h2 id="installation-and-usage">Installation and Usage</h2><h3 id="es6-via-npm">ES6 via npm</h3><pre><code><code class="source-code prettyprint">npm install rxcomp --save  
-npm install rxcomp-form --save</code>
+<h2 id="installation-and-usage">Installation and Usage</h2><h3 id="es6-via-npm">ES6 via npm</h3><p>This library depend on <a href="https://github.com/actarian/rxcomp">RxComp</a> and <a href="https://github.com/ReactiveX/rxjs">RxJs</a><br>install via npm or include via script   </p>
+<pre><code><code class="source-code prettyprint">npm install rxjs rxcomp rxcomp-form --save</code>
 </code></pre><hr>
 <h3 id="cdn">CDN</h3><p>For CDN, you can use unpkg</p>
-<pre><code class="lang-html"><code class="source-code prettyprint">&lt;script src=&quot;https://unpkg.com/rxcomp@1.0.0-alpha.11/dist/rxcomp.min.js&quot;&gt;&lt;/script&gt;  
+<pre><code class="lang-html"><code class="source-code prettyprint">&lt;script src=&quot;https://unpkg.com/@reactivex/rxjs@6.5.3/dist/global/rxjs.umd.min.js&quot;&gt;&lt;/script&gt;
+&lt;script src=&quot;https://unpkg.com/rxcomp@1.0.0-alpha.11/dist/rxcomp.min.js&quot;&gt;&lt;/script&gt;  
 &lt;script src=&quot;https://unpkg.com/rxcomp-form@1.0.0-alpha.11/dist/rxcomp-form.min.js&quot;&gt;&lt;/script&gt;</code>
 </code></pre>
 <p>The global namespace for RxComp is <code>rxcomp</code></p>
@@ -151,12 +155,7 @@ npm install rxcomp-form --save</code>
 <pre><code class="lang-javascript"><code class="source-code prettyprint">import { FormModule } from &apos;rxcomp-form&apos;;</code>
 </code></pre>
 <hr>
-<h3 id="dependancy">Dependancy</h3><p>This library depend on <a href="https://github.com/ReactiveX/rxjs">RxJs</a><br>install via npm or include via script  </p>
-<pre><code><code class="source-code prettyprint">npm install rxjs --save</code>
-</code></pre><pre><code class="lang-html"><code class="source-code prettyprint">&lt;script src=&quot;https://unpkg.com/@reactivex/rxjs@6.5.3/dist/global/rxjs.umd.min.js&quot;&gt;&lt;/script&gt;</code>
-</code></pre>
-<hr>
-<h3 id="bootstrapping-module">Bootstrapping Module</h3><pre><code class="lang-javascript"><code class="source-code prettyprint">import { CoreModule, Module } from &apos;rxcomp&apos;;
+<h3 id="bootstrapping-module">Bootstrapping Module</h3><pre><code class="lang-javascript"><code class="source-code prettyprint">import { Browser, CoreModule, Module } from &apos;rxcomp&apos;;
 import { FormModule } from &apos;rxcomp-form&apos;;
 import AppComponent from &apos;./app.component&apos;;
 
@@ -169,7 +168,9 @@ AppModule.meta = {
     ],
     declarations: [],
     bootstrap: AppComponent,
-};</code>
+};
+
+Browser.bootstrap(AppModule);</code>
 </code></pre>
 <hr>
 <h3 id="reactive-form-definition">Reactive Form Definition</h3><pre><code class="lang-javascript"><code class="source-code prettyprint">import { Component } from &apos;rxcomp&apos;;
@@ -185,11 +186,10 @@ export default class AppComponent extends Component {
             country: null,
             evaluate: null,
             privacy: null,
-            items: new FormArray([null, null, null], [RequiredValidator]),
-        }, [RequiredValidator]);
+            items: new FormArray([null, null, null], RequiredValidator()),
+        });
 
         /*
-        // patch example
         form.patch({
             firstName: &apos;Jhon&apos;,
             lastName: &apos;Appleseed&apos;,

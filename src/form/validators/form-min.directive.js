@@ -4,6 +4,8 @@ import { MinValidator } from './validators';
 
 /**
  * @desc FormMinDirective attribute for injecting MinValidator.
+ * @example
+ * <input type="number" formControlName="qty" min="1" />
  */
 export default class FormMinDirective extends Directive {
 

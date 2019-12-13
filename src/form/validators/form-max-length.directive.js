@@ -5,6 +5,8 @@ import { MaxLengthValidator } from './validators';
 
 /**
  * @desc FormMaxLengthDirective attribute for injecting MaxLengthValidator.
+ * @example
+ * <input type="text" formControlName="card" maxlength="12" />
  */
 export default class FormMaxLengthDirective extends Directive {
 

@@ -2,6 +2,10 @@ import FormAbstractCollectionDirective from './form-abstract-collection.directiv
 
 /**
  * @desc FormArrayDirective.
+ * @example
+ * <form [formArray]="form" (submit)="onSubmit()" role="form" novalidate autocomplete="off">
+ * 	...
+ * </form>
  */
 export default class FormArrayDirective extends FormAbstractCollectionDirective {
 

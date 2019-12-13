@@ -90,13 +90,13 @@
 </nav>
 
 <div class="content" data-ice="content"><div class="header-notice">
-  <div data-ice="importPath" class="import-path"><pre class="prettyprint"><code data-ice="importPathCode">import FormValidator from &apos;<span><a href="file/src/form/validators/form-validator.js.html#lineNumber6">rxcomp-form/src/form/validators/form-validator.js</a></span>&apos;</code></pre></div>
+  <div data-ice="importPath" class="import-path"><pre class="prettyprint"><code data-ice="importPathCode">import FormValidator from &apos;<span><a href="file/src/form/validators/form-validator.js.html#lineNumber16">rxcomp-form/src/form/validators/form-validator.js</a></span>&apos;</code></pre></div>
   <span data-ice="access">public</span>
   <span data-ice="kind">class</span>
   
   
   
-  <span data-ice="source">| <span><a href="file/src/form/validators/form-validator.js.html#lineNumber6">source</a></span></span>
+  <span data-ice="source">| <span><a href="file/src/form/validators/form-validator.js.html#lineNumber16">source</a></span></span>
 </div>
 
 <div class="self-detail detail">
@@ -122,7 +122,22 @@
 
   
 
-  
+  <div data-ice="exampleDocs">
+    <h4>Example:</h4>
+    
+  <div class="example-doc" data-ice="exampleDoc">
+      
+      <pre class="prettyprint source-code"><code data-ice="exampleCode">export function EqualValidator(equal) {
+	return new FormValidator(function(value) {
+		const equal = this.params.equal;
+		if (!value || !equal) {
+			return null;
+		}
+		return value !== equal ? { equal: { equal: equal, actual: value } } : null;
+	}, { equal });
+}</code></pre>
+    </div>
+</div>
 
   
 
@@ -287,7 +302,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/form/validators/form-validator.js.html#lineNumber37">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/form/validators/form-validator.js.html#lineNumber47">source</a></span></span>
     </span>
   </h3>
 
@@ -334,7 +349,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/form/validators/form-validator.js.html#lineNumber12">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/form/validators/form-validator.js.html#lineNumber22">source</a></span></span>
     </span>
   </h3>
 
@@ -391,7 +406,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/form/validators/form-validator.js.html#lineNumber20">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/form/validators/form-validator.js.html#lineNumber30">source</a></span></span>
     </span>
   </h3>
 
@@ -438,7 +453,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/form/validators/form-validator.js.html#lineNumber47">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/form/validators/form-validator.js.html#lineNumber57">source</a></span></span>
     </span>
   </h3>
 

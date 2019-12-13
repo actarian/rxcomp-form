@@ -4,6 +4,10 @@ import FormAbstractDirective from './form-abstract.directive';
 
 /**
  * @desc FormRadioDirective.
+ * @example
+ * <input type="radio" [formControl]="control" name="radioGroup" value="one" />
+ * <input type="radio" [formControl]="control" name="radioGroup" value="two" />
+ * <input type="radio" [formControl]="control" name="radioGroup" value="three" />
  */
 export default class FormRadioDirective extends FormAbstractDirective {
 

@@ -4,6 +4,8 @@ import { PatternValidator } from './validators';
 
 /**
  * @desc FormPatternDirective attribute for injecting PatternValidator.
+ * @example
+ * <input type="text" formControlName="visa" pattern="^4[0-9]{12}(?:[0-9]{3})?$" />
  */
 export default class FormPatternDirective extends Directive {
 

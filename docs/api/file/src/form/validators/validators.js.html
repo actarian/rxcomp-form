@@ -117,7 +117,7 @@ export function RequiredValidator() {
  * a required and true validator
  * @return {null|FormValidationError}
  */
-export function RequiredTrueValidator(value) {
+export function RequiredTrueValidator() {
 	return new FormValidator(function(value) {
 		return value === true ? null : { required: true };
 	});

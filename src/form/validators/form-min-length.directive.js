@@ -4,6 +4,8 @@ import { MinLengthValidator } from './validators';
 
 /**
  * @desc FormMinLengthDirective attribute for injecting MinLengthValidator.
+ * @example
+ * <input type="text" formControlName="card" minlength="12" />
  */
 export default class FormMinLengthDirective extends Directive {
 

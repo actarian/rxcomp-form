@@ -101,6 +101,13 @@ table.summary td {
 	padding: 4px 10px;
 }
 
-.github-markdown img:not([src*=".svg"]) {
-	box-shadow: none;
+.github-markdown {
+	img:not([src*=".svg"]) {
+		box-shadow: none;
+	}
+
+	code {
+		color: #f28732;
+		font-size: 15px;
+	}
 }

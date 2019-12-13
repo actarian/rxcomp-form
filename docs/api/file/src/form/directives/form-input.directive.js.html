@@ -95,7 +95,11 @@ import FormAbstractCollectionDirective from &apos;./form-abstract-collection.dir
 import FormAbstractDirective from &apos;./form-abstract.directive&apos;;
 
 /**
- * @desc FormInputDirective.
+ * @desc FormInputDirective to handle input text FormControl value.
+ * @example
+ * &lt;input type=&quot;text&quot; formControlName=&quot;firstName&quot; /&gt;
+ * @example
+ * &lt;input type=&quot;text&quot; [formControl]=&quot;form.get(&apos;firstName&apos;)&quot; /&gt;
  */
 export default class FormInputDirective extends FormAbstractDirective {
 

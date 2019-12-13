@@ -4,6 +4,8 @@ import { MaxValidator } from './validators';
 
 /**
  * @desc FormMaxDirective attribute for injecting MaxValidator.
+ * @example
+ * <input type="number" formControlName="qty" max="12" />
  */
 export default class FormMaxDirective extends Directive {
 

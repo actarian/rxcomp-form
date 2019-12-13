@@ -4,6 +4,10 @@ import FormAbstractDirective from './form-abstract.directive';
 
 /**
  * @desc FormCheckboxDirective.
+ * @example
+ * <input type="checkbox" formControlName="privacy" [value]="true" requiredTrue />
+ * @example
+ * <input type="checkbox" [formControl]="control" [value]="true" requiredTrue />
  */
 export default class FormCheckboxDirective extends FormAbstractDirective {
 

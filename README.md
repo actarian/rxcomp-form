@@ -18,22 +18,30 @@ rxjs.min.js          | ![](https://img.badgesize.io/https://unpkg.com/@reactivex
 rxjs.min.js          | ![](https://img.badgesize.io/https://unpkg.com/@reactivex/rxjs@6.5.3/dist/global/rxjs.umd.min.js.svg)
  
 > [RxComp Form demo](https://actarian.github.io/rxcomp-form/)  
+> [RxComp Form api](https://actarian.github.io/rxcomp-form/api/)  
 
 ___
 
 ### What is included
-* Models *```FormControl```, ```FormGroup```, ```FormArray```*
-* Directives *```FormInput```, ```FormTextarea```, ```FormSelect```, ```FormCheckbox```, ```FormRadio```, ```FormSubmit```*
-* Component Template
+* Models  
+*```FormControl```, ```FormGroup```, ```FormArray```*  
+
+* Directives  
+*```FormInput```, ```FormTextarea```, ```FormSelect```, ```FormCheckbox```, ```FormRadio```, ```FormSubmit```*  
+
+* Validators  
+*```EmailValidator```, ```MaxLengthValidator```, ```MaxValidator```, ```MinLengthValidator```, ```MinValidator```, ```NullValidator```, ```PatternValidator```, ```RequiredTrueValidator```, ```RequiredValidator```* 
 
 ___
 
 ## Installation and Usage
 
 ### ES6 via npm
+This library depend on [RxComp](https://github.com/actarian/rxcomp) and [RxJs](https://github.com/ReactiveX/rxjs)  
+install via npm or include via script   
+
 ```
-npm install rxcomp --save  
-npm install rxcomp-form --save
+npm install rxjs rxcomp rxcomp-form --save
 ```
 ___
 
@@ -42,6 +50,7 @@ ___
 For CDN, you can use unpkg
 
 ```html
+<script src="https://unpkg.com/@reactivex/rxjs@6.5.3/dist/global/rxjs.umd.min.js"></script>
 <script src="https://unpkg.com/rxcomp@1.0.0-alpha.11/dist/rxcomp.min.js"></script>  
 <script src="https://unpkg.com/rxcomp-form@1.0.0-alpha.11/dist/rxcomp-form.min.js"></script>
 ```
@@ -59,38 +68,25 @@ import { FormModule } from 'rxcomp-form';
 ```
 ___
 
-### Dependancy
-
-This library depend on [RxJs](https://github.com/ReactiveX/rxjs)  
-install via npm or include via script  
-
-```
-npm install rxjs --save
-```
-
-```html
-<script src="https://unpkg.com/@reactivex/rxjs@6.5.3/dist/global/rxjs.umd.min.js"></script>
-```
-
-___
-
 ### Bootstrapping Module
 
 ```javascript
-import { CoreModule, Module } from 'rxcomp';
+import { Browser, CoreModule, Module } from 'rxcomp';
 import { FormModule } from 'rxcomp-form';
 import AppComponent from './app.component';
 
 export default class AppModule extends Module {}
 
 AppModule.meta = {
-	imports: [
-		CoreModule,
-		FormModule
-	],
-	declarations: [],
-	bootstrap: AppComponent,
+    imports: [
+        CoreModule,
+        FormModule
+    ],
+    declarations: [],
+    bootstrap: AppComponent,
 };
+
+Browser.bootstrap(AppModule);
 ```
 ___
 
@@ -102,45 +98,44 @@ import { FormArray, FormGroup, RequiredValidator } from 'rxcomp-form';
 
 export default class AppComponent extends Component {
 
-	onInit() {
-		const form = new FormGroup({
-			firstName: null,
-			lastName: null,
-			email: null,
-			country: null,
-			evaluate: null,
-			privacy: null,
-			items: new FormArray([null, null, null], [RequiredValidator]),
-		}, [RequiredValidator]);
+    onInit() {
+        const form = new FormGroup({
+            firstName: null,
+            lastName: null,
+            email: null,
+            country: null,
+            evaluate: null,
+            privacy: null,
+            items: new FormArray([null, null, null], RequiredValidator()),
+        });
 
-		/*
-		// patch example
-		form.patch({
-			firstName: 'Jhon',
-			lastName: 'Appleseed',
-			email: 'jhonappleseed@gmail.com',
-			country: 'en-US'
-		});
-		*/
+        /*
+        form.patch({
+            firstName: 'Jhon',
+            lastName: 'Appleseed',
+            email: 'jhonappleseed@gmail.com',
+            country: 'en-US'
+        });
+        */
 
-		form.changes$.subscribe((changes) => {
-			this.pushChanges();
-		});
+        form.changes$.subscribe((changes) => {
+            this.pushChanges();
+        });
 
-		this.form = form;
-	}
+        this.form = form;
+    }
 
-	onSubmit() {
-		if (this.form.valid) {
-			this.form.submitted = true;
-			// this.form.reset();
-		}
-	}
+    onSubmit() {
+        if (this.form.valid) {
+            this.form.submitted = true;
+            // this.form.reset();
+        }
+    }
 
 }
 
 AppComponent.meta = {
-	selector: '[app-component]',
+    selector: '[app-component]',
 };
 ```
 ___
@@ -149,9 +144,9 @@ ___
 
 ```html
 <form [formGroup]="form" (submit)="onSubmit()" name="form" role="form" novalidate autocomplete="off">
-	<input type="text" formControlName="firstName" placeholder="firstName" />
-	<input type="text" formControlName="lastName" placeholder="lastName" />
-	<button type="submit" [class]="{ submitted: form.submitted }">Submit</button>
+    <input type="text" formControlName="firstName" placeholder="firstName" />
+    <input type="text" formControlName="lastName" placeholder="lastName" />
+    <button type="submit" [class]="{ submitted: form.submitted }">Submit</button>
 </form>
 ```
 ___

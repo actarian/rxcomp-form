@@ -96,6 +96,18 @@ import FormAbstractDirective from &apos;./form-abstract.directive&apos;;
 
 /**
  * @desc FormSelectDirective.
+ * @example
+ * &lt;select formControlName=&quot;country&quot;&gt;
+ * 	&lt;option value=&quot;&quot;&gt;select&lt;/option&gt;
+ * 	&lt;option value=&quot;en-US&quot;&gt;English&lt;/option&gt;
+ * 	&lt;option value=&quot;it-IT&quot;&gt;Italiano&lt;/option&gt;
+ * &lt;/select&gt;
+ * @example
+ * &lt;select [formControl]=&quot;control&quot;&gt;
+ * 	&lt;option value=&quot;&quot;&gt;select&lt;/option&gt;
+ * 	&lt;option value=&quot;en-US&quot;&gt;English&lt;/option&gt;
+ * 	&lt;option value=&quot;it-IT&quot;&gt;Italiano&lt;/option&gt;
+ * &lt;/select&gt;
  */
 export default class FormSelectDirective extends FormAbstractDirective {
 
