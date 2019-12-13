@@ -1,15 +1,17 @@
 {
 	"author": "Luca Zampetti <lzampetti@gmail.com>",
 	"name": "rxcomp-form",
-	"description": "rxcomp-form",
+	"description": "Reactive component library for JavaScript",
 	"version": "1.0.0-alpha.11",
 	"license": "MIT",
+	"main": "dist/rxcomp-form.js",
 	"repository": {
 		"type": "git",
 		"url": "git://github.com/actarian/rxcomp-form.git"
 	},
 	"scripts": {
-		"start": "gulp"
+		"start": "gulp",
+		"build": "gulp build --target dist"
 	},
 	"browserslist": {
 		"development": [
