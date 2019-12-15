@@ -30,6 +30,7 @@
 				"input": "src/rxcomp-form.js",
 				"output": "dist/rxcomp-form.js",
 				"rollup": {
+					"name": "rxcomp-form",
 					"format": "umd",
 					"globals": {
 						"rxjs": "rxjs",
@@ -43,10 +44,7 @@
 			"bundle": [],
 			"docs": [{
 				"input": "src/rxcomp-form.js",
-				"output": "docs3",
-				"esdoc": {
-
-				}
+				"output": "docs/api"
 			}]
 		}
 	},

@@ -1,5 +1,5 @@
 /**
- * @license rxcomp-form v1.0.0-alpha.11
+ * @license rxcomp-form v1.0.0-alpha.14
  * (c) 2019 Luca Zampetti <lzampetti@gmail.com>
  * License: MIT
  */
@@ -2264,7 +2264,7 @@
     }
 
     return ErrorsComponent;
-  }(rxcomp.Component); // !!! rxcomp check *for in *if
+  }(rxcomp.Component);
   ErrorsComponent.meta = {
     selector: 'errors-component',
     inputs: ['control'],

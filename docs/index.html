@@ -56,7 +56,6 @@
 		<!-- (submit) parentInstance should be app-component -->
 		<form [formGroup]="form" (submit)="onSubmit()" name="form" role="form" novalidate autocomplete="off">
 			<fieldset>
-				<!-- <div class="group--form" [formField]="form.get('firstName')"> -->
 				<div class="group--form">
 					<i class="icon--remove" [class]="{ active: form.get('firstName').dirty }" (click)="form.get('firstName').reset()"></i>
 					<input type="text" class="control--text" formControlName="firstName" placeholder="firstName" required />
@@ -118,7 +117,7 @@
 	</main>
 	<script src="https://polyfill.io/v3/polyfill.min.js?features=es5%2CArray.prototype.find%2CObject.assign"></script>
 	<script src="https://unpkg.com/@reactivex/rxjs@6.5.3/dist/global/rxjs.umd.min.js"></script>
-	<script src="https://unpkg.com/rxcomp@1.0.0-alpha.11/dist/rxcomp.min.js"></script>
+	<script src="https://unpkg.com/rxcomp@1.0.0-alpha.14/dist/rxcomp.min.js"></script>
 	<script src="js/main.min.js"></script>
 </body>
 

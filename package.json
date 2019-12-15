@@ -1,14 +1,26 @@
 {
 	"author": "Luca Zampetti <lzampetti@gmail.com>",
 	"name": "rxcomp-form",
-	"description": "Reactive component library for JavaScript",
-	"version": "1.0.0-alpha.11",
-	"license": "MIT",
+	"description": "Reactive FormModule for RxComp component library",
+	"version": "1.0.0-alpha.14",
 	"main": "dist/rxcomp-form.js",
+	"license": "MIT",
+	"keywords": [
+		"rxcomp",
+    "framework",
+    "form",
+		"rxjs",
+		"es6",
+		"es2015"
+	],
 	"repository": {
 		"type": "git",
 		"url": "git://github.com/actarian/rxcomp-form.git"
 	},
+	"bugs": {
+		"url": "https://github.com/actarian/rxcomp-form/issues"
+	},
+	"homepage": "https://github.com/actarian/rxcomp-form",
 	"scripts": {
 		"start": "gulp",
 		"build": "gulp build --target dist"
@@ -24,7 +36,7 @@
 	},
 	"dependencies": {
 		"rxjs": "~6.5.3",
-		"rxcomp": "1.0.0-alpha.11"
+		"rxcomp": "1.0.0-alpha.14"
 	},
 	"devDependencies": {
 		"@babel/core": "~7.6.4",

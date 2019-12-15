@@ -2,9 +2,6 @@ import { Component } from 'rxcomp';
 
 export default class ErrorsComponent extends Component {}
 
-// !!! rxcomp check *for in *if
-// !!! rxcomp check [key,value] in componentless textNode
-
 ErrorsComponent.meta = {
 	selector: 'errors-component',
 	inputs: ['control'],
