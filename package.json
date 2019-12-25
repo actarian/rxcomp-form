@@ -2,13 +2,13 @@
 	"author": "Luca Zampetti <lzampetti@gmail.com>",
 	"name": "rxcomp-form",
 	"description": "Reactive FormModule for RxComp component library",
-	"version": "1.0.0-alpha.14",
+	"version": "1.0.0-beta.1",
 	"main": "dist/rxcomp-form.js",
 	"license": "MIT",
 	"keywords": [
 		"rxcomp",
-    "framework",
-    "form",
+		"framework",
+		"form",
 		"rxjs",
 		"es6",
 		"es2015"
@@ -36,7 +36,7 @@
 	},
 	"dependencies": {
 		"rxjs": "~6.5.3",
-		"rxcomp": "1.0.0-alpha.14"
+		"rxcomp": "1.0.0-beta.1"
 	},
 	"devDependencies": {
 		"@babel/core": "~7.6.4",

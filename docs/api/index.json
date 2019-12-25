@@ -3691,85 +3691,6 @@
   {
     "__docId__": 185,
     "kind": "file",
-    "name": "src/form/validators/_validators.js",
-    "content": "import FormValidator from \"./form-validator\";\n\nexport default class RequiredValidator extends FormValidator {\n\n\t/**\n\t * Create a RequiredValidator.\n\t * @abstract\n\t */\n\tconstructor() {}\n\n\t/**\n\t * validate a value\n\t * @param {any} value - the value to validate\n\t * @return {null|FormValidationError}\n\t */\n\tvalidate(value) {\n\t\treturn (value == null || value.length === 0) ? { required: true } : null;\n\t\t// return (value == null || value.length === 0) ? 'required' : null;\n\t}\n\n}\n",
-    "static": true,
-    "longname": "/Users/lucazampetti/Desktop/GIT/rxcomp-form/src/form/validators/_validators.js",
-    "access": "public",
-    "description": null,
-    "lineNumber": 1
-  },
-  {
-    "__docId__": 186,
-    "kind": "class",
-    "name": "RequiredValidator",
-    "memberof": "src/form/validators/_validators.js",
-    "static": true,
-    "longname": "src/form/validators/_validators.js~RequiredValidator",
-    "access": "public",
-    "export": true,
-    "importPath": "rxcomp-form/src/form/validators/_validators.js",
-    "importStyle": "RequiredValidator",
-    "description": null,
-    "lineNumber": 3,
-    "undocument": true,
-    "interface": false,
-    "extends": [
-      "src/form/validators/form-validator.js~FormValidator"
-    ],
-    "ignore": true
-  },
-  {
-    "__docId__": 187,
-    "kind": "constructor",
-    "name": "constructor",
-    "memberof": "src/form/validators/_validators.js~RequiredValidator",
-    "generator": false,
-    "async": false,
-    "static": false,
-    "longname": "src/form/validators/_validators.js~RequiredValidator#constructor",
-    "access": "public",
-    "description": "Create a RequiredValidator.",
-    "lineNumber": 9,
-    "abstract": true
-  },
-  {
-    "__docId__": 188,
-    "kind": "method",
-    "name": "validate",
-    "memberof": "src/form/validators/_validators.js~RequiredValidator",
-    "generator": false,
-    "async": false,
-    "static": false,
-    "longname": "src/form/validators/_validators.js~RequiredValidator#validate",
-    "access": "public",
-    "description": "validate a value",
-    "lineNumber": 16,
-    "params": [
-      {
-        "nullable": null,
-        "types": [
-          "any"
-        ],
-        "spread": false,
-        "optional": false,
-        "name": "value",
-        "description": "the value to validate"
-      }
-    ],
-    "return": {
-      "nullable": null,
-      "types": [
-        "null",
-        "FormValidationError"
-      ],
-      "spread": false,
-      "description": ""
-    }
-  },
-  {
-    "__docId__": 189,
-    "kind": "file",
     "name": "src/form/validators/form-email.directive.js",
     "content": "import { Directive } from 'rxcomp';\nimport FormAbstractDirective from '../directives/form-abstract.directive';\nimport { EmailValidator } from './validators';\n\n/**\n * @desc FormEmailDirective attribute for injecting EmailValidator.\n * @example\n * <input type=\"text\" formControlName=\"email\" email />\n */\nexport default class FormEmailDirective extends Directive {\n\n\tonInit() {\n\t\t// console.log('FormEmailDirective', this.host.control);\n\t\tconst validator = this.validator = EmailValidator();\n\t\tthis.host.control.addValidators(validator);\n\t}\n\n}\n\nFormEmailDirective.meta = {\n\tselector: '[email][formControl],[email][formControlName]',\n\tinputs: ['email'],\n\thosts: { host: FormAbstractDirective },\n};\n",
     "static": true,
@@ -3779,7 +3700,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 190,
+    "__docId__": 186,
     "kind": "class",
     "name": "FormEmailDirective",
     "memberof": "src/form/validators/form-email.directive.js",
@@ -3800,7 +3721,7 @@
     ]
   },
   {
-    "__docId__": 191,
+    "__docId__": 187,
     "kind": "method",
     "name": "onInit",
     "memberof": "src/form/validators/form-email.directive.js~FormEmailDirective",
@@ -3817,7 +3738,7 @@
     "ignore": true
   },
   {
-    "__docId__": 192,
+    "__docId__": 188,
     "kind": "file",
     "name": "src/form/validators/form-max-length.directive.js",
     "content": "import { Directive } from 'rxcomp';\nimport FormAbstractDirective from '../directives/form-abstract.directive';\nimport { MaxLengthValidator } from './validators';\n// import { EmailValidator, MaxLengthValidator, MaxValidator, MaxLengthValidator, MaxValidator, NullValidator, PatternValidator, RequiredTrueValidator, RequiredValidator } from './form/validators/validators';\n\n/**\n * @desc FormMaxLengthDirective attribute for injecting MaxLengthValidator.\n * @example\n * <input type=\"text\" formControlName=\"card\" maxlength=\"12\" />\n */\nexport default class FormMaxLengthDirective extends Directive {\n\n\tonInit() {\n\t\t// console.log('FormMaxLengthDirective.onInit', this.maxlength);\n\t\tconst validator = this.validator = MaxLengthValidator(this.maxlength);\n\t\tthis.host.control.addValidators(this.validator);\n\t}\n\n\tonChanges(changes) {\n\t\t// console.log('FormMaxLengthDirective.onChanges', this.maxlength);\n\t\tthis.validator.params = { maxlength: this.maxlength };\n\t}\n\n}\n\nFormMaxLengthDirective.meta = {\n\tselector: '[maxlength][formControl],[maxlength][formControlName]',\n\tinputs: ['maxlength'],\n\thosts: { host: FormAbstractDirective },\n};\n",
@@ -3828,7 +3749,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 193,
+    "__docId__": 189,
     "kind": "class",
     "name": "FormMaxLengthDirective",
     "memberof": "src/form/validators/form-max-length.directive.js",
@@ -3849,7 +3770,7 @@
     ]
   },
   {
-    "__docId__": 194,
+    "__docId__": 190,
     "kind": "method",
     "name": "onInit",
     "memberof": "src/form/validators/form-max-length.directive.js~FormMaxLengthDirective",
@@ -3866,7 +3787,7 @@
     "ignore": true
   },
   {
-    "__docId__": 195,
+    "__docId__": 191,
     "kind": "method",
     "name": "onChanges",
     "memberof": "src/form/validators/form-max-length.directive.js~FormMaxLengthDirective",
@@ -3890,7 +3811,7 @@
     "ignore": true
   },
   {
-    "__docId__": 196,
+    "__docId__": 192,
     "kind": "file",
     "name": "src/form/validators/form-max.directive.js",
     "content": "import { Directive } from 'rxcomp';\nimport FormAbstractDirective from '../directives/form-abstract.directive';\nimport { MaxValidator } from './validators';\n\n/**\n * @desc FormMaxDirective attribute for injecting MaxValidator.\n * @example\n * <input type=\"number\" formControlName=\"qty\" max=\"12\" />\n */\nexport default class FormMaxDirective extends Directive {\n\n\tonInit() {\n\t\t// console.log('FormMaxDirective.onInit', this.max);\n\t\tconst validator = this.validator = MaxValidator(this.max);\n\t\tthis.host.control.addValidators(this.validator);\n\t}\n\n\tonChanges(changes) {\n\t\t// console.log('FormMaxDirective.onChanges', this.max);\n\t\tthis.validator.params = { max: this.max };\n\t}\n\n}\n\nFormMaxDirective.meta = {\n\tselector: '[max][formControl],[max][formControlName]',\n\tinputs: ['max'],\n\thosts: { host: FormAbstractDirective },\n};\n",
@@ -3901,7 +3822,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 197,
+    "__docId__": 193,
     "kind": "class",
     "name": "FormMaxDirective",
     "memberof": "src/form/validators/form-max.directive.js",
@@ -3922,7 +3843,7 @@
     ]
   },
   {
-    "__docId__": 198,
+    "__docId__": 194,
     "kind": "method",
     "name": "onInit",
     "memberof": "src/form/validators/form-max.directive.js~FormMaxDirective",
@@ -3939,7 +3860,7 @@
     "ignore": true
   },
   {
-    "__docId__": 199,
+    "__docId__": 195,
     "kind": "method",
     "name": "onChanges",
     "memberof": "src/form/validators/form-max.directive.js~FormMaxDirective",
@@ -3963,7 +3884,7 @@
     "ignore": true
   },
   {
-    "__docId__": 200,
+    "__docId__": 196,
     "kind": "file",
     "name": "src/form/validators/form-min-length.directive.js",
     "content": "import { Directive } from 'rxcomp';\nimport FormAbstractDirective from '../directives/form-abstract.directive';\nimport { MinLengthValidator } from './validators';\n\n/**\n * @desc FormMinLengthDirective attribute for injecting MinLengthValidator.\n * @example\n * <input type=\"text\" formControlName=\"card\" minlength=\"12\" />\n */\nexport default class FormMinLengthDirective extends Directive {\n\n\tonInit() {\n\t\t// console.log('FormMinLengthDirective.onInit', this.minlength);\n\t\tconst validator = this.validator = MinLengthValidator(this.minlength);\n\t\tthis.host.control.addValidators(this.validator);\n\t}\n\n\tonChanges(changes) {\n\t\t// console.log('FormMinLengthDirective.onChanges', this.minlength);\n\t\tthis.validator.params = { minlength: this.minlength };\n\t}\n\n}\n\nFormMinLengthDirective.meta = {\n\tselector: '[minlength][formControl],[minlength][formControlName]',\n\tinputs: ['minlength'],\n\thosts: { host: FormAbstractDirective },\n};\n",
@@ -3974,7 +3895,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 201,
+    "__docId__": 197,
     "kind": "class",
     "name": "FormMinLengthDirective",
     "memberof": "src/form/validators/form-min-length.directive.js",
@@ -3995,7 +3916,7 @@
     ]
   },
   {
-    "__docId__": 202,
+    "__docId__": 198,
     "kind": "method",
     "name": "onInit",
     "memberof": "src/form/validators/form-min-length.directive.js~FormMinLengthDirective",
@@ -4012,7 +3933,7 @@
     "ignore": true
   },
   {
-    "__docId__": 203,
+    "__docId__": 199,
     "kind": "method",
     "name": "onChanges",
     "memberof": "src/form/validators/form-min-length.directive.js~FormMinLengthDirective",
@@ -4036,7 +3957,7 @@
     "ignore": true
   },
   {
-    "__docId__": 204,
+    "__docId__": 200,
     "kind": "file",
     "name": "src/form/validators/form-min.directive.js",
     "content": "import { Directive } from 'rxcomp';\nimport FormAbstractDirective from '../directives/form-abstract.directive';\nimport { MinValidator } from './validators';\n\n/**\n * @desc FormMinDirective attribute for injecting MinValidator.\n * @example\n * <input type=\"number\" formControlName=\"qty\" min=\"1\" />\n */\nexport default class FormMinDirective extends Directive {\n\n\tonInit() {\n\t\t// console.log('FormMinDirective.onInit', this.min);\n\t\tconst validator = this.validator = MinValidator(this.min);\n\t\tthis.host.control.addValidators(this.validator);\n\t}\n\n\tonChanges(changes) {\n\t\t// console.log('FormMinDirective.onChanges', this.min);\n\t\tthis.validator.params = { min: this.min };\n\t}\n\n}\n\nFormMinDirective.meta = {\n\tselector: '[min][formControl],[min][formControlName]',\n\tinputs: ['min'],\n\thosts: { host: FormAbstractDirective },\n};\n",
@@ -4047,7 +3968,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 205,
+    "__docId__": 201,
     "kind": "class",
     "name": "FormMinDirective",
     "memberof": "src/form/validators/form-min.directive.js",
@@ -4068,7 +3989,7 @@
     ]
   },
   {
-    "__docId__": 206,
+    "__docId__": 202,
     "kind": "method",
     "name": "onInit",
     "memberof": "src/form/validators/form-min.directive.js~FormMinDirective",
@@ -4085,7 +4006,7 @@
     "ignore": true
   },
   {
-    "__docId__": 207,
+    "__docId__": 203,
     "kind": "method",
     "name": "onChanges",
     "memberof": "src/form/validators/form-min.directive.js~FormMinDirective",
@@ -4109,7 +4030,7 @@
     "ignore": true
   },
   {
-    "__docId__": 208,
+    "__docId__": 204,
     "kind": "file",
     "name": "src/form/validators/form-pattern.directive.js",
     "content": "import { Directive } from 'rxcomp';\nimport FormAbstractDirective from '../directives/form-abstract.directive';\nimport { PatternValidator } from './validators';\n\n/**\n * @desc FormPatternDirective attribute for injecting PatternValidator.\n * @example\n * <input type=\"text\" formControlName=\"visa\" pattern=\"^4[0-9]{12}(?:[0-9]{3})?$\" />\n */\nexport default class FormPatternDirective extends Directive {\n\n\tonInit() {\n\t\t// console.log('FormPatternDirective.onInit', this.pattern);\n\t\tconst validator = this.validator = PatternValidator(this.pattern);\n\t\tthis.host.control.addValidators(this.validator);\n\t}\n\n\tonChanges(changes) {\n\t\t// console.log('FormPatternDirective.onChanges', this.pattern);\n\t\tthis.validator.params = { pattern: this.pattern };\n\t}\n\n}\n\nFormPatternDirective.meta = {\n\tselector: '[pattern][formControl],[pattern][formControlName]',\n\tinputs: ['pattern'],\n\thosts: { host: FormAbstractDirective },\n};\n",
@@ -4120,7 +4041,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 209,
+    "__docId__": 205,
     "kind": "class",
     "name": "FormPatternDirective",
     "memberof": "src/form/validators/form-pattern.directive.js",
@@ -4141,7 +4062,7 @@
     ]
   },
   {
-    "__docId__": 210,
+    "__docId__": 206,
     "kind": "method",
     "name": "onInit",
     "memberof": "src/form/validators/form-pattern.directive.js~FormPatternDirective",
@@ -4158,7 +4079,7 @@
     "ignore": true
   },
   {
-    "__docId__": 211,
+    "__docId__": 207,
     "kind": "method",
     "name": "onChanges",
     "memberof": "src/form/validators/form-pattern.directive.js~FormPatternDirective",
@@ -4182,7 +4103,7 @@
     "ignore": true
   },
   {
-    "__docId__": 212,
+    "__docId__": 208,
     "kind": "file",
     "name": "src/form/validators/form-required-true.directive.js",
     "content": "import { Directive } from 'rxcomp';\nimport FormAbstractDirective from '../directives/form-abstract.directive';\nimport { RequiredTrueValidator } from './validators';\n\n/**\n * @desc FormRequiredTrueDirective attribute for injecting RequiredTrueValidator.\n * @example\n * <input type=\"checkbox\" formControlName=\"privacy\" requiredTrue />\n */\nexport default class FormRequiredTrueDirective extends Directive {\n\n\tonInit() {\n\t\t// console.log('FormRequiredTrueDirective', this.host.control);\n\t\tconst validator = this.validator = RequiredTrueValidator();\n\t\tthis.host.control.addValidators(validator);\n\t}\n\n}\n\nFormRequiredTrueDirective.meta = {\n\tselector: '[requiredTrue][formControl],[requiredTrue][formControlName]',\n\tinputs: ['requiredTrue'],\n\thosts: { host: FormAbstractDirective },\n};\n",
@@ -4193,7 +4114,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 213,
+    "__docId__": 209,
     "kind": "class",
     "name": "FormRequiredTrueDirective",
     "memberof": "src/form/validators/form-required-true.directive.js",
@@ -4214,7 +4135,7 @@
     ]
   },
   {
-    "__docId__": 214,
+    "__docId__": 210,
     "kind": "method",
     "name": "onInit",
     "memberof": "src/form/validators/form-required-true.directive.js~FormRequiredTrueDirective",
@@ -4231,7 +4152,7 @@
     "ignore": true
   },
   {
-    "__docId__": 215,
+    "__docId__": 211,
     "kind": "file",
     "name": "src/form/validators/form-required.directive.js",
     "content": "import { Directive } from 'rxcomp';\nimport FormAbstractDirective from '../directives/form-abstract.directive';\nimport { RequiredValidator } from './validators';\n\n/**\n * @desc FormRequiredDirective attribute for injecting RequiredValidator.\n * @example\n * <input type=\"text\" formControlName=\"firstName\" required />\n */\nexport default class FormRequiredDirective extends Directive {\n\n\tonInit() {\n\t\t// console.log('FormRequiredDirective', this.host.control);\n\t\tconst validator = this.validator = RequiredValidator();\n\t\tthis.host.control.addValidators(validator);\n\t}\n\n}\n\nFormRequiredDirective.meta = {\n\tselector: '[required][formControl],[required][formControlName]',\n\tinputs: ['required'],\n\thosts: { host: FormAbstractDirective },\n};\n",
@@ -4242,7 +4163,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 216,
+    "__docId__": 212,
     "kind": "class",
     "name": "FormRequiredDirective",
     "memberof": "src/form/validators/form-required.directive.js",
@@ -4263,7 +4184,7 @@
     ]
   },
   {
-    "__docId__": 217,
+    "__docId__": 213,
     "kind": "method",
     "name": "onInit",
     "memberof": "src/form/validators/form-required.directive.js~FormRequiredDirective",
@@ -4280,7 +4201,7 @@
     "ignore": true
   },
   {
-    "__docId__": 218,
+    "__docId__": 214,
     "kind": "file",
     "name": "src/form/validators/form-validator.js",
     "content": "import { BehaviorSubject } from \"rxjs\";\n\n/**\n * @desc FormValidator class representing a form validator.\n * @example\n * export function EqualValidator(equal) {\n * \treturn new FormValidator(function(value) {\n * \t\tconst equal = this.params.equal;\n * \t\tif (!value || !equal) {\n * \t\t\treturn null;\n * \t\t}\n * \t\treturn value !== equal ? { equal: { equal: equal, actual: value } } : null;\n * \t}, { equal });\n * }\n */\nexport default class FormValidator {\n\n\t/**\n\t * params getter\n\t * @return {any} params\n\t */\n\tget params() {\n\t\treturn this.params$.getValue();\n\t}\n\n\t/**\n\t * params setter\n\t * @param {any} params\n\t */\n\tset params(params) {\n\t\tif (params) {\n\t\t\tconst current = this.params;\n\t\t\tconst differs = Object.keys(params).reduce((flag, key) => {\n\t\t\t\treturn flag || !current || current[key] !== params[key];\n\t\t\t}, false);\n\t\t\tif (differs) {\n\t\t\t\t// if (JSON.stringify(params) !== JSON.stringify(this.params)) {\n\t\t\t\tthis.params$.next(params);\n\t\t\t}\n\t\t}\n\t}\n\n\t/**\n\t * Create a FormValidator.\n\t * @abstract\n\t */\n\tconstructor(validator, params) {\n\t\tthis.validator = validator.bind(this);\n\t\tthis.params$ = new BehaviorSubject(params);\n\t}\n\n\t/**\n\t * validate a value\n\t * @param {any} value - the value to validate\n\t * @return {null|FormValidationError}\n\t */\n\tvalidate(value) {\n\t\treturn this.validator(value);\n\t}\n\n}\n",
@@ -4291,7 +4212,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 219,
+    "__docId__": 215,
     "kind": "class",
     "name": "FormValidator",
     "memberof": "src/form/validators/form-validator.js",
@@ -4309,7 +4230,7 @@
     "interface": false
   },
   {
-    "__docId__": 220,
+    "__docId__": 216,
     "kind": "get",
     "name": "params",
     "memberof": "src/form/validators/form-validator.js~FormValidator",
@@ -4335,7 +4256,7 @@
     }
   },
   {
-    "__docId__": 221,
+    "__docId__": 217,
     "kind": "set",
     "name": "params",
     "memberof": "src/form/validators/form-validator.js~FormValidator",
@@ -4360,7 +4281,7 @@
     ]
   },
   {
-    "__docId__": 222,
+    "__docId__": 218,
     "kind": "constructor",
     "name": "constructor",
     "memberof": "src/form/validators/form-validator.js~FormValidator",
@@ -4374,7 +4295,7 @@
     "abstract": true
   },
   {
-    "__docId__": 223,
+    "__docId__": 219,
     "kind": "member",
     "name": "validator",
     "memberof": "src/form/validators/form-validator.js~FormValidator",
@@ -4392,7 +4313,7 @@
     "ignore": true
   },
   {
-    "__docId__": 224,
+    "__docId__": 220,
     "kind": "member",
     "name": "params$",
     "memberof": "src/form/validators/form-validator.js~FormValidator",
@@ -4410,7 +4331,7 @@
     "ignore": true
   },
   {
-    "__docId__": 225,
+    "__docId__": 221,
     "kind": "method",
     "name": "validate",
     "memberof": "src/form/validators/form-validator.js~FormValidator",
@@ -4444,7 +4365,7 @@
     }
   },
   {
-    "__docId__": 226,
+    "__docId__": 222,
     "kind": "file",
     "name": "src/form/validators/validators.js",
     "content": "import FormValidator from './form-validator';\n\n/**\n * a null validator\n * @return {null}\n */\nexport function NullValidator() {\n\treturn new FormValidator(function(value) {\n\t\treturn null;\n\t});\n}\n\n/**\n * a required validator\n * @return {null|FormValidationError}\n */\nexport function RequiredValidator() {\n\treturn new FormValidator(function(value) {\n\t\treturn (value == null || value.length === 0) ? { required: true } : null;\n\t});\n\t// return (value == null || value.length === 0) ? 'required' : null;\n}\n\n/**\n * a required and true validator\n * @return {null|FormValidationError}\n */\nexport function RequiredTrueValidator() {\n\treturn new FormValidator(function(value) {\n\t\treturn value === true ? null : { required: true };\n\t});\n}\n\n/**\n * a min number value validator\n * @return {null|FormValidationError}\n */\nexport function MinValidator(min) {\n\treturn new FormValidator(function(value) {\n\t\tconst min = this.params.min;\n\t\tif (!value || !min) {\n\t\t\treturn null;\n\t\t}\n\t\tvalue = parseFloat(value);\n\t\treturn !isNaN(value) && value < min ? { min: { min: min, actual: value } } : null;\n\t}, { min });\n}\n\n/**\n * a max number value validator\n * @return {null|FormValidationError}\n */\nexport function MaxValidator(max) {\n\treturn new FormValidator(function(value) {\n\t\tconst max = this.params.max;\n\t\tif (!value || !max) {\n\t\t\treturn null;\n\t\t}\n\t\tvalue = parseFloat(value);\n\t\treturn !isNaN(value) && value > max ? { max: { max: max, actual: value } } : null;\n\t}, { max });\n}\n\n/**\n * a min string length validator\n * @return {null|FormValidationError}\n */\nexport function MinLengthValidator(minlength) {\n\treturn new FormValidator(function(value) {\n\t\tconst minlength = this.params.minlength;\n\t\tif (!value || !minlength) {\n\t\t\treturn null;\n\t\t}\n\t\tconst length = value ? value.length : 0;\n\t\treturn length < minlength ? { minlength: { requiredLength: minlength, actualLength: length } } : null;\n\t}, { minlength });\n}\n\n/**\n * a max string length validator\n * @return {null|FormValidationError}\n */\nexport function MaxLengthValidator(maxlength) {\n\treturn new FormValidator(function(value) {\n\t\tconst maxlength = this.params.maxlength;\n\t\tif (!value || !maxlength) {\n\t\t\treturn null;\n\t\t}\n\t\tconst length = value ? value.length : 0;\n\t\treturn length > maxlength ? { minlength: { requiredLength: maxlength, actualLength: length } } : null;\n\t}, { maxlength });\n}\n\n/**\n * a regex pattern validator\n * @return {null|FormValidationError}\n */\nexport function PatternValidator(pattern) {\n\treturn new FormValidator(function(value) {\n\t\tconst pattern = this.params.pattern;\n\t\tif (!value || !pattern) {\n\t\t\treturn null;\n\t\t}\n\t\tconst regex = patternToRegEx(pattern);\n\t\treturn regex.test(value) ? null : { pattern: { requiredPattern: regex.toString(), actualValue: value } };\n\t}, { pattern });\n}\n\n/**\n * an email pattern validator\n * @return {null|FormValidationError}\n */\nexport function EmailValidator(value) {\n\tconst regex = /^(?=.{1,254}$)(?=.{1,64}@)[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+)*@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;\n\treturn new FormValidator(function(value) {\n\t\tif (!value) {\n\t\t\treturn null;\n\t\t}\n\t\treturn regex.test(value) ? null : { email: true };\n\t});\n}\n\nfunction patternToRegEx(pattern) {\n\tlet regex;\n\tif (pattern instanceof RegExp) {\n\t\tregex = pattern;\n\t} else if (typeof pattern === 'string') {\n\t\tpattern = pattern.charAt(0) === '^' ? pattern : `^${pattern}`;\n\t\tpattern = pattern.charAt(pattern.length - 1) === '$' ? pattern : `${pattern}$`;\n\t\tregex = new RegExp(pattern);\n\t}\n\treturn regex;\n}\n",
@@ -4455,7 +4376,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 227,
+    "__docId__": 223,
     "kind": "function",
     "name": "NullValidator",
     "memberof": "src/form/validators/validators.js",
@@ -4480,7 +4401,7 @@
     "params": []
   },
   {
-    "__docId__": 228,
+    "__docId__": 224,
     "kind": "function",
     "name": "RequiredValidator",
     "memberof": "src/form/validators/validators.js",
@@ -4506,7 +4427,7 @@
     "params": []
   },
   {
-    "__docId__": 229,
+    "__docId__": 225,
     "kind": "function",
     "name": "RequiredTrueValidator",
     "memberof": "src/form/validators/validators.js",
@@ -4532,7 +4453,7 @@
     "params": []
   },
   {
-    "__docId__": 230,
+    "__docId__": 226,
     "kind": "function",
     "name": "MinValidator",
     "memberof": "src/form/validators/validators.js",
@@ -4565,7 +4486,7 @@
     ]
   },
   {
-    "__docId__": 231,
+    "__docId__": 227,
     "kind": "function",
     "name": "MaxValidator",
     "memberof": "src/form/validators/validators.js",
@@ -4598,7 +4519,7 @@
     ]
   },
   {
-    "__docId__": 232,
+    "__docId__": 228,
     "kind": "function",
     "name": "MinLengthValidator",
     "memberof": "src/form/validators/validators.js",
@@ -4631,7 +4552,7 @@
     ]
   },
   {
-    "__docId__": 233,
+    "__docId__": 229,
     "kind": "function",
     "name": "MaxLengthValidator",
     "memberof": "src/form/validators/validators.js",
@@ -4664,7 +4585,7 @@
     ]
   },
   {
-    "__docId__": 234,
+    "__docId__": 230,
     "kind": "function",
     "name": "PatternValidator",
     "memberof": "src/form/validators/validators.js",
@@ -4697,7 +4618,7 @@
     ]
   },
   {
-    "__docId__": 235,
+    "__docId__": 231,
     "kind": "function",
     "name": "EmailValidator",
     "memberof": "src/form/validators/validators.js",
@@ -4730,7 +4651,7 @@
     ]
   },
   {
-    "__docId__": 236,
+    "__docId__": 232,
     "kind": "function",
     "name": "patternToRegEx",
     "memberof": "src/form/validators/validators.js",
@@ -4761,7 +4682,7 @@
     "ignore": true
   },
   {
-    "__docId__": 237,
+    "__docId__": 233,
     "kind": "file",
     "name": "src/form.module.js",
     "content": "import { Module } from 'rxcomp';\nimport FormArrayDirective from './form/directives/form-array.directive';\nimport FormCheckboxDirective from './form/directives/form-checkbox.directive';\nimport FormFieldComponent from './form/directives/form-field.component';\nimport FormGroupDirective from './form/directives/form-group.directive';\nimport FormInputDirective from './form/directives/form-input.directive';\nimport FormPlaceholderDirective from './form/directives/form-placeholder.directive';\nimport FormRadioDirective from './form/directives/form-radio.directive';\nimport FormSelectDirective from './form/directives/form-select.directive';\nimport FormSubmitDirective from './form/directives/form-submit.directive';\nimport FormEmailDirective from './form/validators/form-email.directive';\nimport FormMaxLengthDirective from './form/validators/form-max-length.directive';\nimport FormMaxDirective from './form/validators/form-max.directive';\nimport FormMinLengthDirective from './form/validators/form-min-length.directive';\nimport FormMinDirective from './form/validators/form-min.directive';\nimport FormPatternDirective from './form/validators/form-pattern.directive';\nimport FormRequiredTrueDirective from './form/validators/form-required-true.directive';\nimport FormRequiredDirective from './form/validators/form-required.directive';\n\n/**\n * @desc FormModule Class.\n * @example\n * export default class AppModule extends Module {}\n *\n * AppModule.meta = {\n *  imports: [\n *   CoreModule,\n *   FormModule\n *  ],\n *  declarations: [\n *   ErrorsComponent\n *  ],\n *  bootstrap: AppComponent,\n * };\n * @extends Module\n */\nexport default class FormModule extends Module {}\nconst factories = [\n\tFormArrayDirective,\n\tFormCheckboxDirective,\n\tFormFieldComponent,\n\tFormGroupDirective,\n\tFormInputDirective,\n\tFormPlaceholderDirective,\n\tFormRadioDirective,\n\tFormSelectDirective,\n\tFormSubmitDirective,\n\tFormEmailDirective,\n\tFormMaxDirective,\n\tFormMaxLengthDirective,\n\tFormMinDirective,\n\tFormMinLengthDirective,\n\tFormPatternDirective,\n\tFormRequiredDirective,\n\tFormRequiredTrueDirective,\n];\nconst pipes = [\n];\nFormModule.meta = {\n\tdeclarations: [\n\t\t...factories,\n\t\t...pipes,\n\t],\n\texports: [\n\t\t...factories,\n\t\t...pipes,\n\t]\n};\n",
@@ -4772,7 +4693,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 238,
+    "__docId__": 234,
     "kind": "class",
     "name": "FormModule",
     "memberof": "src/form.module.js",
@@ -4793,7 +4714,7 @@
     ]
   },
   {
-    "__docId__": 239,
+    "__docId__": 235,
     "kind": "variable",
     "name": "factories",
     "memberof": "src/form.module.js",
@@ -4814,7 +4735,7 @@
     "ignore": true
   },
   {
-    "__docId__": 240,
+    "__docId__": 236,
     "kind": "variable",
     "name": "pipes",
     "memberof": "src/form.module.js",
@@ -4835,7 +4756,7 @@
     "ignore": true
   },
   {
-    "__docId__": 241,
+    "__docId__": 237,
     "kind": "file",
     "name": "src/rxcomp-form.js",
     "content": "export { default as FormModule } from './form.module';\nexport { default as FormAbstractCollectionDirective } from './form/directives/form-abstract-collection.directive';\nexport { default as FormArrayDirective } from './form/directives/form-array.directive';\nexport { default as FormCheckboxDirective } from './form/directives/form-checkbox.directive';\nexport { default as FormFieldComponent } from './form/directives/form-field.component';\nexport { default as FormGroupDirective } from './form/directives/form-group.directive';\nexport { default as FormInputDirective } from './form/directives/form-input.directive';\nexport { default as FormPlaceholderDirective } from './form/directives/form-placeholder.directive';\nexport { default as FormRadioDirective } from './form/directives/form-radio.directive';\nexport { default as FormSelectDirective } from './form/directives/form-select.directive';\nexport { default as FormAbstract } from './form/form-abstract';\nexport { default as FormAbstractCollection } from './form/form-abstract-collection';\nexport { default as FormArray, formArray } from './form/form-array';\nexport { default as FormControl } from './form/form-control';\nexport { default as FormGroup, formGroup } from './form/form-group';\nexport { default as FormStatus } from './form/models/form-status';\nexport { default as FormEmailDirective } from './form/validators/form-email.directive';\nexport { default as FormMaxLengthDirective } from './form/validators/form-max-length.directive';\nexport { default as FormMaxDirective } from './form/validators/form-max.directive';\nexport { default as FormMinLengthDirective } from './form/validators/form-min-length.directive';\nexport { default as FormMinDirective } from './form/validators/form-min.directive';\nexport { default as FormPatternDirective } from './form/validators/form-pattern.directive';\nexport { default as FormRequiredTrueDirective } from './form/validators/form-required-true.directive';\nexport { default as FormRequiredDirective } from './form/validators/form-required.directive';\nexport { default as FormValidator } from './form/validators/form-validator';\nexport { EmailValidator, MaxLengthValidator, MaxValidator, MinLengthValidator, MinValidator, NullValidator, PatternValidator, RequiredTrueValidator, RequiredValidator } from './form/validators/validators';\nexport { Validators };\nimport * as Validators from './form/validators/validators';\n",
@@ -4847,7 +4768,7 @@
   },
   {
     "kind": "index",
-    "content": "# 💎 RxComp FormModule\n\n[![Licence](https://img.shields.io/github/license/actarian/rxcomp-form.svg)](https://github.com/actarian/rxcomp-form)\n\n[RxComp FormModule](https://github.com/actarian/rxcomp-form) is a Reactive Form Module for RxComp library\n\n[RxComp](https://github.com/actarian/rxcomp) is a reactive component library built on top of [RxJs](https://github.com/ReactiveX/rxjs) that mimics the [Angular](https://angular.io/) declarative syntax. \n\nIf you like Angular declarative syntax but you just want go Vanilla, RxComp library come in useful.\n\n lib & dependancy    | size\n:--------------------|:----------------------------------------------------------------------------------------------|\nrxcomp-form.min.js   | ![](https://img.badgesize.io/actarian/rxcomp-form/master/dist/rxcomp-form.min.js.svg?compression=gzip)\nrxcomp-form.min.js   | ![](https://img.badgesize.io/actarian/rxcomp-form/master/dist/rxcomp-form.min.js.svg)\nrxcomp.min.js        | ![](https://img.badgesize.io/actarian/rxcomp/master/dist/rxcomp.min.js.svg?compression=gzip)\nrxcomp.min.js        | ![](https://img.badgesize.io/actarian/rxcomp/master/dist/rxcomp.min.js.svg)\nrxjs.min.js          | ![](https://img.badgesize.io/https://unpkg.com/@reactivex/rxjs@6.5.3/dist/global/rxjs.umd.min.js.svg?compression=gzip)\nrxjs.min.js          | ![](https://img.badgesize.io/https://unpkg.com/@reactivex/rxjs@6.5.3/dist/global/rxjs.umd.min.js.svg)\n \n> [RxComp Form Demo](https://actarian.github.io/rxcomp-form/)  \n> [RxComp Form Api](https://actarian.github.io/rxcomp-form/api/)  \n> [RxComp Form Codepen](https://codepen.io/actarian/pen/vYEXXPe?editors=0010)  \n___\n\n### What is included\n* Models  \n*```FormControl```, ```FormGroup```, ```FormArray```*  \n\n* Directives  \n*```FormInput```, ```FormTextarea```, ```FormSelect```, ```FormCheckbox```, ```FormRadio```, ```FormSubmit```*  \n\n* Validators  \n*```EmailValidator```, ```MaxLengthValidator```, ```MaxValidator```, ```MinLengthValidator```, ```MinValidator```, ```NullValidator```, ```PatternValidator```, ```RequiredTrueValidator```, ```RequiredValidator```* \n\n___\n\n## Installation and Usage\n\n### ES6 via npm\nThis library depend on [RxComp](https://github.com/actarian/rxcomp) and [RxJs](https://github.com/ReactiveX/rxjs)  \ninstall via npm or include via script   \n\n```\nnpm install rxjs rxcomp rxcomp-form --save\n```\n___\n\n### CDN\n\nFor CDN, you can use unpkg\n\n```html\n<script src=\"https://unpkg.com/@reactivex/rxjs@6.5.3/dist/global/rxjs.umd.min.js\"></script>\n<script src=\"https://unpkg.com/rxcomp@1.0.0-alpha.14/dist/rxcomp.min.js\"></script>  \n<script src=\"https://unpkg.com/rxcomp-form@1.0.0-alpha.14/dist/rxcomp-form.min.js\"></script>\n```\n\nThe global namespace for RxComp is `rxcomp`\n\n```javascript\nimport { CoreModule, Module } from 'rxcomp';\n```\n\nThe global namespace for RxComp FormModule is `rxcomp-form`\n\n```javascript\nimport { FormModule } from 'rxcomp-form';\n```\n___\n\n### Bootstrapping Module\n\n```javascript\nimport { Browser, CoreModule, Module } from 'rxcomp';\nimport { FormModule } from 'rxcomp-form';\nimport AppComponent from './app.component';\n\nexport default class AppModule extends Module {}\n\nAppModule.meta = {\n    imports: [\n        CoreModule,\n        FormModule\n    ],\n    declarations: [],\n    bootstrap: AppComponent,\n};\n\nBrowser.bootstrap(AppModule);\n```\n___\n\n### Reactive Form Definition\n\n```javascript\nimport { Component } from 'rxcomp';\nimport { FormArray, FormGroup, RequiredValidator } from 'rxcomp-form';\n\nexport default class AppComponent extends Component {\n\n    onInit() {\n        const form = new FormGroup({\n            firstName: null,\n            lastName: null,\n            email: null,\n            country: null,\n            evaluate: null,\n            privacy: null,\n            items: new FormArray([null, null, null], RequiredValidator()),\n        });\n\n        /*\n        form.patch({\n            firstName: 'Jhon',\n            lastName: 'Appleseed',\n            email: 'jhonappleseed@gmail.com',\n            country: 'en-US'\n        });\n        */\n\n        form.changes$.subscribe((changes) => {\n            this.pushChanges();\n        });\n\n        this.form = form;\n    }\n\n    onSubmit() {\n        if (this.form.valid) {\n            this.form.submitted = true;\n            // this.form.reset();\n        }\n    }\n\n}\n\nAppComponent.meta = {\n    selector: '[app-component]',\n};\n```\n___\n\n### Declarative Syntax\n\n```html\n<form [formGroup]=\"form\" (submit)=\"onSubmit()\" name=\"form\" role=\"form\" novalidate autocomplete=\"off\">\n    <input type=\"text\" formControlName=\"firstName\" placeholder=\"firstName\" />\n    <input type=\"text\" formControlName=\"lastName\" placeholder=\"lastName\" />\n    <button type=\"submit\" [class]=\"{ submitted: form.submitted }\">Submit</button>\n</form>\n```\n___\n### Browser Compatibility\nRxComp supports all browsers that are [ES5-compliant](http://kangax.github.io/compat-table/es5/) (IE8 and below are not supported).\n___\n## Contributing\n\n*Pull requests are welcome and please submit bugs 🐞*\n___\n\n### Install packages\n```\nnpm install\n```\n___\n\n### Build, Serve & Watch \n```\ngulp\n```\n___\n\n### Build Dist\n```\ngulp build --target dist\n```\n___\n\n*Thank you for taking the time to provide feedback and review. This feedback is appreciated and very helpful 🌈*\n\n[![GitHub forks](https://img.shields.io/github/forks/actarian/rxcomp.svg?style=social&label=Fork&maxAge=2592000)](https://gitHub.com/actarian/rxcomp/network/)  [![GitHub stars](https://img.shields.io/github/stars/actarian/rxcomp.svg?style=social&label=Star&maxAge=2592000)](https://GitHub.com/actarian/rxcomp/stargazers/)  [![GitHub followers](https://img.shields.io/github/followers/actarian.svg?style=social&label=Follow&maxAge=2592000)](https://github.com/actarian?tab=followers)\n\n* [Github Project Page](https://github.com/actarian/rxcomp)  \n\n*If you find it helpful, feel free to contribute in keeping this library up to date via [PayPal](https://www.paypal.me/circledev/5)*\n\n[![PayPal](https://www.paypalobjects.com/webstatic/en_US/i/buttons/PP_logo_h_100x26.png)](https://www.paypal.me/circledev/5)\n___\n\n## Contact\n\n* Luca Zampetti <lzampetti@gmail.com>\n* Follow [@actarian](https://twitter.com/actarian) on Twitter\n\n[![Twitter Follow](https://img.shields.io/twitter/follow/actarian.svg?style=social&label=Follow%20@actarian)](https://twitter.com/actarian)\n___\n\n## Release Notes\nChangelog [here](https://github.com/actarian/rxcomp-form/blob/master/CHANGELOG.md).\n\n---\n\n## 1.0.0-alpha.14\n* Updating dependancy\n\n---\n\n## 1.0.0-alpha.11\n* Initial release of RxComp Form module\n",
+    "content": "# 💎 RxComp FormModule\n\n[![Licence](https://img.shields.io/github/license/actarian/rxcomp-form.svg)](https://github.com/actarian/rxcomp-form)\n\n[RxComp FormModule](https://github.com/actarian/rxcomp-form) is a Reactive Form Module for RxComp library\n\n[RxComp](https://github.com/actarian/rxcomp) is a reactive component library built on top of [RxJs](https://github.com/ReactiveX/rxjs) that mimics the [Angular](https://angular.io/) declarative syntax. \n\nIf you like Angular declarative syntax but you just want go Vanilla, RxComp library come in useful.\n\n lib & dependancy    | size\n:--------------------|:----------------------------------------------------------------------------------------------|\nrxcomp-form.min.js   | ![](https://img.badgesize.io/actarian/rxcomp-form/master/dist/rxcomp-form.min.js.svg?compression=gzip)\nrxcomp-form.min.js   | ![](https://img.badgesize.io/actarian/rxcomp-form/master/dist/rxcomp-form.min.js.svg)\nrxcomp.min.js        | ![](https://img.badgesize.io/actarian/rxcomp/master/dist/rxcomp.min.js.svg?compression=gzip)\nrxcomp.min.js        | ![](https://img.badgesize.io/actarian/rxcomp/master/dist/rxcomp.min.js.svg)\nrxjs.min.js          | ![](https://img.badgesize.io/https://unpkg.com/@reactivex/rxjs@6.5.3/dist/global/rxjs.umd.min.js.svg?compression=gzip)\nrxjs.min.js          | ![](https://img.badgesize.io/https://unpkg.com/@reactivex/rxjs@6.5.3/dist/global/rxjs.umd.min.js.svg)\n \n> [RxComp Form Demo](https://actarian.github.io/rxcomp-form/)  \n> [RxComp Form Api](https://actarian.github.io/rxcomp-form/api/)  \n> [RxComp Form Codepen](https://codepen.io/actarian/pen/vYEXXPe?editors=0010)  \n___\n\n### What is included\n* Models  \n*```FormControl```, ```FormGroup```, ```FormArray```*  \n\n* Directives  \n*```FormInput```, ```FormTextarea```, ```FormSelect```, ```FormCheckbox```, ```FormRadio```, ```FormSubmit```*  \n\n* Validators  \n*```EmailValidator```, ```MaxLengthValidator```, ```MaxValidator```, ```MinLengthValidator```, ```MinValidator```, ```NullValidator```, ```PatternValidator```, ```RequiredTrueValidator```, ```RequiredValidator```* \n\n___\n\n## Installation and Usage\n\n### ES6 via npm\nThis library depend on [RxComp](https://github.com/actarian/rxcomp) and [RxJs](https://github.com/ReactiveX/rxjs)  \ninstall via npm or include via script   \n\n```\nnpm install rxjs rxcomp rxcomp-form --save\n```\n___\n\n### CDN\n\nFor CDN, you can use unpkg\n\n```html\n<script src=\"https://unpkg.com/@reactivex/rxjs@6.5.3/dist/global/rxjs.umd.min.js\"></script>\n<script src=\"https://unpkg.com/rxcomp@1.0.0-beta.1/dist/rxcomp.min.js\"></script>  \n<script src=\"https://unpkg.com/rxcomp-form@1.0.0-beta.1/dist/rxcomp-form.min.js\"></script>\n```\n\nThe global namespace for RxComp is `rxcomp`\n\n```javascript\nimport { CoreModule, Module } from 'rxcomp';\n```\n\nThe global namespace for RxComp FormModule is `rxcomp-form`\n\n```javascript\nimport { FormModule } from 'rxcomp-form';\n```\n___\n\n### Bootstrapping Module\n\n```javascript\nimport { Browser, CoreModule, Module } from 'rxcomp';\nimport { FormModule } from 'rxcomp-form';\nimport AppComponent from './app.component';\n\nexport default class AppModule extends Module {}\n\nAppModule.meta = {\n    imports: [\n        CoreModule,\n        FormModule\n    ],\n    declarations: [],\n    bootstrap: AppComponent,\n};\n\nBrowser.bootstrap(AppModule);\n```\n___\n\n### Reactive Form Definition\n\n```javascript\nimport { Component } from 'rxcomp';\nimport { FormArray, FormGroup, RequiredValidator } from 'rxcomp-form';\n\nexport default class AppComponent extends Component {\n\n    onInit() {\n        const form = new FormGroup({\n            firstName: null,\n            lastName: null,\n            email: null,\n            country: null,\n            evaluate: null,\n            privacy: null,\n            items: new FormArray([null, null, null], RequiredValidator()),\n        });\n\n        /*\n        form.patch({\n            firstName: 'Jhon',\n            lastName: 'Appleseed',\n            email: 'jhonappleseed@gmail.com',\n            country: 'en-US'\n        });\n        */\n\n        form.changes$.subscribe((changes) => {\n            this.pushChanges();\n        });\n\n        this.form = form;\n    }\n\n    onSubmit() {\n        if (this.form.valid) {\n            this.form.submitted = true;\n            // this.form.reset();\n        }\n    }\n\n}\n\nAppComponent.meta = {\n    selector: '[app-component]',\n};\n```\n___\n\n### Declarative Syntax\n\n```html\n<form [formGroup]=\"form\" (submit)=\"onSubmit()\" name=\"form\" role=\"form\" novalidate autocomplete=\"off\">\n    <input type=\"text\" formControlName=\"firstName\" placeholder=\"firstName\" />\n    <input type=\"text\" formControlName=\"lastName\" placeholder=\"lastName\" />\n    <button type=\"submit\" [class]=\"{ submitted: form.submitted }\">Submit</button>\n</form>\n```\n___\n### Browser Compatibility\nRxComp supports all browsers that are [ES5-compliant](http://kangax.github.io/compat-table/es5/) (IE8 and below are not supported).\n___\n## Contributing\n\n*Pull requests are welcome and please submit bugs 🐞*\n___\n\n### Install packages\n```\nnpm install\n```\n___\n\n### Build, Serve & Watch \n```\ngulp\n```\n___\n\n### Build Dist\n```\ngulp build --target dist\n```\n___\n\n*Thank you for taking the time to provide feedback and review. This feedback is appreciated and very helpful 🌈*\n\n[![GitHub forks](https://img.shields.io/github/forks/actarian/rxcomp.svg?style=social&label=Fork&maxAge=2592000)](https://gitHub.com/actarian/rxcomp/network/)  [![GitHub stars](https://img.shields.io/github/stars/actarian/rxcomp.svg?style=social&label=Star&maxAge=2592000)](https://GitHub.com/actarian/rxcomp/stargazers/)  [![GitHub followers](https://img.shields.io/github/followers/actarian.svg?style=social&label=Follow&maxAge=2592000)](https://github.com/actarian?tab=followers)\n\n* [Github Project Page](https://github.com/actarian/rxcomp)  \n\n*If you find it helpful, feel free to contribute in keeping this library up to date via [PayPal](https://www.paypal.me/circledev/5)*\n\n[![PayPal](https://www.paypalobjects.com/webstatic/en_US/i/buttons/PP_logo_h_100x26.png)](https://www.paypal.me/circledev/5)\n___\n\n## Contact\n\n* Luca Zampetti <lzampetti@gmail.com>\n* Follow [@actarian](https://twitter.com/actarian) on Twitter\n\n[![Twitter Follow](https://img.shields.io/twitter/follow/actarian.svg?style=social&label=Follow%20@actarian)](https://twitter.com/actarian)\n___\n\n## Release Notes\nChangelog [here](https://github.com/actarian/rxcomp-form/blob/master/CHANGELOG.md).\n\n---\n\n## 1.0.0-beta.1\n* Updating dependancy\n\n---\n\n## 1.0.0-alpha.14\n* Updating dependancy\n\n---\n\n## 1.0.0-alpha.11\n* Initial release of RxComp Form module\n",
     "longname": "/Users/lucazampetti/Desktop/GIT/rxcomp-form/README.md",
     "name": "./README.md",
     "static": true,
@@ -4855,7 +4776,7 @@
   },
   {
     "kind": "packageJSON",
-    "content": "{\n\t\"author\": \"Luca Zampetti <lzampetti@gmail.com>\",\n\t\"name\": \"rxcomp-form\",\n\t\"description\": \"Reactive component library for JavaScript\",\n\t\"version\": \"1.0.0-alpha.14\",\n\t\"main\": \"dist/rxcomp-form.js\",\n\t\"license\": \"MIT\",\n\t\"keywords\": [\n\t\t\"rxcomp\",\n\t\t\"framework\",\n\t\t\"rxjs\",\n\t\t\"es6\",\n\t\t\"es2015\"\n\t],\n\t\"repository\": {\n\t\t\"type\": \"git\",\n\t\t\"url\": \"git://github.com/actarian/rxcomp-form.git\"\n\t},\n\t\"bugs\": {\n\t\t\"url\": \"https://github.com/actarian/rxcomp-form/issues\"\n\t},\n\t\"homepage\": \"https://github.com/actarian/rxcomp-form\",\n\t\"scripts\": {\n\t\t\"start\": \"gulp\",\n\t\t\"build\": \"gulp build --target dist\"\n\t},\n\t\"browserslist\": {\n\t\t\"development\": [\n\t\t\t\"last 1 version\"\n\t\t],\n\t\t\"production\": [\n\t\t\t\"last 2 version\",\n\t\t\t\"ie 11\"\n\t\t]\n\t},\n\t\"dependencies\": {\n\t\t\"rxjs\": \"~6.5.3\",\n\t\t\"rxcomp\": \"1.0.0-alpha.14\"\n\t},\n\t\"devDependencies\": {\n\t\t\"@babel/core\": \"~7.6.4\",\n\t\t\"@babel/plugin-proposal-class-properties\": \"~7.5.5\",\n\t\t\"@babel/plugin-proposal-object-rest-spread\": \"~7.6.2\",\n\t\t\"@babel/plugin-transform-flow-strip-types\": \"~7.6.3\",\n\t\t\"@babel/plugin-transform-modules-systemjs\": \"~7.5.0\",\n\t\t\"@babel/preset-env\": \"~7.6.3\",\n\t\t\"@babel/preset-typescript\": \"~7.6.0\",\n\t\t\"babel-plugin-syntax-dynamic-import\": \"~6.18.0\",\n\t\t\"babelify\": \"~10.0.0\",\n\t\t\"browserify\": \"~16.5.0\",\n\t\t\"esdoc\": \"~1.1.0\",\n\t\t\"esdoc-accessor-plugin\": \"~1.0.0\",\n\t\t\"esdoc-brand-plugin\": \"~1.0.1\",\n\t\t\"esdoc-coverage-plugin\": \"~1.1.0\",\n\t\t\"esdoc-external-ecmascript-plugin\": \"~1.0.0\",\n\t\t\"esdoc-inject-assets-plugin\": \"~1.0.0\",\n\t\t\"esdoc-integrate-manual-plugin\": \"~1.0.0\",\n\t\t\"esdoc-lint-plugin\": \"~1.0.2\",\n\t\t\"esdoc-publish-html-plugin\": \"~1.1.2\",\n\t\t\"esdoc-standard-plugin\": \"~1.0.0\",\n\t\t\"esdoc-type-inference-plugin\": \"~1.0.2\",\n\t\t\"esdoc-undocumented-identifier-plugin\": \"~1.0.0\",\n\t\t\"esdoc-unexported-identifier-plugin\": \"~1.0.0\",\n\t\t\"eslint\": \"~6.5.1\",\n\t\t\"gulp\": \"~4.0.2\",\n\t\t\"gulp-autoprefixer\": \"~7.0.1\",\n\t\t\"gulp-babel\": \"~8.0.0-beta.2\",\n\t\t\"gulp-better-rollup\": \"~4.0.1\",\n\t\t\"gulp-concat\": \"~2.6.1\",\n\t\t\"gulp-concat-util\": \"~0.5.5\",\n\t\t\"gulp-cssmin\": \"~0.2.0\",\n\t\t\"gulp-filter\": \"~6.0.0\",\n\t\t\"gulp-html2js\": \"~0.4.2\",\n\t\t\"gulp-if\": \"~3.0.0\",\n\t\t\"gulp-plumber\": \"~1.2.1\",\n\t\t\"gulp-rename\": \"~1.4.0\",\n\t\t\"gulp-sass\": \"~4.0.2\",\n\t\t\"gulp-terser\": \"~1.2.0\",\n\t\t\"gulp-webserver\": \"~0.9.1\",\n\t\t\"rollup\": \"~1.26.3\",\n\t\t\"rollup-plugin-babel\": \"~4.3.3\",\n\t\t\"rollup-plugin-banner\": \"~0.2.1\",\n\t\t\"rollup-plugin-license\": \"~0.12.1\",\n\t\t\"tfs\": \"~1.6.0\",\n\t\t\"through2\": \"~3.0.1\",\n\t\t\"tsify\": \"~4.0.1\",\n\t\t\"tslint\": \"~5.20.0\",\n\t\t\"typescript\": \"~3.6.4\",\n\t\t\"yargs\": \"~14.2.0\"\n\t}\n}\n",
+    "content": "{\n\t\"author\": \"Luca Zampetti <lzampetti@gmail.com>\",\n\t\"name\": \"rxcomp-form\",\n\t\"description\": \"Reactive FormModule for RxComp component library\",\n\t\"version\": \"1.0.0-beta.1\",\n\t\"main\": \"dist/rxcomp-form.js\",\n\t\"license\": \"MIT\",\n\t\"keywords\": [\n\t\t\"rxcomp\",\n\t\t\"framework\",\n\t\t\"form\",\n\t\t\"rxjs\",\n\t\t\"es6\",\n\t\t\"es2015\"\n\t],\n\t\"repository\": {\n\t\t\"type\": \"git\",\n\t\t\"url\": \"git://github.com/actarian/rxcomp-form.git\"\n\t},\n\t\"bugs\": {\n\t\t\"url\": \"https://github.com/actarian/rxcomp-form/issues\"\n\t},\n\t\"homepage\": \"https://github.com/actarian/rxcomp-form\",\n\t\"scripts\": {\n\t\t\"start\": \"gulp\",\n\t\t\"build\": \"gulp build --target dist\"\n\t},\n\t\"browserslist\": {\n\t\t\"development\": [\n\t\t\t\"last 1 version\"\n\t\t],\n\t\t\"production\": [\n\t\t\t\"last 2 version\",\n\t\t\t\"ie 11\"\n\t\t]\n\t},\n\t\"dependencies\": {\n\t\t\"rxjs\": \"~6.5.3\",\n\t\t\"rxcomp\": \"1.0.0-beta.1\"\n\t},\n\t\"devDependencies\": {\n\t\t\"@babel/core\": \"~7.6.4\",\n\t\t\"@babel/plugin-proposal-class-properties\": \"~7.5.5\",\n\t\t\"@babel/plugin-proposal-object-rest-spread\": \"~7.6.2\",\n\t\t\"@babel/plugin-transform-flow-strip-types\": \"~7.6.3\",\n\t\t\"@babel/plugin-transform-modules-systemjs\": \"~7.5.0\",\n\t\t\"@babel/preset-env\": \"~7.6.3\",\n\t\t\"@babel/preset-typescript\": \"~7.6.0\",\n\t\t\"babel-plugin-syntax-dynamic-import\": \"~6.18.0\",\n\t\t\"babelify\": \"~10.0.0\",\n\t\t\"browserify\": \"~16.5.0\",\n\t\t\"esdoc\": \"~1.1.0\",\n\t\t\"esdoc-accessor-plugin\": \"~1.0.0\",\n\t\t\"esdoc-brand-plugin\": \"~1.0.1\",\n\t\t\"esdoc-coverage-plugin\": \"~1.1.0\",\n\t\t\"esdoc-external-ecmascript-plugin\": \"~1.0.0\",\n\t\t\"esdoc-inject-assets-plugin\": \"~1.0.0\",\n\t\t\"esdoc-integrate-manual-plugin\": \"~1.0.0\",\n\t\t\"esdoc-lint-plugin\": \"~1.0.2\",\n\t\t\"esdoc-publish-html-plugin\": \"~1.1.2\",\n\t\t\"esdoc-standard-plugin\": \"~1.0.0\",\n\t\t\"esdoc-type-inference-plugin\": \"~1.0.2\",\n\t\t\"esdoc-undocumented-identifier-plugin\": \"~1.0.0\",\n\t\t\"esdoc-unexported-identifier-plugin\": \"~1.0.0\",\n\t\t\"eslint\": \"~6.5.1\",\n\t\t\"gulp\": \"~4.0.2\",\n\t\t\"gulp-autoprefixer\": \"~7.0.1\",\n\t\t\"gulp-babel\": \"~8.0.0-beta.2\",\n\t\t\"gulp-better-rollup\": \"~4.0.1\",\n\t\t\"gulp-concat\": \"~2.6.1\",\n\t\t\"gulp-concat-util\": \"~0.5.5\",\n\t\t\"gulp-cssmin\": \"~0.2.0\",\n\t\t\"gulp-filter\": \"~6.0.0\",\n\t\t\"gulp-html2js\": \"~0.4.2\",\n\t\t\"gulp-if\": \"~3.0.0\",\n\t\t\"gulp-plumber\": \"~1.2.1\",\n\t\t\"gulp-rename\": \"~1.4.0\",\n\t\t\"gulp-sass\": \"~4.0.2\",\n\t\t\"gulp-terser\": \"~1.2.0\",\n\t\t\"gulp-webserver\": \"~0.9.1\",\n\t\t\"rollup\": \"~1.26.3\",\n\t\t\"rollup-plugin-babel\": \"~4.3.3\",\n\t\t\"rollup-plugin-banner\": \"~0.2.1\",\n\t\t\"rollup-plugin-license\": \"~0.12.1\",\n\t\t\"tfs\": \"~1.6.0\",\n\t\t\"through2\": \"~3.0.1\",\n\t\t\"tsify\": \"~4.0.1\",\n\t\t\"tslint\": \"~5.20.0\",\n\t\t\"typescript\": \"~3.6.4\",\n\t\t\"yargs\": \"~14.2.0\"\n\t}\n}\n",
     "longname": "/Users/lucazampetti/Desktop/GIT/rxcomp-form/package.json",
     "name": "package.json",
     "static": true,
