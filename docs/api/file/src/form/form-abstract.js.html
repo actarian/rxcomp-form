@@ -180,6 +180,7 @@ export default class FormAbstract {
 	validate$(value) {
 		if (this.status === FormStatus.Disabled || this.submitted_ || !this.validators.length) {
 			this.errors = {};
+			this.status = FormStatus.Valid;
 			return of(this.errors);
 		} else {
 			return combineLatest(this.validators.map(x =&gt; {
@@ -261,9 +262,15 @@ export default class FormAbstract {
 	 */
 	set disabled(disabled) {
 		if (disabled) {
-			this.status = FormStatus.Disabled;
+			if (this.status !== FormStatus.Disabled) {
+				this.status = FormStatus.Disabled;
+				this.statusSubject.next(this);
+			}
+		} else {
+			if (this.status === FormStatus.Disabled) {
+				this.reset();
+			}
 		}
-		this.statusSubject.next(this);
 	}
 
 	/**

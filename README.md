@@ -197,18 +197,3 @@ ___
 
 ## Release Notes
 Changelog [here](https://github.com/actarian/rxcomp-form/blob/master/CHANGELOG.md).
-
----
-
-## 1.0.0-beta.1
-* Updating dependancy
-
----
-
-## 1.0.0-alpha.14
-* Updating dependancy
-
----
-
-## 1.0.0-alpha.11
-* Initial release of RxComp Form module

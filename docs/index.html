@@ -75,7 +75,7 @@
 				</div>
 				<errors-component [control]="form.get('email')"></errors-component>
 				<div class="group--form group--form--select" formFieldName="country">
-					<select class="control--select" [formControl]="control" required>
+					<select class="control--select" [formControl]="control">
 						<option value="">select</option>
 						<option value="en-US">English</option>
 						<option value="it-IT">Italiano</option>
@@ -89,8 +89,12 @@
 					<label><input type="radio" class="control--radio" [formControl]="control" name="evaluate" value="enterprise" required /><span>enterprise</span></label>
 				</div>
 				<errors-component [control]="form.get('evaluate')"></errors-component>
+				<div class="group--form group--checkbox" formFieldName="newsletter">
+					<label><input type="checkbox" class="control--checkbox" [formControl]="control" [value]="true" /><span>checkbox required</span></label>
+				</div>
+				<errors-component [control]="form.get('newsletter')"></errors-component>
 				<div class="group--form group--checkbox" formFieldName="privacy">
-					<label><input type="checkbox" class="control--checkbox" [formControl]="control" [value]="true" requiredTrue /><span>accept privacy</span></label>
+					<label><input type="checkbox" class="control--checkbox" [formControl]="control" [value]="true" requiredTrue /><span>checkbox required true</span></label>
 				</div>
 				<errors-component [control]="form.get('privacy')"></errors-component>
 				<div class="group--form" *for="let item of form.get('items').controls">
@@ -112,6 +116,7 @@
 			</div>
 			<div class="group--form group--form--fixed">
 				<code [innerHTML]="form.value | json"></code>
+				<button type="button" class="btn--test" (click)="test()"><span>test</span></button>
 			</div>
 		</form>
 	</main>

@@ -16,6 +16,7 @@ export function NullValidator() {
  */
 export function RequiredValidator() {
 	return new FormValidator(function(value) {
+		// console.log('RequiredValidator', value, (value == null || value.length === 0) ? { required: true } : null);
 		return (value == null || value.length === 0) ? { required: true } : null;
 	});
 	// return (value == null || value.length === 0) ? 'required' : null;
@@ -27,6 +28,7 @@ export function RequiredValidator() {
  */
 export function RequiredTrueValidator() {
 	return new FormValidator(function(value) {
+		// console.log('RequiredTrueValidator', value, value === true ? null : { required: true });
 		return value === true ? null : { required: true };
 	});
 }

@@ -10,6 +10,7 @@ export default class AppComponent extends Component {
 			email: null,
 			country: null,
 			evaluate: null,
+			newsletter: null,
 			privacy: null,
 			items: new FormArray([null, null, null], RequiredValidator()),
 		});
@@ -24,11 +25,23 @@ export default class AppComponent extends Component {
 		*/
 
 		form.changes$.subscribe((changes) => {
-			console.log('AppComponent.form.changes$', changes, form.valid);
+			console.log('AppComponent.form.changes$', changes, form.valid, form);
 			this.pushChanges();
 		});
 
 		this.form = form;
+	}
+
+	test() {
+		this.form.patch({
+			firstName: 'Jhon',
+			lastName: 'Appleseed',
+			email: 'jhonappleseed@gmail.com',
+			// country: 'en-US',
+			evaluate: 'free',
+			privacy: true,
+			items: ['aaaa', 'aaaa', 'aaaa']
+		});
 	}
 
 	onSubmit() {

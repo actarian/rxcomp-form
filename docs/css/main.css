@@ -482,12 +482,12 @@ input.valid + .icon--check {
 .group--checkbox span {
   margin: 0 5px; }
 
-.submitted .btn--submit, .submitted .btn--add, .invalid .btn--submit {
+.submitted .btn--submit, .submitted .btn--add, .submitted .btn--test, .invalid .btn--submit {
   opacity: 0.5;
   background: #7d7d7d;
   color: white; }
 
-.btn--submit, .btn--add {
+.btn--submit, .btn--add, .btn--test {
   display: block;
   width: 100%;
   padding: 10px;
@@ -499,10 +499,10 @@ input.valid + .icon--check {
   -webkit-transition: all ease-in-out 350ms;
   transition: all ease-in-out 350ms; }
 
-.btn--submit {
+.valid .btn--submit {
   background: #4CAF50;
   color: white; }
-  .btn--submit:hover, .btn--submit:active, .btn--submit:focus {
+  .valid .btn--submit:hover, .valid .btn--submit:active, .valid .btn--submit:focus {
     background: #338e36;
     color: white; }
 
@@ -510,6 +510,15 @@ input.valid + .icon--check {
   background: #d3833c;
   color: white; }
   .btn--add:hover, .btn--add:active, .btn--add:focus {
+    background: #d3833c;
+    color: white; }
+
+.btn--test {
+  width: 80px;
+  margin-left: 10px;
+  background: #d3833c;
+  color: white; }
+  .btn--test:hover, .btn--test:active, .btn--test:focus {
     background: #d3833c;
     color: white; }
 

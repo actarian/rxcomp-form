@@ -1,6 +1,6 @@
 /**
- * @license rxcomp-form v1.0.0-beta.1
- * (c) 2019 Luca Zampetti <lzampetti@gmail.com>
+ * @license rxcomp-form v1.0.0-beta.2
+ * (c) 2020 Luca Zampetti <lzampetti@gmail.com>
  * License: MIT
  */
 
@@ -844,6 +844,7 @@
 
   function RequiredValidator() {
     return new FormValidator(function (value) {
+      // console.log('RequiredValidator', value, (value == null || value.length === 0) ? { required: true } : null);
       return value == null || value.length === 0 ? {
         required: true
       } : null;
@@ -856,6 +857,7 @@
 
   function RequiredTrueValidator() {
     return new FormValidator(function (value) {
+      // console.log('RequiredTrueValidator', value, value === true ? null : { required: true });
       return value === true ? null : {
         required: true
       };
@@ -1455,6 +1457,7 @@
 
       if (this.status === FormStatus.Disabled || this.submitted_ || !this.validators.length) {
         this.errors = {};
+        this.status = FormStatus.Valid;
         return rxjs.of(this.errors);
       } else {
         return rxjs.combineLatest(this.validators.map(function (x) {
@@ -1563,10 +1566,15 @@
        */
       set: function set(disabled) {
         if (disabled) {
-          this.status = FormStatus.Disabled;
+          if (this.status !== FormStatus.Disabled) {
+            this.status = FormStatus.Disabled;
+            this.statusSubject.next(this);
+          }
+        } else {
+          if (this.status === FormStatus.Disabled) {
+            this.reset();
+          }
         }
-
-        this.statusSubject.next(this);
       }
       /**
        * @param {boolean} submitted - the submitted state
@@ -2236,6 +2244,7 @@
   exports.FormAbstractCollectionDirective = FormAbstractCollectionDirective;
   exports.FormArray = FormArray;
   exports.FormArrayDirective = FormArrayDirective;
+  exports.FormAttributes = FormAttributes;
   exports.FormCheckboxDirective = FormCheckboxDirective;
   exports.FormControl = FormControl;
   exports.FormEmailDirective = FormEmailDirective;

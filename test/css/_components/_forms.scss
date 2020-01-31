@@ -251,14 +251,17 @@ input.valid+.icon--check {
 .btn--submit {
 	@extend %btn;
 
-	background: #4CAF50;
-	color: white;
-
-	&:hover,
-	&:active,
-	&:focus {
-		background: rgb(51, 142, 54);
+	.valid & {
+		background: #4CAF50;
 		color: white;
+
+		&:hover,
+		&:active,
+		&:focus {
+			background: rgb(51, 142, 54);
+			color: white;
+		}
+
 	}
 
 	.invalid & {
@@ -268,6 +271,23 @@ input.valid+.icon--check {
 
 .btn--add {
 	@extend %btn;
+
+	background: rgb(211, 131, 60);
+	color: white;
+
+	&:hover,
+	&:active,
+	&:focus {
+		background: rgb(211, 131, 60);
+		color: white;
+	}
+}
+
+.btn--test {
+	@extend %btn;
+
+	width: 80px;
+	margin-left: 10px;
 
 	background: rgb(211, 131, 60);
 	color: white;

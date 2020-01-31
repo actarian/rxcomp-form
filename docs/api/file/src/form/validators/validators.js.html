@@ -108,6 +108,7 @@ export function NullValidator() {
  */
 export function RequiredValidator() {
 	return new FormValidator(function(value) {
+		// console.log(&apos;RequiredValidator&apos;, value, (value == null || value.length === 0) ? { required: true } : null);
 		return (value == null || value.length === 0) ? { required: true } : null;
 	});
 	// return (value == null || value.length === 0) ? &apos;required&apos; : null;
@@ -119,6 +120,7 @@ export function RequiredValidator() {
  */
 export function RequiredTrueValidator() {
 	return new FormValidator(function(value) {
+		// console.log(&apos;RequiredTrueValidator&apos;, value, value === true ? null : { required: true });
 		return value === true ? null : { required: true };
 	});
 }

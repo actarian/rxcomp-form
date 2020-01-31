@@ -13,7 +13,7 @@ export { default as FormAbstractCollection } from './form/form-abstract-collecti
 export { default as FormArray, formArray } from './form/form-array';
 export { default as FormControl } from './form/form-control';
 export { default as FormGroup, formGroup } from './form/form-group';
-export { default as FormStatus } from './form/models/form-status';
+export { default as FormStatus, FormAttributes } from './form/models/form-status';
 export { default as FormEmailDirective } from './form/validators/form-email.directive';
 export { default as FormMaxLengthDirective } from './form/validators/form-max-length.directive';
 export { default as FormMaxDirective } from './form/validators/form-max.directive';
