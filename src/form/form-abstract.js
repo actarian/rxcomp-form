@@ -73,7 +73,6 @@ export default class FormAbstract {
 			switchMap(() => this.validate$(this.value)),
 			shareReplay(1)
 		);
-		const changes = {};
 		this.changes$ = merge(this.value$, this.status$).pipe(
 			map(() => this.value),
 			auditTime(1),
@@ -88,7 +87,9 @@ export default class FormAbstract {
 	validate$(value) {
 		if (this.status === FormStatus.Disabled || this.status === FormStatus.Hidden || this.submitted_ || !this.validators.length) {
 			this.errors = {};
-			// this.status = FormStatus.Valid;
+			if (this.status === FormStatus.Invalid) {
+				this.status = FormStatus.Valid;
+			}
 			return of(this.errors);
 		} else {
 			return combineLatest(this.validators.map(x => {

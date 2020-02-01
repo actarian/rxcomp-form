@@ -2152,7 +2152,7 @@
     "__docId__": 112,
     "kind": "file",
     "name": "src/form/form-abstract.js",
-    "content": "import { BehaviorSubject, combineLatest, isObservable, merge, of } from \"rxjs\";\nimport { auditTime, distinctUntilChanged, map, shareReplay, skip, switchAll, switchMap, tap } from 'rxjs/operators';\nimport FormStatus from './models/form-status';\n\n/**\n * @desc Abstract class representing a form control.\n * @abstract\n * @access public\n */\nexport default class FormAbstract {\n\t/**\n\t * Create a FormAbstract.\n\t * @param {FormValidator|FormValidator[]} validators - A list of validators.\n\t */\n\tconstructor(validators) {\n\t\tthis.validators = validators ? (Array.isArray(validators) ? validators : [validators]) : [];\n\t}\n\n\t/**\n\t * @private initialize subjects\n\t * @return {void}\n\t */\n\tinitSubjects_() {\n\t\t/**\n\t\t * @private\n\t\t */\n\t\tthis.valueSubject = new BehaviorSubject(null);\n\t\t/**\n\t\t * @private\n\t\t */\n\t\tthis.statusSubject = new BehaviorSubject(this);\n\t\t/**\n\t\t * @private\n\t\t */\n\t\tthis.validatorsSubject = new BehaviorSubject().pipe(\n\t\t\tswitchAll()\n\t\t);\n\t\tthis.switchValidators_();\n\t}\n\n\t/**\n\t * @private\n\t */\n\tswitchValidators_() {\n\t\tconst validators = this.validators.map(x => x.params$);\n\t\tlet validators$ = validators.length ? combineLatest(validators) : of (validators);\n\t\tthis.validatorsSubject.next(validators$);\n\t}\n\n\t/**\n\t * @private initialize observables\n\t * @return {void}\n\t */\n\tinitObservables_() {\n\t\tthis.value$ = this.valueSubject.pipe(\n\t\t\tdistinctUntilChanged(),\n\t\t\tskip(1),\n\t\t\ttap(() => {\n\t\t\t\t/**\n\t\t\t\t * @private\n\t\t\t\t */\n\t\t\t\tthis.submitted_ = false;\n\t\t\t\t/**\n\t\t\t\t * @private\n\t\t\t\t */\n\t\t\t\tthis.dirty_ = true;\n\t\t\t\tthis.statusSubject.next(this);\n\t\t\t}),\n\t\t\tshareReplay(1)\n\t\t);\n\t\tthis.status$ = merge(this.statusSubject, this.validatorsSubject).pipe(\n\t\t\t// auditTime(1),\n\t\t\tswitchMap(() => this.validate$(this.value)),\n\t\t\tshareReplay(1)\n\t\t);\n\t\tconst changes = {};\n\t\tthis.changes$ = merge(this.value$, this.status$).pipe(\n\t\t\tmap(() => this.value),\n\t\t\tauditTime(1),\n\t\t\tshareReplay(1)\n\t\t);\n\t}\n\n\t/**\n\t * @param {null | string} value - the inner control value\n\t * @return {Observable<errors>} an object with key, value errors\n\t */\n\tvalidate$(value) {\n\t\tif (this.status === FormStatus.Disabled || this.status === FormStatus.Hidden || this.submitted_ || !this.validators.length) {\n\t\t\tthis.errors = {};\n\t\t\t// this.status = FormStatus.Valid;\n\t\t\treturn of(this.errors);\n\t\t} else {\n\t\t\treturn combineLatest(this.validators.map(x => {\n\t\t\t\tlet result$ = x.validate(value);\n\t\t\t\treturn isObservable(result$) ? result$ : of (result$);\n\t\t\t})).pipe(\n\t\t\t\tmap(results => {\n\t\t\t\t\tthis.errors = Object.assign({}, ...results);\n\t\t\t\t\tthis.status = Object.keys(this.errors).length === 0 ? FormStatus.Valid : FormStatus.Invalid;\n\t\t\t\t})\n\t\t\t);\n\t\t}\n\t}\n\n\t/**\n\t * @return {boolean} the pending status\n\t */\n\tget pending() { return this.status === FormStatus.Pending; }\n\n\t/**\n\t * @return {boolean} the valid status\n\t */\n\tget valid() { return this.status !== FormStatus.Invalid; }\n\n\t/**\n\t * @return {boolean} the invalid status\n\t */\n\tget invalid() { return this.status === FormStatus.Invalid; }\n\n\t/**\n\t * @return {boolean} the disabled status\n\t */\n\tget disabled() { return this.status === FormStatus.Disabled; }\n\n\t/**\n\t * @return {boolean} the enabled status\n\t */\n\tget enabled() { return this.status !== FormStatus.Disabled; }\n\n\t/**\n\t * @return {boolean} the hidden status\n\t */\n\tget hidden() { return this.status === FormStatus.Hidden; }\n\n\t/**\n\t * @return {boolean} the visible status\n\t */\n\tget visible() { return this.status !== FormStatus.Hidden; }\n\n\t/**\n\t * @return {boolean} the submitted status\n\t */\n\tget submitted() { return this.submitted_; }\n\n\t/**\n\t * @return {boolean} the dirty status\n\t */\n\tget dirty() { return this.dirty_; }\n\n\t/**\n\t * @return {boolean} the pristine status\n\t */\n\tget pristine() { return !this.dirty_; }\n\n\t/**\n\t * @return {boolean} the touched status\n\t */\n\tget touched() { return this.touched_; }\n\n\t/**\n\t * @return {boolean} the untouched status\n\t */\n\tget untouched() { return !this.touched_; }\n\n\t/**\n\t * @param {boolean} disabled - the disabled state\n\t * @return {void}\n\t */\n\tset disabled(disabled) {\n\t\tif (disabled) {\n\t\t\tif (this.status !== FormStatus.Disabled) {\n\t\t\t\tthis.status = FormStatus.Disabled;\n\t\t\t\tthis.statusSubject.next(this);\n\t\t\t}\n\t\t} else {\n\t\t\tif (this.status === FormStatus.Disabled) {\n\t\t\t\tthis.reset();\n\t\t\t}\n\t\t}\n\t}\n\n\t/**\n\t * @param {boolean} hidden - the hidden state\n\t * @return {void}\n\t */\n\tset hidden(hidden) {\n\t\tif (hidden) {\n\t\t\tif (this.status !== FormStatus.Hidden) {\n\t\t\t\tthis.status = FormStatus.Hidden;\n\t\t\t\tconsole.log('set hidden', hidden, this.status);\n\t\t\t\tthis.statusSubject.next(this);\n\t\t\t}\n\t\t} else {\n\t\t\tif (this.status === FormStatus.Hidden) {\n\t\t\t\tthis.reset();\n\t\t\t}\n\t\t}\n\t}\n\n\t/**\n\t * @param {boolean} submitted - the submitted state\n\t * @return {void}\n\t */\n\tset submitted(submitted) {\n\t\tthis.submitted_ = submitted;\n\t\tthis.statusSubject.next(this);\n\t}\n\n\t/**\n\t * @param {boolean} touched - the touched state\n\t * @return {void}\n\t */\n\tset touched(touched) {\n\t\t/**\n\t\t * @private\n\t\t */\n\t\tthis.touched_ = touched;\n\t\tthis.statusSubject.next(this);\n\t}\n\n\t/**\n\t * @return {null | string} inner value of the control\n\t */\n\tget value() { return this.value_; }\n\n\t/**\n\t * @param {null | string} value - a value\n\t * @return {void}\n\t */\n\tset value(value) {\n\t\t// console.log('set value', value);\n\t\t/**\n\t\t * @private\n\t\t */\n\t\tthis.value_ = value;\n\t\tthis.valueSubject.next(value);\n\t}\n\n\t/**\n\t * @return {void}\n\t */\n\treset() {\n\t\tthis.status = FormStatus.Pending;\n\t\tthis.value_ = null;\n\t\tthis.dirty_ = false;\n\t\tthis.touched_ = false;\n\t\tthis.submitted_ = false;\n\t\tthis.statusSubject.next(this);\n\t}\n\n\t/**\n\t * @param {null | string} value - a value\n\t * @return {void}\n\t */\n\tpatch(value) {\n\t\tthis.value_ = value;\n\t\tthis.dirty_ = true;\n\t\tthis.submitted_ = false;\n\t\tthis.statusSubject.next(this);\n\t}\n\n\t/**\n\t * adds one or more FormValidator.\n\t * @param {...FormValidator[]} validators - A list of validators.\n\t */\n\taddValidators(...validators) {\n\t\tthis.validators.push(...validators);\n\t\tthis.switchValidators_();\n\t}\n\n\t/**\n\t * replace one or more FormValidator.\n\t * @param {...FormValidator[]} validators - A list of validators.\n\t */\n\treplaceValidators(...validators) {\n\t\tthis.validators = validators;\n\t\tthis.switchValidators_();\n\t}\n\n\t/**\n\t * remove all FormValidator.\n\t */\n\tclearValidators() {\n\t\tthis.validators = [];\n\t\tthis.switchValidators_();\n\t}\n\n}\n",
+    "content": "import { BehaviorSubject, combineLatest, isObservable, merge, of } from \"rxjs\";\nimport { auditTime, distinctUntilChanged, map, shareReplay, skip, switchAll, switchMap, tap } from 'rxjs/operators';\nimport FormStatus from './models/form-status';\n\n/**\n * @desc Abstract class representing a form control.\n * @abstract\n * @access public\n */\nexport default class FormAbstract {\n\t/**\n\t * Create a FormAbstract.\n\t * @param {FormValidator|FormValidator[]} validators - A list of validators.\n\t */\n\tconstructor(validators) {\n\t\tthis.validators = validators ? (Array.isArray(validators) ? validators : [validators]) : [];\n\t}\n\n\t/**\n\t * @private initialize subjects\n\t * @return {void}\n\t */\n\tinitSubjects_() {\n\t\t/**\n\t\t * @private\n\t\t */\n\t\tthis.valueSubject = new BehaviorSubject(null);\n\t\t/**\n\t\t * @private\n\t\t */\n\t\tthis.statusSubject = new BehaviorSubject(this);\n\t\t/**\n\t\t * @private\n\t\t */\n\t\tthis.validatorsSubject = new BehaviorSubject().pipe(\n\t\t\tswitchAll()\n\t\t);\n\t\tthis.switchValidators_();\n\t}\n\n\t/**\n\t * @private\n\t */\n\tswitchValidators_() {\n\t\tconst validators = this.validators.map(x => x.params$);\n\t\tlet validators$ = validators.length ? combineLatest(validators) : of (validators);\n\t\tthis.validatorsSubject.next(validators$);\n\t}\n\n\t/**\n\t * @private initialize observables\n\t * @return {void}\n\t */\n\tinitObservables_() {\n\t\tthis.value$ = this.valueSubject.pipe(\n\t\t\tdistinctUntilChanged(),\n\t\t\tskip(1),\n\t\t\ttap(() => {\n\t\t\t\t/**\n\t\t\t\t * @private\n\t\t\t\t */\n\t\t\t\tthis.submitted_ = false;\n\t\t\t\t/**\n\t\t\t\t * @private\n\t\t\t\t */\n\t\t\t\tthis.dirty_ = true;\n\t\t\t\tthis.statusSubject.next(this);\n\t\t\t}),\n\t\t\tshareReplay(1)\n\t\t);\n\t\tthis.status$ = merge(this.statusSubject, this.validatorsSubject).pipe(\n\t\t\t// auditTime(1),\n\t\t\tswitchMap(() => this.validate$(this.value)),\n\t\t\tshareReplay(1)\n\t\t);\n\t\tthis.changes$ = merge(this.value$, this.status$).pipe(\n\t\t\tmap(() => this.value),\n\t\t\tauditTime(1),\n\t\t\tshareReplay(1)\n\t\t);\n\t}\n\n\t/**\n\t * @param {null | string} value - the inner control value\n\t * @return {Observable<errors>} an object with key, value errors\n\t */\n\tvalidate$(value) {\n\t\tif (this.status === FormStatus.Disabled || this.status === FormStatus.Hidden || this.submitted_ || !this.validators.length) {\n\t\t\tthis.errors = {};\n\t\t\tif (this.status === FormStatus.Invalid) {\n\t\t\t\tthis.status = FormStatus.Valid;\n\t\t\t}\n\t\t\treturn of(this.errors);\n\t\t} else {\n\t\t\treturn combineLatest(this.validators.map(x => {\n\t\t\t\tlet result$ = x.validate(value);\n\t\t\t\treturn isObservable(result$) ? result$ : of (result$);\n\t\t\t})).pipe(\n\t\t\t\tmap(results => {\n\t\t\t\t\tthis.errors = Object.assign({}, ...results);\n\t\t\t\t\tthis.status = Object.keys(this.errors).length === 0 ? FormStatus.Valid : FormStatus.Invalid;\n\t\t\t\t})\n\t\t\t);\n\t\t}\n\t}\n\n\t/**\n\t * @return {boolean} the pending status\n\t */\n\tget pending() { return this.status === FormStatus.Pending; }\n\n\t/**\n\t * @return {boolean} the valid status\n\t */\n\tget valid() { return this.status !== FormStatus.Invalid; }\n\n\t/**\n\t * @return {boolean} the invalid status\n\t */\n\tget invalid() { return this.status === FormStatus.Invalid; }\n\n\t/**\n\t * @return {boolean} the disabled status\n\t */\n\tget disabled() { return this.status === FormStatus.Disabled; }\n\n\t/**\n\t * @return {boolean} the enabled status\n\t */\n\tget enabled() { return this.status !== FormStatus.Disabled; }\n\n\t/**\n\t * @return {boolean} the hidden status\n\t */\n\tget hidden() { return this.status === FormStatus.Hidden; }\n\n\t/**\n\t * @return {boolean} the visible status\n\t */\n\tget visible() { return this.status !== FormStatus.Hidden; }\n\n\t/**\n\t * @return {boolean} the submitted status\n\t */\n\tget submitted() { return this.submitted_; }\n\n\t/**\n\t * @return {boolean} the dirty status\n\t */\n\tget dirty() { return this.dirty_; }\n\n\t/**\n\t * @return {boolean} the pristine status\n\t */\n\tget pristine() { return !this.dirty_; }\n\n\t/**\n\t * @return {boolean} the touched status\n\t */\n\tget touched() { return this.touched_; }\n\n\t/**\n\t * @return {boolean} the untouched status\n\t */\n\tget untouched() { return !this.touched_; }\n\n\t/**\n\t * @param {boolean} disabled - the disabled state\n\t * @return {void}\n\t */\n\tset disabled(disabled) {\n\t\tif (disabled) {\n\t\t\tif (this.status !== FormStatus.Disabled) {\n\t\t\t\tthis.status = FormStatus.Disabled;\n\t\t\t\tthis.statusSubject.next(this);\n\t\t\t}\n\t\t} else {\n\t\t\tif (this.status === FormStatus.Disabled) {\n\t\t\t\tthis.reset();\n\t\t\t}\n\t\t}\n\t}\n\n\t/**\n\t * @param {boolean} hidden - the hidden state\n\t * @return {void}\n\t */\n\tset hidden(hidden) {\n\t\tif (hidden) {\n\t\t\tif (this.status !== FormStatus.Hidden) {\n\t\t\t\tthis.status = FormStatus.Hidden;\n\t\t\t\tconsole.log('set hidden', hidden, this.status);\n\t\t\t\tthis.statusSubject.next(this);\n\t\t\t}\n\t\t} else {\n\t\t\tif (this.status === FormStatus.Hidden) {\n\t\t\t\tthis.reset();\n\t\t\t}\n\t\t}\n\t}\n\n\t/**\n\t * @param {boolean} submitted - the submitted state\n\t * @return {void}\n\t */\n\tset submitted(submitted) {\n\t\tthis.submitted_ = submitted;\n\t\tthis.statusSubject.next(this);\n\t}\n\n\t/**\n\t * @param {boolean} touched - the touched state\n\t * @return {void}\n\t */\n\tset touched(touched) {\n\t\t/**\n\t\t * @private\n\t\t */\n\t\tthis.touched_ = touched;\n\t\tthis.statusSubject.next(this);\n\t}\n\n\t/**\n\t * @return {null | string} inner value of the control\n\t */\n\tget value() { return this.value_; }\n\n\t/**\n\t * @param {null | string} value - a value\n\t * @return {void}\n\t */\n\tset value(value) {\n\t\t// console.log('set value', value);\n\t\t/**\n\t\t * @private\n\t\t */\n\t\tthis.value_ = value;\n\t\tthis.valueSubject.next(value);\n\t}\n\n\t/**\n\t * @return {void}\n\t */\n\treset() {\n\t\tthis.status = FormStatus.Pending;\n\t\tthis.value_ = null;\n\t\tthis.dirty_ = false;\n\t\tthis.touched_ = false;\n\t\tthis.submitted_ = false;\n\t\tthis.statusSubject.next(this);\n\t}\n\n\t/**\n\t * @param {null | string} value - a value\n\t * @return {void}\n\t */\n\tpatch(value) {\n\t\tthis.value_ = value;\n\t\tthis.dirty_ = true;\n\t\tthis.submitted_ = false;\n\t\tthis.statusSubject.next(this);\n\t}\n\n\t/**\n\t * adds one or more FormValidator.\n\t * @param {...FormValidator[]} validators - A list of validators.\n\t */\n\taddValidators(...validators) {\n\t\tthis.validators.push(...validators);\n\t\tthis.switchValidators_();\n\t}\n\n\t/**\n\t * replace one or more FormValidator.\n\t * @param {...FormValidator[]} validators - A list of validators.\n\t */\n\treplaceValidators(...validators) {\n\t\tthis.validators = validators;\n\t\tthis.switchValidators_();\n\t}\n\n\t/**\n\t * remove all FormValidator.\n\t */\n\tclearValidators() {\n\t\tthis.validators = [];\n\t\tthis.switchValidators_();\n\t}\n\n}\n",
     "static": true,
     "longname": "/Users/lucazampetti/Desktop/GIT/rxcomp-form/src/form/form-abstract.js",
     "access": "public",
@@ -2411,7 +2411,7 @@
     "longname": "src/form/form-abstract.js~FormAbstract#changes$",
     "access": "public",
     "description": null,
-    "lineNumber": 77,
+    "lineNumber": 76,
     "undocument": true,
     "type": {
       "types": [
@@ -2431,7 +2431,7 @@
     "longname": "src/form/form-abstract.js~FormAbstract#validate$",
     "access": "public",
     "description": "",
-    "lineNumber": 88,
+    "lineNumber": 87,
     "params": [
       {
         "nullable": null,
@@ -2463,7 +2463,7 @@
     "longname": "src/form/form-abstract.js~FormAbstract#errors",
     "access": "public",
     "description": null,
-    "lineNumber": 90,
+    "lineNumber": 89,
     "undocument": true,
     "type": {
       "types": [
@@ -2473,7 +2473,7 @@
     "ignore": true
   },
   {
-    "__docId__": 130,
+    "__docId__": 129,
     "kind": "member",
     "name": "status",
     "memberof": "src/form/form-abstract.js~FormAbstract",
@@ -2481,7 +2481,7 @@
     "longname": "src/form/form-abstract.js~FormAbstract#status",
     "access": "public",
     "description": null,
-    "lineNumber": 100,
+    "lineNumber": 91,
     "undocument": true,
     "type": {
       "types": [
@@ -2491,7 +2491,7 @@
     "ignore": true
   },
   {
-    "__docId__": 131,
+    "__docId__": 132,
     "kind": "get",
     "name": "pending",
     "memberof": "src/form/form-abstract.js~FormAbstract",
@@ -2501,7 +2501,7 @@
     "longname": "src/form/form-abstract.js~FormAbstract#pending",
     "access": "public",
     "description": "",
-    "lineNumber": 109,
+    "lineNumber": 110,
     "return": {
       "nullable": null,
       "types": [
@@ -2517,7 +2517,7 @@
     }
   },
   {
-    "__docId__": 132,
+    "__docId__": 133,
     "kind": "get",
     "name": "valid",
     "memberof": "src/form/form-abstract.js~FormAbstract",
@@ -2527,7 +2527,7 @@
     "longname": "src/form/form-abstract.js~FormAbstract#valid",
     "access": "public",
     "description": "",
-    "lineNumber": 114,
+    "lineNumber": 115,
     "return": {
       "nullable": null,
       "types": [
@@ -2543,7 +2543,7 @@
     }
   },
   {
-    "__docId__": 133,
+    "__docId__": 134,
     "kind": "get",
     "name": "invalid",
     "memberof": "src/form/form-abstract.js~FormAbstract",
@@ -2553,7 +2553,7 @@
     "longname": "src/form/form-abstract.js~FormAbstract#invalid",
     "access": "public",
     "description": "",
-    "lineNumber": 119,
+    "lineNumber": 120,
     "return": {
       "nullable": null,
       "types": [
@@ -2569,7 +2569,7 @@
     }
   },
   {
-    "__docId__": 134,
+    "__docId__": 135,
     "kind": "get",
     "name": "disabled",
     "memberof": "src/form/form-abstract.js~FormAbstract",
@@ -2579,7 +2579,7 @@
     "longname": "src/form/form-abstract.js~FormAbstract#disabled",
     "access": "public",
     "description": "",
-    "lineNumber": 124,
+    "lineNumber": 125,
     "return": {
       "nullable": null,
       "types": [
@@ -2595,7 +2595,7 @@
     }
   },
   {
-    "__docId__": 135,
+    "__docId__": 136,
     "kind": "get",
     "name": "enabled",
     "memberof": "src/form/form-abstract.js~FormAbstract",
@@ -2605,7 +2605,7 @@
     "longname": "src/form/form-abstract.js~FormAbstract#enabled",
     "access": "public",
     "description": "",
-    "lineNumber": 129,
+    "lineNumber": 130,
     "return": {
       "nullable": null,
       "types": [
@@ -2621,7 +2621,7 @@
     }
   },
   {
-    "__docId__": 136,
+    "__docId__": 137,
     "kind": "get",
     "name": "hidden",
     "memberof": "src/form/form-abstract.js~FormAbstract",
@@ -2631,7 +2631,7 @@
     "longname": "src/form/form-abstract.js~FormAbstract#hidden",
     "access": "public",
     "description": "",
-    "lineNumber": 134,
+    "lineNumber": 135,
     "return": {
       "nullable": null,
       "types": [
@@ -2647,7 +2647,7 @@
     }
   },
   {
-    "__docId__": 137,
+    "__docId__": 138,
     "kind": "get",
     "name": "visible",
     "memberof": "src/form/form-abstract.js~FormAbstract",
@@ -2657,7 +2657,7 @@
     "longname": "src/form/form-abstract.js~FormAbstract#visible",
     "access": "public",
     "description": "",
-    "lineNumber": 139,
+    "lineNumber": 140,
     "return": {
       "nullable": null,
       "types": [
@@ -2673,7 +2673,7 @@
     }
   },
   {
-    "__docId__": 138,
+    "__docId__": 139,
     "kind": "get",
     "name": "submitted",
     "memberof": "src/form/form-abstract.js~FormAbstract",
@@ -2683,7 +2683,7 @@
     "longname": "src/form/form-abstract.js~FormAbstract#submitted",
     "access": "public",
     "description": "",
-    "lineNumber": 144,
+    "lineNumber": 145,
     "return": {
       "nullable": null,
       "types": [
@@ -2699,7 +2699,7 @@
     }
   },
   {
-    "__docId__": 139,
+    "__docId__": 140,
     "kind": "get",
     "name": "dirty",
     "memberof": "src/form/form-abstract.js~FormAbstract",
@@ -2709,7 +2709,7 @@
     "longname": "src/form/form-abstract.js~FormAbstract#dirty",
     "access": "public",
     "description": "",
-    "lineNumber": 149,
+    "lineNumber": 150,
     "return": {
       "nullable": null,
       "types": [
@@ -2725,7 +2725,7 @@
     }
   },
   {
-    "__docId__": 140,
+    "__docId__": 141,
     "kind": "get",
     "name": "pristine",
     "memberof": "src/form/form-abstract.js~FormAbstract",
@@ -2735,7 +2735,7 @@
     "longname": "src/form/form-abstract.js~FormAbstract#pristine",
     "access": "public",
     "description": "",
-    "lineNumber": 154,
+    "lineNumber": 155,
     "return": {
       "nullable": null,
       "types": [
@@ -2751,7 +2751,7 @@
     }
   },
   {
-    "__docId__": 141,
+    "__docId__": 142,
     "kind": "get",
     "name": "touched",
     "memberof": "src/form/form-abstract.js~FormAbstract",
@@ -2761,7 +2761,7 @@
     "longname": "src/form/form-abstract.js~FormAbstract#touched",
     "access": "public",
     "description": "",
-    "lineNumber": 159,
+    "lineNumber": 160,
     "return": {
       "nullable": null,
       "types": [
@@ -2777,7 +2777,7 @@
     }
   },
   {
-    "__docId__": 142,
+    "__docId__": 143,
     "kind": "get",
     "name": "untouched",
     "memberof": "src/form/form-abstract.js~FormAbstract",
@@ -2787,7 +2787,7 @@
     "longname": "src/form/form-abstract.js~FormAbstract#untouched",
     "access": "public",
     "description": "",
-    "lineNumber": 164,
+    "lineNumber": 165,
     "return": {
       "nullable": null,
       "types": [
@@ -2803,7 +2803,7 @@
     }
   },
   {
-    "__docId__": 143,
+    "__docId__": 144,
     "kind": "set",
     "name": "disabled",
     "memberof": "src/form/form-abstract.js~FormAbstract",
@@ -2813,7 +2813,7 @@
     "longname": "src/form/form-abstract.js~FormAbstract#disabled",
     "access": "public",
     "description": "",
-    "lineNumber": 170,
+    "lineNumber": 171,
     "params": [
       {
         "nullable": null,
@@ -2836,7 +2836,7 @@
     }
   },
   {
-    "__docId__": 145,
+    "__docId__": 146,
     "kind": "set",
     "name": "hidden",
     "memberof": "src/form/form-abstract.js~FormAbstract",
@@ -2846,7 +2846,7 @@
     "longname": "src/form/form-abstract.js~FormAbstract#hidden",
     "access": "public",
     "description": "",
-    "lineNumber": 187,
+    "lineNumber": 188,
     "params": [
       {
         "nullable": null,
@@ -2869,7 +2869,7 @@
     }
   },
   {
-    "__docId__": 147,
+    "__docId__": 148,
     "kind": "set",
     "name": "submitted",
     "memberof": "src/form/form-abstract.js~FormAbstract",
@@ -2879,7 +2879,7 @@
     "longname": "src/form/form-abstract.js~FormAbstract#submitted",
     "access": "public",
     "description": "",
-    "lineNumber": 205,
+    "lineNumber": 206,
     "params": [
       {
         "nullable": null,
@@ -2902,7 +2902,7 @@
     }
   },
   {
-    "__docId__": 149,
+    "__docId__": 150,
     "kind": "set",
     "name": "touched",
     "memberof": "src/form/form-abstract.js~FormAbstract",
@@ -2912,7 +2912,7 @@
     "longname": "src/form/form-abstract.js~FormAbstract#touched",
     "access": "public",
     "description": "",
-    "lineNumber": 214,
+    "lineNumber": 215,
     "params": [
       {
         "nullable": null,
@@ -2935,7 +2935,7 @@
     }
   },
   {
-    "__docId__": 150,
+    "__docId__": 151,
     "kind": "member",
     "name": "touched_",
     "memberof": "src/form/form-abstract.js~FormAbstract",
@@ -2943,7 +2943,7 @@
     "longname": "src/form/form-abstract.js~FormAbstract#touched_",
     "access": "private",
     "description": "",
-    "lineNumber": 218,
+    "lineNumber": 219,
     "ignore": true,
     "type": {
       "types": [
@@ -2952,7 +2952,7 @@
     }
   },
   {
-    "__docId__": 151,
+    "__docId__": 152,
     "kind": "get",
     "name": "value",
     "memberof": "src/form/form-abstract.js~FormAbstract",
@@ -2962,7 +2962,7 @@
     "longname": "src/form/form-abstract.js~FormAbstract#value",
     "access": "public",
     "description": "",
-    "lineNumber": 225,
+    "lineNumber": 226,
     "return": {
       "nullable": null,
       "types": [
@@ -2979,7 +2979,7 @@
     }
   },
   {
-    "__docId__": 152,
+    "__docId__": 153,
     "kind": "set",
     "name": "value",
     "memberof": "src/form/form-abstract.js~FormAbstract",
@@ -2989,7 +2989,7 @@
     "longname": "src/form/form-abstract.js~FormAbstract#value",
     "access": "public",
     "description": "",
-    "lineNumber": 231,
+    "lineNumber": 232,
     "params": [
       {
         "nullable": null,
@@ -3013,7 +3013,7 @@
     }
   },
   {
-    "__docId__": 153,
+    "__docId__": 154,
     "kind": "member",
     "name": "value_",
     "memberof": "src/form/form-abstract.js~FormAbstract",
@@ -3021,7 +3021,7 @@
     "longname": "src/form/form-abstract.js~FormAbstract#value_",
     "access": "private",
     "description": "",
-    "lineNumber": 236,
+    "lineNumber": 237,
     "ignore": true,
     "type": {
       "types": [
@@ -3030,7 +3030,7 @@
     }
   },
   {
-    "__docId__": 154,
+    "__docId__": 155,
     "kind": "method",
     "name": "reset",
     "memberof": "src/form/form-abstract.js~FormAbstract",
@@ -3040,7 +3040,7 @@
     "longname": "src/form/form-abstract.js~FormAbstract#reset",
     "access": "public",
     "description": "",
-    "lineNumber": 243,
+    "lineNumber": 244,
     "return": {
       "nullable": null,
       "types": [
@@ -3052,7 +3052,7 @@
     "params": []
   },
   {
-    "__docId__": 160,
+    "__docId__": 161,
     "kind": "method",
     "name": "patch",
     "memberof": "src/form/form-abstract.js~FormAbstract",
@@ -3062,7 +3062,7 @@
     "longname": "src/form/form-abstract.js~FormAbstract#patch",
     "access": "public",
     "description": "",
-    "lineNumber": 256,
+    "lineNumber": 257,
     "params": [
       {
         "nullable": null,
@@ -3086,7 +3086,7 @@
     }
   },
   {
-    "__docId__": 164,
+    "__docId__": 165,
     "kind": "method",
     "name": "addValidators",
     "memberof": "src/form/form-abstract.js~FormAbstract",
@@ -3096,7 +3096,7 @@
     "longname": "src/form/form-abstract.js~FormAbstract#addValidators",
     "access": "public",
     "description": "adds one or more FormValidator.",
-    "lineNumber": 267,
+    "lineNumber": 268,
     "params": [
       {
         "nullable": null,
@@ -3112,7 +3112,7 @@
     "return": null
   },
   {
-    "__docId__": 165,
+    "__docId__": 166,
     "kind": "method",
     "name": "replaceValidators",
     "memberof": "src/form/form-abstract.js~FormAbstract",
@@ -3122,7 +3122,7 @@
     "longname": "src/form/form-abstract.js~FormAbstract#replaceValidators",
     "access": "public",
     "description": "replace one or more FormValidator.",
-    "lineNumber": 276,
+    "lineNumber": 277,
     "params": [
       {
         "nullable": null,
@@ -3138,7 +3138,7 @@
     "return": null
   },
   {
-    "__docId__": 167,
+    "__docId__": 168,
     "kind": "method",
     "name": "clearValidators",
     "memberof": "src/form/form-abstract.js~FormAbstract",
@@ -3148,12 +3148,12 @@
     "longname": "src/form/form-abstract.js~FormAbstract#clearValidators",
     "access": "public",
     "description": "remove all FormValidator.",
-    "lineNumber": 284,
+    "lineNumber": 285,
     "params": [],
     "return": null
   },
   {
-    "__docId__": 169,
+    "__docId__": 170,
     "kind": "file",
     "name": "src/form/form-array.js",
     "content": "import FormAbstract from './form-abstract';\nimport FormAbstractCollection from './form-abstract-collection';\n\n/**\n * @desc Class representing a FormArray.\n */\nexport default class FormArray extends FormAbstractCollection {\n\n\t/**\n\t * @desc Create a FormArray.\n\t * @example\n\t * const form = new FormArray([null, null, null]);\n\t *\n\t * form.changes$.subscribe(changes => {\n\t * \tconsole.log(changes);\n\t * });\n\t * @param {any|FormControl[]} controls - An array containing controls.\n\t * @param {FormValidator[]} validators - A list of validators.\n\t */\n\tconstructor(controls = [], validators) {\n\t\tsuper(controls, validators);\n\t}\n\n\t/**\n\t * @private\n\t */\n\tforEach_(callback) {\n\t\tthis.controls.forEach((control, key) => callback(control, key));\n\t}\n\n\t/**\n\t * @return {any[]}\n\t */\n\tget value() {\n\t\treturn this.reduce_((result, control, key) => {\n\t\t\tresult[key] = control.value;\n\t\t\treturn result;\n\t\t}, []); // init as array\n\t}\n\n\t/**\n\t * @return {number}\n\t */\n\tget length() {\n\t\treturn this.controls.length;\n\t}\n\n\t/**\n\t * @protected\n\t * @param {FormAbstract} control\n\t * @param {number} key\n\t */\n\tinit(control, key) {\n\t\tthis.controls.length = Math.max(this.controls.length, key);\n\t\tthis.controls[key] = this.initControl_(control, key);\n\t}\n\n\t/**\n\t * @param {FormAbstract} control\n\t * @param {number} key\n\t */\n\tset(control, key) {\n\t\t// this.controls.length = Math.max(this.controls.length, key);\n\t\t// this.controls[key] = this.initControl_(control);\n\t\tthis.controls.splice(key, 1, this.initControl_(control, key));\n\t\tthis.switchSubjects_();\n\t}\n\n\t// !!! needed?\n\t/**\n\t * @param {FormAbstract} control\n\t * @param {number} key\n\t */\n\tadd(control, key) {\n\t\tthis.controls.length = Math.max(this.controls.length, key);\n\t\tthis.controls[key] = this.initControl_(control, key);\n\t\tthis.switchSubjects_();\n\t}\n\n\t/**\n\t * @param {FormAbstract} control\n\t */\n\tpush(control) {\n\t\t// this.controls.length = Math.max(this.controls.length, key);\n\t\t// this.controls[key] = this.initControl_(control);\n\t\tthis.controls.push(this.initControl_(control, this.controls.length));\n\t\tthis.switchSubjects_();\n\t}\n\n\t/**\n\t * @param {FormAbstract} control\n\t * @param {number} key\n\t */\n\tinsert(control, key) {\n\t\tthis.controls.splice(key, 0, this.initControl_(control, key));\n\t\tthis.switchSubjects_();\n\t}\n\n\t/**\n\t * @param {FormAbstract} control\n\t */\n\tremove(control) {\n\t\tconst key = this.controls.indexOf(control);\n\t\tif (key !== -1) {\n\t\t\tthis.removeKey(key);\n\t\t}\n\t}\n\n\t/**\n\t * @param {number} key\n\t */\n\tremoveKey(key) {\n\t\tif (this.controls.length > key) {\n\t\t\tthis.controls.splice(key, 1);\n\t\t\tthis.switchSubjects_();\n\t\t}\n\t}\n\n\t/**\n\t * @param {number} key\n\t */\n\tat(key) {\n\t\treturn this.controls[key];\n\t}\n\n}\n\n/**\n * @desc Shortcut for new FormArray\n * @param {any|FormControl[]} controls\n * @param {FormValidator[]} validators\n */\nexport function formArray(controls, validators) {\n\treturn new FormArray(controls, validators);\n}\n",
@@ -3164,7 +3164,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 170,
+    "__docId__": 171,
     "kind": "class",
     "name": "FormArray",
     "memberof": "src/form/form-array.js",
@@ -3182,7 +3182,7 @@
     ]
   },
   {
-    "__docId__": 171,
+    "__docId__": 172,
     "kind": "constructor",
     "name": "constructor",
     "memberof": "src/form/form-array.js~FormArray",
@@ -3221,7 +3221,7 @@
     ]
   },
   {
-    "__docId__": 172,
+    "__docId__": 173,
     "kind": "method",
     "name": "forEach_",
     "memberof": "src/form/form-array.js~FormArray",
@@ -3244,7 +3244,7 @@
     "return": null
   },
   {
-    "__docId__": 173,
+    "__docId__": 174,
     "kind": "get",
     "name": "value",
     "memberof": "src/form/form-array.js~FormArray",
@@ -3270,7 +3270,7 @@
     }
   },
   {
-    "__docId__": 174,
+    "__docId__": 175,
     "kind": "get",
     "name": "length",
     "memberof": "src/form/form-array.js~FormArray",
@@ -3296,7 +3296,7 @@
     }
   },
   {
-    "__docId__": 175,
+    "__docId__": 176,
     "kind": "method",
     "name": "init",
     "memberof": "src/form/form-array.js~FormArray",
@@ -3332,7 +3332,7 @@
     "return": null
   },
   {
-    "__docId__": 176,
+    "__docId__": 177,
     "kind": "method",
     "name": "set",
     "memberof": "src/form/form-array.js~FormArray",
@@ -3368,7 +3368,7 @@
     "return": null
   },
   {
-    "__docId__": 177,
+    "__docId__": 178,
     "kind": "method",
     "name": "add",
     "memberof": "src/form/form-array.js~FormArray",
@@ -3404,7 +3404,7 @@
     "return": null
   },
   {
-    "__docId__": 178,
+    "__docId__": 179,
     "kind": "method",
     "name": "push",
     "memberof": "src/form/form-array.js~FormArray",
@@ -3430,7 +3430,7 @@
     "return": null
   },
   {
-    "__docId__": 179,
+    "__docId__": 180,
     "kind": "method",
     "name": "insert",
     "memberof": "src/form/form-array.js~FormArray",
@@ -3466,7 +3466,7 @@
     "return": null
   },
   {
-    "__docId__": 180,
+    "__docId__": 181,
     "kind": "method",
     "name": "remove",
     "memberof": "src/form/form-array.js~FormArray",
@@ -3492,7 +3492,7 @@
     "return": null
   },
   {
-    "__docId__": 181,
+    "__docId__": 182,
     "kind": "method",
     "name": "removeKey",
     "memberof": "src/form/form-array.js~FormArray",
@@ -3518,7 +3518,7 @@
     "return": null
   },
   {
-    "__docId__": 182,
+    "__docId__": 183,
     "kind": "method",
     "name": "at",
     "memberof": "src/form/form-array.js~FormArray",
@@ -3548,7 +3548,7 @@
     }
   },
   {
-    "__docId__": 183,
+    "__docId__": 184,
     "kind": "function",
     "name": "formArray",
     "memberof": "src/form/form-array.js",
@@ -3592,7 +3592,7 @@
     }
   },
   {
-    "__docId__": 184,
+    "__docId__": 185,
     "kind": "file",
     "name": "src/form/form-control.js",
     "content": "import FormAbstract from \"./form-abstract\";\nimport FormStatus from './models/form-status';\n\n/**\n * @desc Class representing a FormControl.\n */\nexport default class FormControl extends FormAbstract {\n\n\t/**\n\t * @desc Create a FormControl.\n\t * @example\n\t * const form = new FormControl(null);\n\t *\n\t * form.changes$.subscribe(changes => {\n\t * \tconsole.log(changes);\n\t * });\n\t * @param {null | string | FormControl} value - The value of the control.\n\t * @param {FormValidator[]} validators - A list of validators.\n\t */\n\tconstructor(value = null, validators) {\n\t\tsuper(validators);\n\t\t/**\n\t\t * @private\n\t\t */\n\t\tthis.value_ = value;\n\t\t/**\n\t\t * @private\n\t\t */\n\t\tthis.status = FormStatus.Pending;\n\t\tthis.errors = {};\n\t\tthis.initSubjects_();\n\t\tthis.initObservables_();\n\t\tthis.statusSubject.next(this);\n\t}\n\n}\n\n/** Shortcut for new FormControl. */\nexport function formControl(value, validators) {\n\treturn new FormControl(value, validators);\n}\n",
@@ -3603,7 +3603,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 185,
+    "__docId__": 186,
     "kind": "class",
     "name": "FormControl",
     "memberof": "src/form/form-control.js",
@@ -3621,7 +3621,7 @@
     ]
   },
   {
-    "__docId__": 186,
+    "__docId__": 187,
     "kind": "constructor",
     "name": "constructor",
     "memberof": "src/form/form-control.js~FormControl",
@@ -3661,7 +3661,7 @@
     ]
   },
   {
-    "__docId__": 187,
+    "__docId__": 188,
     "kind": "member",
     "name": "value_",
     "memberof": "src/form/form-control.js~FormControl",
@@ -3678,7 +3678,7 @@
     }
   },
   {
-    "__docId__": 188,
+    "__docId__": 189,
     "kind": "member",
     "name": "status",
     "memberof": "src/form/form-control.js~FormControl",
@@ -3695,7 +3695,7 @@
     }
   },
   {
-    "__docId__": 189,
+    "__docId__": 190,
     "kind": "member",
     "name": "errors",
     "memberof": "src/form/form-control.js~FormControl",
@@ -3713,7 +3713,7 @@
     "ignore": true
   },
   {
-    "__docId__": 190,
+    "__docId__": 191,
     "kind": "function",
     "name": "formControl",
     "memberof": "src/form/form-control.js",
@@ -3748,7 +3748,7 @@
     }
   },
   {
-    "__docId__": 191,
+    "__docId__": 192,
     "kind": "file",
     "name": "src/form/form-group.js",
     "content": "import FormAbstractCollection from './form-abstract-collection';\n\n/**\n * @desc Class representing a FormGroup.\n */\nexport default class FormGroup extends FormAbstractCollection {\n\n\t/**\n\t * @desc Create a FormControl.\n\t * @example\n\t * const form = new FormGroup({\n\t * \tfirstName: null,\n\t *  lastName: null,\n\t * });\n\t *\n\t * form.changes$.subscribe(changes => {\n\t * \tconsole.log(changes);\n\t * });\n\t * @param {Map<string, any|FormAbstract>} controls - An object containing controls.\n\t * @param {FormValidator[]} validators - A list of validators.\n\t */\n\tconstructor(controls = {}, validators) {\n\t\tsuper(controls, validators);\n\t}\n\n}\n\n/**\n * @desc Shortcut for new FormGroup\n * @param {Map<string, any|FormAbstract>} controls\n * @param {FormValidator[]} validators\n */\nexport function formGroup(controls, validators) {\n\treturn new FormGroup(controls, validators);\n}\n",
@@ -3759,7 +3759,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 192,
+    "__docId__": 193,
     "kind": "class",
     "name": "FormGroup",
     "memberof": "src/form/form-group.js",
@@ -3777,7 +3777,7 @@
     ]
   },
   {
-    "__docId__": 193,
+    "__docId__": 194,
     "kind": "constructor",
     "name": "constructor",
     "memberof": "src/form/form-group.js~FormGroup",
@@ -3815,7 +3815,7 @@
     ]
   },
   {
-    "__docId__": 194,
+    "__docId__": 195,
     "kind": "function",
     "name": "formGroup",
     "memberof": "src/form/form-group.js",
@@ -3858,7 +3858,7 @@
     }
   },
   {
-    "__docId__": 195,
+    "__docId__": 196,
     "kind": "file",
     "name": "src/form/models/form-status.js",
     "content": "const FormStatus = {\n\tPending: 'pending',\n\tValid: 'valid',\n\tInvalid: 'invalid',\n\tDisabled: 'disabled',\n\tHidden: 'hidden',\n};\n\nexport default FormStatus;\n\nexport const FormAttributes = ['untouched', 'touched', 'pristine', 'dirty', 'pending', 'enabled', 'disabled', 'hidden', 'visible', 'valid', 'invalid', 'submitted'];\n",
@@ -3869,7 +3869,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 196,
+    "__docId__": 197,
     "kind": "variable",
     "name": "FormAttributes",
     "memberof": "src/form/models/form-status.js",
@@ -3890,7 +3890,7 @@
     "ignore": true
   },
   {
-    "__docId__": 197,
+    "__docId__": 198,
     "kind": "variable",
     "name": "FormStatus",
     "memberof": "src/form/models/form-status.js",
@@ -3911,7 +3911,7 @@
     "ignore": true
   },
   {
-    "__docId__": 198,
+    "__docId__": 199,
     "kind": "file",
     "name": "src/form/validators/form-email.directive.js",
     "content": "import { Directive } from 'rxcomp';\nimport FormAbstractDirective from '../directives/form-abstract.directive';\nimport { EmailValidator } from './validators';\n\n/**\n * @desc FormEmailDirective attribute for injecting EmailValidator.\n * @example\n * <input type=\"text\" formControlName=\"email\" email />\n */\nexport default class FormEmailDirective extends Directive {\n\n\tonInit() {\n\t\t// console.log('FormEmailDirective', this.host.control);\n\t\tconst validator = this.validator = EmailValidator();\n\t\tthis.host.control.addValidators(validator);\n\t}\n\n}\n\nFormEmailDirective.meta = {\n\tselector: '[email][formControl],[email][formControlName]',\n\tinputs: ['email'],\n\thosts: { host: FormAbstractDirective },\n};\n",
@@ -3922,7 +3922,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 199,
+    "__docId__": 200,
     "kind": "class",
     "name": "FormEmailDirective",
     "memberof": "src/form/validators/form-email.directive.js",
@@ -3943,7 +3943,7 @@
     ]
   },
   {
-    "__docId__": 200,
+    "__docId__": 201,
     "kind": "method",
     "name": "onInit",
     "memberof": "src/form/validators/form-email.directive.js~FormEmailDirective",
@@ -3960,7 +3960,7 @@
     "ignore": true
   },
   {
-    "__docId__": 201,
+    "__docId__": 202,
     "kind": "file",
     "name": "src/form/validators/form-max-length.directive.js",
     "content": "import { Directive } from 'rxcomp';\nimport FormAbstractDirective from '../directives/form-abstract.directive';\nimport { MaxLengthValidator } from './validators';\n// import { EmailValidator, MaxLengthValidator, MaxValidator, MaxLengthValidator, MaxValidator, NullValidator, PatternValidator, RequiredTrueValidator, RequiredValidator } from './form/validators/validators';\n\n/**\n * @desc FormMaxLengthDirective attribute for injecting MaxLengthValidator.\n * @example\n * <input type=\"text\" formControlName=\"card\" maxlength=\"12\" />\n */\nexport default class FormMaxLengthDirective extends Directive {\n\n\tonInit() {\n\t\t// console.log('FormMaxLengthDirective.onInit', this.maxlength);\n\t\tconst validator = this.validator = MaxLengthValidator(this.maxlength);\n\t\tthis.host.control.addValidators(this.validator);\n\t}\n\n\tonChanges(changes) {\n\t\t// console.log('FormMaxLengthDirective.onChanges', this.maxlength);\n\t\tthis.validator.params = { maxlength: this.maxlength };\n\t}\n\n}\n\nFormMaxLengthDirective.meta = {\n\tselector: '[maxlength][formControl],[maxlength][formControlName]',\n\tinputs: ['maxlength'],\n\thosts: { host: FormAbstractDirective },\n};\n",
@@ -3971,7 +3971,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 202,
+    "__docId__": 203,
     "kind": "class",
     "name": "FormMaxLengthDirective",
     "memberof": "src/form/validators/form-max-length.directive.js",
@@ -3992,7 +3992,7 @@
     ]
   },
   {
-    "__docId__": 203,
+    "__docId__": 204,
     "kind": "method",
     "name": "onInit",
     "memberof": "src/form/validators/form-max-length.directive.js~FormMaxLengthDirective",
@@ -4009,7 +4009,7 @@
     "ignore": true
   },
   {
-    "__docId__": 204,
+    "__docId__": 205,
     "kind": "method",
     "name": "onChanges",
     "memberof": "src/form/validators/form-max-length.directive.js~FormMaxLengthDirective",
@@ -4033,7 +4033,7 @@
     "ignore": true
   },
   {
-    "__docId__": 205,
+    "__docId__": 206,
     "kind": "file",
     "name": "src/form/validators/form-max.directive.js",
     "content": "import { Directive } from 'rxcomp';\nimport FormAbstractDirective from '../directives/form-abstract.directive';\nimport { MaxValidator } from './validators';\n\n/**\n * @desc FormMaxDirective attribute for injecting MaxValidator.\n * @example\n * <input type=\"number\" formControlName=\"qty\" max=\"12\" />\n */\nexport default class FormMaxDirective extends Directive {\n\n\tonInit() {\n\t\t// console.log('FormMaxDirective.onInit', this.max);\n\t\tconst validator = this.validator = MaxValidator(this.max);\n\t\tthis.host.control.addValidators(this.validator);\n\t}\n\n\tonChanges(changes) {\n\t\t// console.log('FormMaxDirective.onChanges', this.max);\n\t\tthis.validator.params = { max: this.max };\n\t}\n\n}\n\nFormMaxDirective.meta = {\n\tselector: '[max][formControl],[max][formControlName]',\n\tinputs: ['max'],\n\thosts: { host: FormAbstractDirective },\n};\n",
@@ -4044,7 +4044,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 206,
+    "__docId__": 207,
     "kind": "class",
     "name": "FormMaxDirective",
     "memberof": "src/form/validators/form-max.directive.js",
@@ -4065,7 +4065,7 @@
     ]
   },
   {
-    "__docId__": 207,
+    "__docId__": 208,
     "kind": "method",
     "name": "onInit",
     "memberof": "src/form/validators/form-max.directive.js~FormMaxDirective",
@@ -4082,7 +4082,7 @@
     "ignore": true
   },
   {
-    "__docId__": 208,
+    "__docId__": 209,
     "kind": "method",
     "name": "onChanges",
     "memberof": "src/form/validators/form-max.directive.js~FormMaxDirective",
@@ -4106,7 +4106,7 @@
     "ignore": true
   },
   {
-    "__docId__": 209,
+    "__docId__": 210,
     "kind": "file",
     "name": "src/form/validators/form-min-length.directive.js",
     "content": "import { Directive } from 'rxcomp';\nimport FormAbstractDirective from '../directives/form-abstract.directive';\nimport { MinLengthValidator } from './validators';\n\n/**\n * @desc FormMinLengthDirective attribute for injecting MinLengthValidator.\n * @example\n * <input type=\"text\" formControlName=\"card\" minlength=\"12\" />\n */\nexport default class FormMinLengthDirective extends Directive {\n\n\tonInit() {\n\t\t// console.log('FormMinLengthDirective.onInit', this.minlength);\n\t\tconst validator = this.validator = MinLengthValidator(this.minlength);\n\t\tthis.host.control.addValidators(this.validator);\n\t}\n\n\tonChanges(changes) {\n\t\t// console.log('FormMinLengthDirective.onChanges', this.minlength);\n\t\tthis.validator.params = { minlength: this.minlength };\n\t}\n\n}\n\nFormMinLengthDirective.meta = {\n\tselector: '[minlength][formControl],[minlength][formControlName]',\n\tinputs: ['minlength'],\n\thosts: { host: FormAbstractDirective },\n};\n",
@@ -4117,7 +4117,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 210,
+    "__docId__": 211,
     "kind": "class",
     "name": "FormMinLengthDirective",
     "memberof": "src/form/validators/form-min-length.directive.js",
@@ -4138,7 +4138,7 @@
     ]
   },
   {
-    "__docId__": 211,
+    "__docId__": 212,
     "kind": "method",
     "name": "onInit",
     "memberof": "src/form/validators/form-min-length.directive.js~FormMinLengthDirective",
@@ -4155,7 +4155,7 @@
     "ignore": true
   },
   {
-    "__docId__": 212,
+    "__docId__": 213,
     "kind": "method",
     "name": "onChanges",
     "memberof": "src/form/validators/form-min-length.directive.js~FormMinLengthDirective",
@@ -4179,7 +4179,7 @@
     "ignore": true
   },
   {
-    "__docId__": 213,
+    "__docId__": 214,
     "kind": "file",
     "name": "src/form/validators/form-min.directive.js",
     "content": "import { Directive } from 'rxcomp';\nimport FormAbstractDirective from '../directives/form-abstract.directive';\nimport { MinValidator } from './validators';\n\n/**\n * @desc FormMinDirective attribute for injecting MinValidator.\n * @example\n * <input type=\"number\" formControlName=\"qty\" min=\"1\" />\n */\nexport default class FormMinDirective extends Directive {\n\n\tonInit() {\n\t\t// console.log('FormMinDirective.onInit', this.min);\n\t\tconst validator = this.validator = MinValidator(this.min);\n\t\tthis.host.control.addValidators(this.validator);\n\t}\n\n\tonChanges(changes) {\n\t\t// console.log('FormMinDirective.onChanges', this.min);\n\t\tthis.validator.params = { min: this.min };\n\t}\n\n}\n\nFormMinDirective.meta = {\n\tselector: '[min][formControl],[min][formControlName]',\n\tinputs: ['min'],\n\thosts: { host: FormAbstractDirective },\n};\n",
@@ -4190,7 +4190,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 214,
+    "__docId__": 215,
     "kind": "class",
     "name": "FormMinDirective",
     "memberof": "src/form/validators/form-min.directive.js",
@@ -4211,7 +4211,7 @@
     ]
   },
   {
-    "__docId__": 215,
+    "__docId__": 216,
     "kind": "method",
     "name": "onInit",
     "memberof": "src/form/validators/form-min.directive.js~FormMinDirective",
@@ -4228,7 +4228,7 @@
     "ignore": true
   },
   {
-    "__docId__": 216,
+    "__docId__": 217,
     "kind": "method",
     "name": "onChanges",
     "memberof": "src/form/validators/form-min.directive.js~FormMinDirective",
@@ -4252,7 +4252,7 @@
     "ignore": true
   },
   {
-    "__docId__": 217,
+    "__docId__": 218,
     "kind": "file",
     "name": "src/form/validators/form-pattern.directive.js",
     "content": "import { Directive } from 'rxcomp';\nimport FormAbstractDirective from '../directives/form-abstract.directive';\nimport { PatternValidator } from './validators';\n\n/**\n * @desc FormPatternDirective attribute for injecting PatternValidator.\n * @example\n * <input type=\"text\" formControlName=\"visa\" pattern=\"^4[0-9]{12}(?:[0-9]{3})?$\" />\n */\nexport default class FormPatternDirective extends Directive {\n\n\tonInit() {\n\t\t// console.log('FormPatternDirective.onInit', this.pattern);\n\t\tconst validator = this.validator = PatternValidator(this.pattern);\n\t\tthis.host.control.addValidators(this.validator);\n\t}\n\n\tonChanges(changes) {\n\t\t// console.log('FormPatternDirective.onChanges', this.pattern);\n\t\tthis.validator.params = { pattern: this.pattern };\n\t}\n\n}\n\nFormPatternDirective.meta = {\n\tselector: '[pattern][formControl],[pattern][formControlName]',\n\tinputs: ['pattern'],\n\thosts: { host: FormAbstractDirective },\n};\n",
@@ -4263,7 +4263,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 218,
+    "__docId__": 219,
     "kind": "class",
     "name": "FormPatternDirective",
     "memberof": "src/form/validators/form-pattern.directive.js",
@@ -4284,7 +4284,7 @@
     ]
   },
   {
-    "__docId__": 219,
+    "__docId__": 220,
     "kind": "method",
     "name": "onInit",
     "memberof": "src/form/validators/form-pattern.directive.js~FormPatternDirective",
@@ -4301,7 +4301,7 @@
     "ignore": true
   },
   {
-    "__docId__": 220,
+    "__docId__": 221,
     "kind": "method",
     "name": "onChanges",
     "memberof": "src/form/validators/form-pattern.directive.js~FormPatternDirective",
@@ -4325,7 +4325,7 @@
     "ignore": true
   },
   {
-    "__docId__": 221,
+    "__docId__": 222,
     "kind": "file",
     "name": "src/form/validators/form-required-true.directive.js",
     "content": "import { Directive } from 'rxcomp';\nimport FormAbstractDirective from '../directives/form-abstract.directive';\nimport { RequiredTrueValidator } from './validators';\n\n/**\n * @desc FormRequiredTrueDirective attribute for injecting RequiredTrueValidator.\n * @example\n * <input type=\"checkbox\" formControlName=\"privacy\" requiredTrue />\n */\nexport default class FormRequiredTrueDirective extends Directive {\n\n\tonInit() {\n\t\t// console.log('FormRequiredTrueDirective', this.host.control);\n\t\tconst validator = this.validator = RequiredTrueValidator();\n\t\tthis.host.control.addValidators(validator);\n\t}\n\n}\n\nFormRequiredTrueDirective.meta = {\n\tselector: '[requiredTrue][formControl],[requiredTrue][formControlName]',\n\tinputs: ['requiredTrue'],\n\thosts: { host: FormAbstractDirective },\n};\n",
@@ -4336,7 +4336,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 222,
+    "__docId__": 223,
     "kind": "class",
     "name": "FormRequiredTrueDirective",
     "memberof": "src/form/validators/form-required-true.directive.js",
@@ -4357,7 +4357,7 @@
     ]
   },
   {
-    "__docId__": 223,
+    "__docId__": 224,
     "kind": "method",
     "name": "onInit",
     "memberof": "src/form/validators/form-required-true.directive.js~FormRequiredTrueDirective",
@@ -4374,7 +4374,7 @@
     "ignore": true
   },
   {
-    "__docId__": 224,
+    "__docId__": 225,
     "kind": "file",
     "name": "src/form/validators/form-required.directive.js",
     "content": "import { Directive } from 'rxcomp';\nimport FormAbstractDirective from '../directives/form-abstract.directive';\nimport { RequiredValidator } from './validators';\n\n/**\n * @desc FormRequiredDirective attribute for injecting RequiredValidator.\n * @example\n * <input type=\"text\" formControlName=\"firstName\" required />\n */\nexport default class FormRequiredDirective extends Directive {\n\n\tonInit() {\n\t\t// console.log('FormRequiredDirective', this.host.control);\n\t\tconst validator = this.validator = RequiredValidator();\n\t\tthis.host.control.addValidators(validator);\n\t}\n\n}\n\nFormRequiredDirective.meta = {\n\tselector: '[required][formControl],[required][formControlName]',\n\tinputs: ['required'],\n\thosts: { host: FormAbstractDirective },\n};\n",
@@ -4385,7 +4385,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 225,
+    "__docId__": 226,
     "kind": "class",
     "name": "FormRequiredDirective",
     "memberof": "src/form/validators/form-required.directive.js",
@@ -4406,7 +4406,7 @@
     ]
   },
   {
-    "__docId__": 226,
+    "__docId__": 227,
     "kind": "method",
     "name": "onInit",
     "memberof": "src/form/validators/form-required.directive.js~FormRequiredDirective",
@@ -4423,7 +4423,7 @@
     "ignore": true
   },
   {
-    "__docId__": 227,
+    "__docId__": 228,
     "kind": "file",
     "name": "src/form/validators/form-validator.js",
     "content": "import { BehaviorSubject } from \"rxjs\";\n\n/**\n * @desc FormValidator class representing a form validator.\n * @example\n * export function EqualValidator(equal) {\n * \treturn new FormValidator(function(value) {\n * \t\tconst equal = this.params.equal;\n * \t\tif (!value || !equal) {\n * \t\t\treturn null;\n * \t\t}\n * \t\treturn value !== equal ? { equal: { equal: equal, actual: value } } : null;\n * \t}, { equal });\n * }\n */\nexport default class FormValidator {\n\n\t/**\n\t * params getter\n\t * @return {any} params\n\t */\n\tget params() {\n\t\treturn this.params$.getValue();\n\t}\n\n\t/**\n\t * params setter\n\t * @param {any} params\n\t */\n\tset params(params) {\n\t\tif (params) {\n\t\t\tconst current = this.params;\n\t\t\tconst differs = Object.keys(params).reduce((flag, key) => {\n\t\t\t\treturn flag || !current || current[key] !== params[key];\n\t\t\t}, false);\n\t\t\tif (differs) {\n\t\t\t\t// if (JSON.stringify(params) !== JSON.stringify(this.params)) {\n\t\t\t\tthis.params$.next(params);\n\t\t\t}\n\t\t}\n\t}\n\n\t/**\n\t * Create a FormValidator.\n\t * @abstract\n\t */\n\tconstructor(validator, params) {\n\t\tthis.validator = validator.bind(this);\n\t\tthis.params$ = new BehaviorSubject(params);\n\t}\n\n\t/**\n\t * validate a value\n\t * @param {any} value - the value to validate\n\t * @return {null|FormValidationError}\n\t */\n\tvalidate(value) {\n\t\treturn this.validator(value);\n\t}\n\n}\n",
@@ -4434,7 +4434,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 228,
+    "__docId__": 229,
     "kind": "class",
     "name": "FormValidator",
     "memberof": "src/form/validators/form-validator.js",
@@ -4452,7 +4452,7 @@
     "interface": false
   },
   {
-    "__docId__": 229,
+    "__docId__": 230,
     "kind": "get",
     "name": "params",
     "memberof": "src/form/validators/form-validator.js~FormValidator",
@@ -4478,7 +4478,7 @@
     }
   },
   {
-    "__docId__": 230,
+    "__docId__": 231,
     "kind": "set",
     "name": "params",
     "memberof": "src/form/validators/form-validator.js~FormValidator",
@@ -4503,7 +4503,7 @@
     ]
   },
   {
-    "__docId__": 231,
+    "__docId__": 232,
     "kind": "constructor",
     "name": "constructor",
     "memberof": "src/form/validators/form-validator.js~FormValidator",
@@ -4517,7 +4517,7 @@
     "abstract": true
   },
   {
-    "__docId__": 232,
+    "__docId__": 233,
     "kind": "member",
     "name": "validator",
     "memberof": "src/form/validators/form-validator.js~FormValidator",
@@ -4535,7 +4535,7 @@
     "ignore": true
   },
   {
-    "__docId__": 233,
+    "__docId__": 234,
     "kind": "member",
     "name": "params$",
     "memberof": "src/form/validators/form-validator.js~FormValidator",
@@ -4553,7 +4553,7 @@
     "ignore": true
   },
   {
-    "__docId__": 234,
+    "__docId__": 235,
     "kind": "method",
     "name": "validate",
     "memberof": "src/form/validators/form-validator.js~FormValidator",
@@ -4587,7 +4587,7 @@
     }
   },
   {
-    "__docId__": 235,
+    "__docId__": 236,
     "kind": "file",
     "name": "src/form/validators/validators.js",
     "content": "import FormValidator from './form-validator';\n\n/**\n * a null validator\n * @return {null}\n */\nexport function NullValidator() {\n\treturn new FormValidator(function(value) {\n\t\treturn null;\n\t});\n}\n\n/**\n * a required validator\n * @return {null|FormValidationError}\n */\nexport function RequiredValidator() {\n\treturn new FormValidator(function(value) {\n\t\t// console.log('RequiredValidator', value, (value == null || value.length === 0) ? { required: true } : null);\n\t\treturn (value == null || value.length === 0) ? { required: true } : null;\n\t});\n\t// return (value == null || value.length === 0) ? 'required' : null;\n}\n\n/**\n * a required and true validator\n * @return {null|FormValidationError}\n */\nexport function RequiredTrueValidator() {\n\treturn new FormValidator(function(value) {\n\t\t// console.log('RequiredTrueValidator', value, value === true ? null : { required: true });\n\t\treturn value === true ? null : { required: true };\n\t});\n}\n\n/**\n * a min number value validator\n * @return {null|FormValidationError}\n */\nexport function MinValidator(min) {\n\treturn new FormValidator(function(value) {\n\t\tconst min = this.params.min;\n\t\tif (!value || !min) {\n\t\t\treturn null;\n\t\t}\n\t\tvalue = parseFloat(value);\n\t\treturn !isNaN(value) && value < min ? { min: { min: min, actual: value } } : null;\n\t}, { min });\n}\n\n/**\n * a max number value validator\n * @return {null|FormValidationError}\n */\nexport function MaxValidator(max) {\n\treturn new FormValidator(function(value) {\n\t\tconst max = this.params.max;\n\t\tif (!value || !max) {\n\t\t\treturn null;\n\t\t}\n\t\tvalue = parseFloat(value);\n\t\treturn !isNaN(value) && value > max ? { max: { max: max, actual: value } } : null;\n\t}, { max });\n}\n\n/**\n * a min string length validator\n * @return {null|FormValidationError}\n */\nexport function MinLengthValidator(minlength) {\n\treturn new FormValidator(function(value) {\n\t\tconst minlength = this.params.minlength;\n\t\tif (!value || !minlength) {\n\t\t\treturn null;\n\t\t}\n\t\tconst length = value ? value.length : 0;\n\t\treturn length < minlength ? { minlength: { requiredLength: minlength, actualLength: length } } : null;\n\t}, { minlength });\n}\n\n/**\n * a max string length validator\n * @return {null|FormValidationError}\n */\nexport function MaxLengthValidator(maxlength) {\n\treturn new FormValidator(function(value) {\n\t\tconst maxlength = this.params.maxlength;\n\t\tif (!value || !maxlength) {\n\t\t\treturn null;\n\t\t}\n\t\tconst length = value ? value.length : 0;\n\t\treturn length > maxlength ? { minlength: { requiredLength: maxlength, actualLength: length } } : null;\n\t}, { maxlength });\n}\n\n/**\n * a regex pattern validator\n * @return {null|FormValidationError}\n */\nexport function PatternValidator(pattern) {\n\treturn new FormValidator(function(value) {\n\t\tconst pattern = this.params.pattern;\n\t\tif (!value || !pattern) {\n\t\t\treturn null;\n\t\t}\n\t\tconst regex = patternToRegEx(pattern);\n\t\treturn regex.test(value) ? null : { pattern: { requiredPattern: regex.toString(), actualValue: value } };\n\t}, { pattern });\n}\n\n/**\n * an email pattern validator\n * @return {null|FormValidationError}\n */\nexport function EmailValidator(value) {\n\tconst regex = /^(?=.{1,254}$)(?=.{1,64}@)[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+)*@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;\n\treturn new FormValidator(function(value) {\n\t\tif (!value) {\n\t\t\treturn null;\n\t\t}\n\t\treturn regex.test(value) ? null : { email: true };\n\t});\n}\n\nfunction patternToRegEx(pattern) {\n\tlet regex;\n\tif (pattern instanceof RegExp) {\n\t\tregex = pattern;\n\t} else if (typeof pattern === 'string') {\n\t\tpattern = pattern.charAt(0) === '^' ? pattern : `^${pattern}`;\n\t\tpattern = pattern.charAt(pattern.length - 1) === '$' ? pattern : `${pattern}$`;\n\t\tregex = new RegExp(pattern);\n\t}\n\treturn regex;\n}\n",
@@ -4598,7 +4598,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 236,
+    "__docId__": 237,
     "kind": "function",
     "name": "NullValidator",
     "memberof": "src/form/validators/validators.js",
@@ -4623,7 +4623,7 @@
     "params": []
   },
   {
-    "__docId__": 237,
+    "__docId__": 238,
     "kind": "function",
     "name": "RequiredValidator",
     "memberof": "src/form/validators/validators.js",
@@ -4649,7 +4649,7 @@
     "params": []
   },
   {
-    "__docId__": 238,
+    "__docId__": 239,
     "kind": "function",
     "name": "RequiredTrueValidator",
     "memberof": "src/form/validators/validators.js",
@@ -4675,7 +4675,7 @@
     "params": []
   },
   {
-    "__docId__": 239,
+    "__docId__": 240,
     "kind": "function",
     "name": "MinValidator",
     "memberof": "src/form/validators/validators.js",
@@ -4708,7 +4708,7 @@
     ]
   },
   {
-    "__docId__": 240,
+    "__docId__": 241,
     "kind": "function",
     "name": "MaxValidator",
     "memberof": "src/form/validators/validators.js",
@@ -4741,7 +4741,7 @@
     ]
   },
   {
-    "__docId__": 241,
+    "__docId__": 242,
     "kind": "function",
     "name": "MinLengthValidator",
     "memberof": "src/form/validators/validators.js",
@@ -4774,7 +4774,7 @@
     ]
   },
   {
-    "__docId__": 242,
+    "__docId__": 243,
     "kind": "function",
     "name": "MaxLengthValidator",
     "memberof": "src/form/validators/validators.js",
@@ -4807,7 +4807,7 @@
     ]
   },
   {
-    "__docId__": 243,
+    "__docId__": 244,
     "kind": "function",
     "name": "PatternValidator",
     "memberof": "src/form/validators/validators.js",
@@ -4840,7 +4840,7 @@
     ]
   },
   {
-    "__docId__": 244,
+    "__docId__": 245,
     "kind": "function",
     "name": "EmailValidator",
     "memberof": "src/form/validators/validators.js",
@@ -4873,7 +4873,7 @@
     ]
   },
   {
-    "__docId__": 245,
+    "__docId__": 246,
     "kind": "function",
     "name": "patternToRegEx",
     "memberof": "src/form/validators/validators.js",
@@ -4904,7 +4904,7 @@
     "ignore": true
   },
   {
-    "__docId__": 246,
+    "__docId__": 247,
     "kind": "file",
     "name": "src/form.module.js",
     "content": "import { Module } from 'rxcomp';\nimport FormArrayDirective from './form/directives/form-array.directive';\nimport FormCheckboxDirective from './form/directives/form-checkbox.directive';\nimport FormFieldComponent from './form/directives/form-field.component';\nimport FormGroupDirective from './form/directives/form-group.directive';\nimport FormInputDirective from './form/directives/form-input.directive';\nimport FormPlaceholderDirective from './form/directives/form-placeholder.directive';\nimport FormRadioDirective from './form/directives/form-radio.directive';\nimport FormSelectDirective from './form/directives/form-select.directive';\nimport FormSubmitDirective from './form/directives/form-submit.directive';\nimport FormEmailDirective from './form/validators/form-email.directive';\nimport FormMaxLengthDirective from './form/validators/form-max-length.directive';\nimport FormMaxDirective from './form/validators/form-max.directive';\nimport FormMinLengthDirective from './form/validators/form-min-length.directive';\nimport FormMinDirective from './form/validators/form-min.directive';\nimport FormPatternDirective from './form/validators/form-pattern.directive';\nimport FormRequiredTrueDirective from './form/validators/form-required-true.directive';\nimport FormRequiredDirective from './form/validators/form-required.directive';\n\n/**\n * @desc FormModule Class.\n * @example\n * export default class AppModule extends Module {}\n *\n * AppModule.meta = {\n *  imports: [\n *   CoreModule,\n *   FormModule\n *  ],\n *  declarations: [\n *   ErrorsComponent\n *  ],\n *  bootstrap: AppComponent,\n * };\n * @extends Module\n */\nexport default class FormModule extends Module {}\nconst factories = [\n\tFormArrayDirective,\n\tFormCheckboxDirective,\n\tFormFieldComponent,\n\tFormGroupDirective,\n\tFormInputDirective,\n\tFormPlaceholderDirective,\n\tFormRadioDirective,\n\tFormSelectDirective,\n\tFormSubmitDirective,\n\tFormEmailDirective,\n\tFormMaxDirective,\n\tFormMaxLengthDirective,\n\tFormMinDirective,\n\tFormMinLengthDirective,\n\tFormPatternDirective,\n\tFormRequiredDirective,\n\tFormRequiredTrueDirective,\n];\nconst pipes = [\n];\nFormModule.meta = {\n\tdeclarations: [\n\t\t...factories,\n\t\t...pipes,\n\t],\n\texports: [\n\t\t...factories,\n\t\t...pipes,\n\t]\n};\n",
@@ -4915,7 +4915,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 247,
+    "__docId__": 248,
     "kind": "class",
     "name": "FormModule",
     "memberof": "src/form.module.js",
@@ -4936,7 +4936,7 @@
     ]
   },
   {
-    "__docId__": 248,
+    "__docId__": 249,
     "kind": "variable",
     "name": "factories",
     "memberof": "src/form.module.js",
@@ -4957,7 +4957,7 @@
     "ignore": true
   },
   {
-    "__docId__": 249,
+    "__docId__": 250,
     "kind": "variable",
     "name": "pipes",
     "memberof": "src/form.module.js",
@@ -4978,7 +4978,7 @@
     "ignore": true
   },
   {
-    "__docId__": 250,
+    "__docId__": 251,
     "kind": "file",
     "name": "src/rxcomp-form.js",
     "content": "export { default as FormModule } from './form.module';\nexport { default as FormAbstractCollectionDirective } from './form/directives/form-abstract-collection.directive';\nexport { default as FormArrayDirective } from './form/directives/form-array.directive';\nexport { default as FormCheckboxDirective } from './form/directives/form-checkbox.directive';\nexport { default as FormFieldComponent } from './form/directives/form-field.component';\nexport { default as FormGroupDirective } from './form/directives/form-group.directive';\nexport { default as FormInputDirective } from './form/directives/form-input.directive';\nexport { default as FormPlaceholderDirective } from './form/directives/form-placeholder.directive';\nexport { default as FormRadioDirective } from './form/directives/form-radio.directive';\nexport { default as FormSelectDirective } from './form/directives/form-select.directive';\nexport { default as FormAbstract } from './form/form-abstract';\nexport { default as FormAbstractCollection } from './form/form-abstract-collection';\nexport { default as FormArray, formArray } from './form/form-array';\nexport { default as FormControl } from './form/form-control';\nexport { default as FormGroup, formGroup } from './form/form-group';\nexport { default as FormStatus, FormAttributes } from './form/models/form-status';\nexport { default as FormEmailDirective } from './form/validators/form-email.directive';\nexport { default as FormMaxLengthDirective } from './form/validators/form-max-length.directive';\nexport { default as FormMaxDirective } from './form/validators/form-max.directive';\nexport { default as FormMinLengthDirective } from './form/validators/form-min-length.directive';\nexport { default as FormMinDirective } from './form/validators/form-min.directive';\nexport { default as FormPatternDirective } from './form/validators/form-pattern.directive';\nexport { default as FormRequiredTrueDirective } from './form/validators/form-required-true.directive';\nexport { default as FormRequiredDirective } from './form/validators/form-required.directive';\nexport { default as FormValidator } from './form/validators/form-validator';\nexport { EmailValidator, MaxLengthValidator, MaxValidator, MinLengthValidator, MinValidator, NullValidator, PatternValidator, RequiredTrueValidator, RequiredValidator } from './form/validators/validators';\nexport { Validators };\nimport * as Validators from './form/validators/validators';\n",

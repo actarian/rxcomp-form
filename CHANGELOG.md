@@ -3,7 +3,7 @@ All notable changes to the "rxcomp-form" library will be documented in this file
 
 ---
 
-## [1.0.0-beta.2] - 2020-01-31
+## [1.0.0-beta.2] - 2020-02-01
 ### Fixing
 - Validation
 

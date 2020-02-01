@@ -1457,7 +1457,11 @@
       var _this2 = this;
 
       if (this.status === FormStatus.Disabled || this.status === FormStatus.Hidden || this.submitted_ || !this.validators.length) {
-        this.errors = {}; // this.status = FormStatus.Valid;
+        this.errors = {};
+
+        if (this.status === FormStatus.Invalid) {
+          this.status = FormStatus.Valid;
+        }
 
         return rxjs.of(this.errors);
       } else {
