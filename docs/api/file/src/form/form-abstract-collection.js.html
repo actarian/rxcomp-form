@@ -168,7 +168,7 @@ export default class FormAbstractCollection extends FormAbstract {
 	}
 
 	validate(value) {
-		if (this.status === FormStatus.Disabled) {
+		if (this.status === FormStatus.Disabled || this.status === FormStatus.Hidden) {
 			// this.errors = {};
 			this.errors = [];
 		} else {
@@ -223,6 +223,8 @@ export default class FormAbstractCollection extends FormAbstract {
 	get pending() { return this.any_(&apos;pending&apos;, true); }
 	get disabled() { return this.all_(&apos;disabled&apos;, true); }
 	get enabled() { return this.any_(&apos;enabled&apos;, true); }
+	get hidden() { return this.all_(&apos;hidden&apos;, true); }
+	get visible() { return this.any_(&apos;visible&apos;, true); }
 	get submitted() { return this.all_(&apos;submitted&apos;, true); }
 	get dirty() { return this.any_(&apos;dirty&apos;, true); }
 	get pristine() { return this.all_(&apos;pristine&apos;, true); }
@@ -232,6 +234,12 @@ export default class FormAbstractCollection extends FormAbstract {
 	set disabled(disabled) {
 		this.forEach_(control =&gt; {
 			control.disabled = disabled;
+		});
+	}
+
+	set hidden(hidden) {
+		this.forEach_(control =&gt; {
+			control.hidden = hidden;
 		});
 	}
 
@@ -319,6 +327,21 @@ export default class FormAbstractCollection extends FormAbstract {
 	 */
 	addValidators(...validators) {
 		this.forEach_(control =&gt; control.addValidators(...validators));
+	}
+
+	/**
+	 * replace one or more FormValidator.
+	 * @param {...FormValidator[]} validators - A list of validators.
+	 */
+	replaceValidators(...validators) {
+		this.forEach_(control =&gt; control.replaceValidators(...validators));
+	}
+
+	/**
+	 * remove all FormValidator.
+	 */
+	clearValidators() {
+		this.forEach_(control =&gt; control.clearValidators());
 	}
 
 }

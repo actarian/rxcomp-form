@@ -44,9 +44,10 @@
     Pending: 'pending',
     Valid: 'valid',
     Invalid: 'invalid',
-    Disabled: 'disabled'
+    Disabled: 'disabled',
+    Hidden: 'hidden'
   };
-  var FormAttributes = ['untouched', 'touched', 'pristine', 'dirty', 'pending', 'enabled', 'disabled', 'valid', 'invalid', 'submitted'];
+  var FormAttributes = ['untouched', 'touched', 'pristine', 'dirty', 'pending', 'enabled', 'disabled', 'hidden', 'visible', 'valid', 'invalid', 'submitted'];
 
   /**
    * @desc Abstract class representing a FormAbstractCollectionDirective.
@@ -1432,9 +1433,9 @@
     _proto.validate$ = function validate$(value) {
       var _this2 = this;
 
-      if (this.status === FormStatus.Disabled || this.submitted_ || !this.validators.length) {
-        this.errors = {};
-        this.status = FormStatus.Valid;
+      if (this.status === FormStatus.Disabled || this.status === FormStatus.Hidden || this.submitted_ || !this.validators.length) {
+        this.errors = {}; // this.status = FormStatus.Valid;
+
         return rxjs.of(this.errors);
       } else {
         return rxjs.combineLatest(this.validators.map(function (x) {
@@ -1445,18 +1446,6 @@
           _this2.status = Object.keys(_this2.errors).length === 0 ? FormStatus.Valid : FormStatus.Invalid;
         }));
       }
-      /*
-      if (this.status === FormStatus.Disabled || this.submitted_) {
-      	this.errors = {};
-      } else {
-      	this.errors = Object.assign({}, ...this.validators.map(x => x.validate$(value)));
-      	this.status = Object.keys(this.errors).length === 0 ? FormStatus.Valid : FormStatus.Invalid;
-      	// this.errors = this.validators.map(x => x(value)).filter(x => x !== null);
-      	// this.status = this.errors.length === 0 ? FormStatus.Valid : FormStatus.Invalid;
-      }
-      return this.errors;
-      */
-
     }
     /**
      * @return {boolean} the pending status
@@ -1498,6 +1487,29 @@
       (_this$validators = this.validators).push.apply(_this$validators, arguments);
 
       this.switchValidators_();
+    }
+    /**
+     * replace one or more FormValidator.
+     * @param {...FormValidator[]} validators - A list of validators.
+     */
+    ;
+
+    _proto.replaceValidators = function replaceValidators() {
+      for (var _len = arguments.length, validators = new Array(_len), _key = 0; _key < _len; _key++) {
+        validators[_key] = arguments[_key];
+      }
+
+      this.validators = validators;
+      this.switchValidators_();
+    }
+    /**
+     * remove all FormValidator.
+     */
+    ;
+
+    _proto.clearValidators = function clearValidators() {
+      this.validators = [];
+      this.switchValidators_();
     };
 
     _createClass(FormAbstract, [{
@@ -1512,7 +1524,7 @@
     }, {
       key: "valid",
       get: function get() {
-        return this.status === FormStatus.Valid;
+        return this.status !== FormStatus.Invalid;
       }
       /**
        * @return {boolean} the invalid status
@@ -1542,13 +1554,51 @@
        * @return {void}
        */
       set: function set(disabled) {
-        if (disabled && this.status !== FormStatus.Disabled) {
-          this.status = FormStatus.Disabled;
-          this.statusSubject.next(this);
+        if (disabled) {
+          if (this.status !== FormStatus.Disabled) {
+            this.status = FormStatus.Disabled;
+            this.statusSubject.next(this);
+          }
+        } else {
+          if (this.status === FormStatus.Disabled) {
+            this.reset();
+          }
         }
+      }
+      /**
+       * @param {boolean} hidden - the hidden state
+       * @return {void}
+       */
 
-        if (!disabled && this.status === FormStatus.Disabled) {
-          this.reset();
+    }, {
+      key: "enabled",
+      get: function get() {
+        return this.status !== FormStatus.Disabled;
+      }
+      /**
+       * @return {boolean} the hidden status
+       */
+
+    }, {
+      key: "hidden",
+      get: function get() {
+        return this.status === FormStatus.Hidden;
+      }
+      /**
+       * @return {boolean} the visible status
+       */
+      ,
+      set: function set(hidden) {
+        if (hidden) {
+          if (this.status !== FormStatus.Hidden) {
+            this.status = FormStatus.Hidden;
+            console.log('set hidden', hidden, this.status);
+            this.statusSubject.next(this);
+          }
+        } else {
+          if (this.status === FormStatus.Hidden) {
+            this.reset();
+          }
         }
       }
       /**
@@ -1557,9 +1607,9 @@
        */
 
     }, {
-      key: "enabled",
+      key: "visible",
       get: function get() {
-        return this.status !== FormStatus.Disabled;
+        return this.status !== FormStatus.Hidden;
       }
       /**
        * @return {boolean} the submitted status
@@ -1798,7 +1848,7 @@
     };
 
     _proto.validate = function validate(value) {
-      if (this.status === FormStatus.Disabled) {
+      if (this.status === FormStatus.Disabled || this.status === FormStatus.Hidden) {
         // this.errors = {};
         this.errors = [];
       } else {
@@ -1929,6 +1979,31 @@
       this.forEach_(function (control) {
         return control.addValidators.apply(control, validators);
       });
+    }
+    /**
+     * replace one or more FormValidator.
+     * @param {...FormValidator[]} validators - A list of validators.
+     */
+    ;
+
+    _proto.replaceValidators = function replaceValidators() {
+      for (var _len2 = arguments.length, validators = new Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
+        validators[_key2] = arguments[_key2];
+      }
+
+      this.forEach_(function (control) {
+        return control.replaceValidators.apply(control, validators);
+      });
+    }
+    /**
+     * remove all FormValidator.
+     */
+    ;
+
+    _proto.clearValidators = function clearValidators() {
+      this.forEach_(function (control) {
+        return control.clearValidators();
+      });
     };
 
     _createClass(FormAbstractCollection, [{
@@ -1960,6 +2035,21 @@
       key: "enabled",
       get: function get() {
         return this.any_('enabled', true);
+      }
+    }, {
+      key: "hidden",
+      get: function get() {
+        return this.all_('hidden', true);
+      },
+      set: function set(hidden) {
+        this.forEach_(function (control) {
+          control.hidden = hidden;
+        });
+      }
+    }, {
+      key: "visible",
+      get: function get() {
+        return this.any_('visible', true);
       }
     }, {
       key: "submitted",
@@ -2253,7 +2343,7 @@
         firstName: 'Jhon',
         lastName: 'Appleseed',
         email: 'jhonappleseed@gmail.com',
-        // country: 'en-US',
+        country: 'en-US',
         evaluate: 'free',
         privacy: true,
         items: ['aaaa', 'aaaa', 'aaaa']

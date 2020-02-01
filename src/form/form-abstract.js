@@ -86,9 +86,9 @@ export default class FormAbstract {
 	 * @return {Observable<errors>} an object with key, value errors
 	 */
 	validate$(value) {
-		if (this.status === FormStatus.Disabled || this.submitted_ || !this.validators.length) {
+		if (this.status === FormStatus.Disabled || this.status === FormStatus.Hidden || this.submitted_ || !this.validators.length) {
 			this.errors = {};
-			this.status = FormStatus.Valid;
+			// this.status = FormStatus.Valid;
 			return of(this.errors);
 		} else {
 			return combineLatest(this.validators.map(x => {
@@ -101,17 +101,6 @@ export default class FormAbstract {
 				})
 			);
 		}
-		/*
-		if (this.status === FormStatus.Disabled || this.submitted_) {
-			this.errors = {};
-		} else {
-			this.errors = Object.assign({}, ...this.validators.map(x => x.validate$(value)));
-			this.status = Object.keys(this.errors).length === 0 ? FormStatus.Valid : FormStatus.Invalid;
-			// this.errors = this.validators.map(x => x(value)).filter(x => x !== null);
-			// this.status = this.errors.length === 0 ? FormStatus.Valid : FormStatus.Invalid;
-		}
-		return this.errors;
-		*/
 	}
 
 	/**
@@ -122,7 +111,7 @@ export default class FormAbstract {
 	/**
 	 * @return {boolean} the valid status
 	 */
-	get valid() { return this.status === FormStatus.Valid; }
+	get valid() { return this.status !== FormStatus.Invalid; }
 
 	/**
 	 * @return {boolean} the invalid status
@@ -138,6 +127,16 @@ export default class FormAbstract {
 	 * @return {boolean} the enabled status
 	 */
 	get enabled() { return this.status !== FormStatus.Disabled; }
+
+	/**
+	 * @return {boolean} the hidden status
+	 */
+	get hidden() { return this.status === FormStatus.Hidden; }
+
+	/**
+	 * @return {boolean} the visible status
+	 */
+	get visible() { return this.status !== FormStatus.Hidden; }
 
 	/**
 	 * @return {boolean} the submitted status
@@ -176,6 +175,24 @@ export default class FormAbstract {
 			}
 		} else {
 			if (this.status === FormStatus.Disabled) {
+				this.reset();
+			}
+		}
+	}
+
+	/**
+	 * @param {boolean} hidden - the hidden state
+	 * @return {void}
+	 */
+	set hidden(hidden) {
+		if (hidden) {
+			if (this.status !== FormStatus.Hidden) {
+				this.status = FormStatus.Hidden;
+				console.log('set hidden', hidden, this.status);
+				this.statusSubject.next(this);
+			}
+		} else {
+			if (this.status === FormStatus.Hidden) {
 				this.reset();
 			}
 		}
@@ -249,6 +266,23 @@ export default class FormAbstract {
 	 */
 	addValidators(...validators) {
 		this.validators.push(...validators);
+		this.switchValidators_();
+	}
+
+	/**
+	 * replace one or more FormValidator.
+	 * @param {...FormValidator[]} validators - A list of validators.
+	 */
+	replaceValidators(...validators) {
+		this.validators = validators;
+		this.switchValidators_();
+	}
+
+	/**
+	 * remove all FormValidator.
+	 */
+	clearValidators() {
+		this.validators = [];
 		this.switchValidators_();
 	}
 

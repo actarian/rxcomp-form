@@ -336,6 +336,8 @@ input.valid + .icon--check {
     letter-spacing: 0.5px;
     line-height: 1.5;
     color: rgba(98, 108, 98, 0.2); }
+  .control--text.disabled {
+    opacity: 0.5; }
   .control--text.pristine {
     color: black; }
   .control--text.dirty {
@@ -425,6 +427,8 @@ input.valid + .icon--check {
     letter-spacing: 0.5px;
     line-height: 1.5;
     color: rgba(98, 108, 98, 0.2); }
+  .control--select.disabled {
+    opacity: 0.5; }
   .control--select.pristine {
     color: black; }
   .control--select.dirty {

@@ -37,7 +37,7 @@ export default class AppComponent extends Component {
 			firstName: 'Jhon',
 			lastName: 'Appleseed',
 			email: 'jhonappleseed@gmail.com',
-			// country: 'en-US',
+			country: 'en-US',
 			evaluate: 'free',
 			privacy: true,
 			items: ['aaaa', 'aaaa', 'aaaa']

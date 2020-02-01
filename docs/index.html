@@ -75,7 +75,7 @@
 				</div>
 				<errors-component [control]="form.get('email')"></errors-component>
 				<div class="group--form group--form--select" formFieldName="country">
-					<select class="control--select" [formControl]="control">
+					<select class="control--select" [formControl]="control" required>
 						<option value="">select</option>
 						<option value="en-US">English</option>
 						<option value="it-IT">Italiano</option>

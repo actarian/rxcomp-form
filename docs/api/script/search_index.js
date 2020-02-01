@@ -312,9 +312,21 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/form/form-abstract-collection.js~formabstractcollection#clearvalidators",
+    "class/src/form/form-abstract-collection.js~FormAbstractCollection.html#instance-method-clearValidators",
+    "src/form/form-abstract-collection.js~FormAbstractCollection#clearValidators",
+    "method"
+  ],
+  [
     "src/form/form-abstract-collection.js~formabstractcollection#constructor",
     "class/src/form/form-abstract-collection.js~FormAbstractCollection.html#instance-constructor-constructor",
     "src/form/form-abstract-collection.js~FormAbstractCollection#constructor",
+    "method"
+  ],
+  [
+    "src/form/form-abstract-collection.js~formabstractcollection#replacevalidators",
+    "class/src/form/form-abstract-collection.js~FormAbstractCollection.html#instance-method-replaceValidators",
+    "src/form/form-abstract-collection.js~FormAbstractCollection#replaceValidators",
     "method"
   ],
   [
@@ -327,6 +339,12 @@ window.esdocSearchIndex = [
     "src/form/form-abstract.js~formabstract#addvalidators",
     "class/src/form/form-abstract.js~FormAbstract.html#instance-method-addValidators",
     "src/form/form-abstract.js~FormAbstract#addValidators",
+    "method"
+  ],
+  [
+    "src/form/form-abstract.js~formabstract#clearvalidators",
+    "class/src/form/form-abstract.js~FormAbstract.html#instance-method-clearValidators",
+    "src/form/form-abstract.js~FormAbstract#clearValidators",
     "method"
   ],
   [
@@ -360,6 +378,18 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
+    "src/form/form-abstract.js~formabstract#hidden",
+    "class/src/form/form-abstract.js~FormAbstract.html#instance-get-hidden",
+    "src/form/form-abstract.js~FormAbstract#hidden",
+    "member"
+  ],
+  [
+    "src/form/form-abstract.js~formabstract#hidden",
+    "class/src/form/form-abstract.js~FormAbstract.html#instance-set-hidden",
+    "src/form/form-abstract.js~FormAbstract#hidden",
+    "member"
+  ],
+  [
     "src/form/form-abstract.js~formabstract#invalid",
     "class/src/form/form-abstract.js~FormAbstract.html#instance-get-invalid",
     "src/form/form-abstract.js~FormAbstract#invalid",
@@ -382,6 +412,12 @@ window.esdocSearchIndex = [
     "class/src/form/form-abstract.js~FormAbstract.html#instance-get-pristine",
     "src/form/form-abstract.js~FormAbstract#pristine",
     "member"
+  ],
+  [
+    "src/form/form-abstract.js~formabstract#replacevalidators",
+    "class/src/form/form-abstract.js~FormAbstract.html#instance-method-replaceValidators",
+    "src/form/form-abstract.js~FormAbstract#replaceValidators",
+    "method"
   ],
   [
     "src/form/form-abstract.js~formabstract#reset",
@@ -441,6 +477,12 @@ window.esdocSearchIndex = [
     "src/form/form-abstract.js~formabstract#value",
     "class/src/form/form-abstract.js~FormAbstract.html#instance-set-value",
     "src/form/form-abstract.js~FormAbstract#value",
+    "member"
+  ],
+  [
+    "src/form/form-abstract.js~formabstract#visible",
+    "class/src/form/form-abstract.js~FormAbstract.html#instance-get-visible",
+    "src/form/form-abstract.js~FormAbstract#visible",
     "member"
   ],
   [
