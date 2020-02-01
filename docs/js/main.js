@@ -2325,15 +2325,6 @@
         privacy: null,
         items: new FormArray([null, null, null], RequiredValidator())
       });
-      /*
-      form.patch({
-      	firstName: 'Jhon',
-      	lastName: 'Appleseed',
-      	email: 'jhonappleseed@gmail.com',
-      	country: 'en-US'
-      });
-      */
-
       form.changes$.subscribe(function (changes) {
         console.log('AppComponent.form.changes$', changes, form.valid, form);
 
@@ -2350,7 +2341,7 @@
         country: 'en-US',
         evaluate: 'free',
         privacy: true,
-        items: ['aaaa', 'aaaa', 'aaaa']
+        items: ['rxcomp', 'rxjs', 'forms']
       });
     };
 

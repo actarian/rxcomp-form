@@ -15,15 +15,6 @@ export default class AppComponent extends Component {
 			items: new FormArray([null, null, null], RequiredValidator()),
 		});
 
-		/*
-		form.patch({
-			firstName: 'Jhon',
-			lastName: 'Appleseed',
-			email: 'jhonappleseed@gmail.com',
-			country: 'en-US'
-		});
-		*/
-
 		form.changes$.subscribe((changes) => {
 			console.log('AppComponent.form.changes$', changes, form.valid, form);
 			this.pushChanges();
@@ -40,7 +31,7 @@ export default class AppComponent extends Component {
 			country: 'en-US',
 			evaluate: 'free',
 			privacy: true,
-			items: ['aaaa', 'aaaa', 'aaaa']
+			items: ['rxcomp', 'rxjs', 'forms']
 		});
 	}
 
