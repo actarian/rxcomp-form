@@ -5,6 +5,7 @@ export default class AppComponent extends Component {
 
 	onInit() {
 		const form = new FormGroup({
+			hidden: 'hiddenValue',
 			firstName: null,
 			lastName: null,
 			email: null,

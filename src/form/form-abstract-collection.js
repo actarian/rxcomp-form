@@ -189,7 +189,9 @@ export default class FormAbstractCollection extends FormAbstract {
 	patch(value) {
 		if (value) {
 			this.forEach_((control, key) => {
-				control.patch(value[key]);
+				if (value[key] != undefined) { // !!! keep != loose inequality
+					control.patch(value[key]);
+				}
 			});
 		}
 	}

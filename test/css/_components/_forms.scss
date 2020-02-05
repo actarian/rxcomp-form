@@ -105,6 +105,10 @@ input.valid+.icon--check {
 		opacity: 0.5;
 	}
 
+	&.hidden {
+		opacity: 0.1;
+	}
+
 	&.pristine {
 		color: black;
 	}
@@ -157,6 +161,10 @@ input.valid+.icon--check {
 
 	&.disabled {
 		opacity: 0.5;
+	}
+
+	&.hidden {
+		opacity: 0.1;
 	}
 
 	&.pristine {

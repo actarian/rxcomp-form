@@ -338,6 +338,8 @@ input.valid + .icon--check {
     color: rgba(98, 108, 98, 0.2); }
   .control--text.disabled {
     opacity: 0.5; }
+  .control--text.hidden {
+    opacity: 0.1; }
   .control--text.pristine {
     color: black; }
   .control--text.dirty {
@@ -429,6 +431,8 @@ input.valid + .icon--check {
     color: rgba(98, 108, 98, 0.2); }
   .control--select.disabled {
     opacity: 0.5; }
+  .control--select.hidden {
+    opacity: 0.1; }
   .control--select.pristine {
     color: black; }
   .control--select.dirty {

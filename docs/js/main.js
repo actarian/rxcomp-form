@@ -1,5 +1,5 @@
 /**
- * @license rxcomp-form v1.0.0-beta.2
+ * @license rxcomp-form v1.0.0-beta.3
  * (c) 2020 Luca Zampetti <lzampetti@gmail.com>
  * License: MIT
  */
@@ -1457,10 +1457,11 @@
     ;
 
     /**
+     * @param {null | FormStatus} status - optional FormStatus
      * @return {void}
      */
-    _proto.reset = function reset() {
-      this.status = FormStatus.Pending;
+    _proto.reset = function reset(status) {
+      this.status = status || FormStatus.Pending;
       this.value_ = null;
       this.dirty_ = false;
       this.touched_ = false;
@@ -1560,12 +1561,21 @@
       set: function set(disabled) {
         if (disabled) {
           if (this.status !== FormStatus.Disabled) {
-            this.status = FormStatus.Disabled;
+            this.status = FormStatus.Disabled; // this.value_ = null;
+
+            this.dirty_ = false;
+            this.touched_ = false;
+            this.submitted_ = false;
             this.statusSubject.next(this);
           }
         } else {
           if (this.status === FormStatus.Disabled) {
-            this.reset();
+            this.status = FormStatus.Pending; // this.value_ = null;
+
+            this.dirty_ = false;
+            this.touched_ = false;
+            this.submitted_ = false;
+            this.statusSubject.next(this);
           }
         }
       }
@@ -1595,13 +1605,21 @@
       set: function set(hidden) {
         if (hidden) {
           if (this.status !== FormStatus.Hidden) {
-            this.status = FormStatus.Hidden;
-            console.log('set hidden', hidden, this.status);
+            this.status = FormStatus.Hidden; // this.value_ = null;
+
+            this.dirty_ = false;
+            this.touched_ = false;
+            this.submitted_ = false;
             this.statusSubject.next(this);
           }
         } else {
           if (this.status === FormStatus.Hidden) {
-            this.reset();
+            this.status = FormStatus.Pending; // this.value_ = null;
+
+            this.dirty_ = false;
+            this.touched_ = false;
+            this.submitted_ = false;
+            this.statusSubject.next(this);
           }
         }
       }
@@ -1924,7 +1942,10 @@
     _proto.patch = function patch(value) {
       if (value) {
         this.forEach_(function (control, key) {
-          control.patch(value[key]);
+          if (value[key] != undefined) {
+            // !!! keep != loose inequality
+            control.patch(value[key]);
+          }
         });
       }
     };
@@ -2316,6 +2337,7 @@
       var _this = this;
 
       var form = new FormGroup({
+        hidden: 'hiddenValue',
         firstName: null,
         lastName: null,
         email: null,

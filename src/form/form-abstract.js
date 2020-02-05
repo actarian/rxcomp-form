@@ -172,11 +172,20 @@ export default class FormAbstract {
 		if (disabled) {
 			if (this.status !== FormStatus.Disabled) {
 				this.status = FormStatus.Disabled;
+				// this.value_ = null;
+				this.dirty_ = false;
+				this.touched_ = false;
+				this.submitted_ = false;
 				this.statusSubject.next(this);
 			}
 		} else {
 			if (this.status === FormStatus.Disabled) {
-				this.reset();
+				this.status = FormStatus.Pending;
+				// this.value_ = null;
+				this.dirty_ = false;
+				this.touched_ = false;
+				this.submitted_ = false;
+				this.statusSubject.next(this);
 			}
 		}
 	}
@@ -189,12 +198,20 @@ export default class FormAbstract {
 		if (hidden) {
 			if (this.status !== FormStatus.Hidden) {
 				this.status = FormStatus.Hidden;
-				console.log('set hidden', hidden, this.status);
+				// this.value_ = null;
+				this.dirty_ = false;
+				this.touched_ = false;
+				this.submitted_ = false;
 				this.statusSubject.next(this);
 			}
 		} else {
 			if (this.status === FormStatus.Hidden) {
-				this.reset();
+				this.status = FormStatus.Pending;
+				// this.value_ = null;
+				this.dirty_ = false;
+				this.touched_ = false;
+				this.submitted_ = false;
+				this.statusSubject.next(this);
 			}
 		}
 	}
@@ -239,10 +256,11 @@ export default class FormAbstract {
 	}
 
 	/**
+	 * @param {null | FormStatus} status - optional FormStatus
 	 * @return {void}
 	 */
-	reset() {
-		this.status = FormStatus.Pending;
+	reset(status) {
+		this.status = status || FormStatus.Pending;
 		this.value_ = null;
 		this.dirty_ = false;
 		this.touched_ = false;
