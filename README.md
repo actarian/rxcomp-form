@@ -14,8 +14,8 @@ rxcomp-form.min.js   | ![](https://img.badgesize.io/actarian/rxcomp-form/master/
 rxcomp-form.min.js   | ![](https://img.badgesize.io/actarian/rxcomp-form/master/dist/rxcomp-form.min.js.svg)
 rxcomp.min.js        | ![](https://img.badgesize.io/actarian/rxcomp/master/dist/rxcomp.min.js.svg?compression=gzip)
 rxcomp.min.js        | ![](https://img.badgesize.io/actarian/rxcomp/master/dist/rxcomp.min.js.svg)
-rxjs.min.js          | ![](https://img.badgesize.io/https://unpkg.com/@reactivex/rxjs@6.5.3/dist/global/rxjs.umd.min.js.svg?compression=gzip)
-rxjs.min.js          | ![](https://img.badgesize.io/https://unpkg.com/@reactivex/rxjs@6.5.3/dist/global/rxjs.umd.min.js.svg)
+rxjs.min.js          | ![](https://img.badgesize.io/https://unpkg.com/@reactivex/rxjs@6.5.4/dist/global/rxjs.umd.min.js.svg?compression=gzip)
+rxjs.min.js          | ![](https://img.badgesize.io/https://unpkg.com/@reactivex/rxjs@6.5.4/dist/global/rxjs.umd.min.js.svg)
  
 > [RxComp Form Demo](https://actarian.github.io/rxcomp-form/)  
 > [RxComp Form Api](https://actarian.github.io/rxcomp-form/api/)  
@@ -50,9 +50,9 @@ ___
 For CDN, you can use unpkg
 
 ```html
-<script src="https://unpkg.com/@reactivex/rxjs@6.5.3/dist/global/rxjs.umd.min.js"></script>
-<script src="https://unpkg.com/rxcomp@1.0.0-beta.1/dist/rxcomp.min.js"></script>  
-<script src="https://unpkg.com/rxcomp-form@1.0.0-beta.1/dist/rxcomp-form.min.js"></script>
+<script src="https://unpkg.com/@reactivex/rxjs@6.5.4/dist/global/rxjs.umd.min.js"></script>
+<script src="https://unpkg.com/rxcomp@1.0.0-beta.5/dist/rxcomp.min.js"></script>  
+<script src="https://unpkg.com/rxcomp-form@1.0.0-beta.5/dist/rxcomp-form.min.js"></script>
 ```
 
 The global namespace for RxComp is `rxcomp`

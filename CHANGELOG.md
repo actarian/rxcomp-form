@@ -15,7 +15,7 @@ All notable changes to the "rxcomp-form" library will be documented in this file
 
 ---
 
-## [1.0.0-beta.1] - 2019-12-25
+## [1.0.0-beta.5] - 2019-12-25
 ### Updating
 - Dependancy
 
