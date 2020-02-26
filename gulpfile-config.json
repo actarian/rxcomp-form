@@ -1,0 +1,89 @@
+﻿{
+	"targets": {
+		"browser": {
+			"compile": [
+				{
+					"input": "test/*.html",
+					"output": "docs/",
+					"minify": false
+        },
+				{
+					"input": "test/css/main.scss",
+					"output": "docs/css/main.css",
+					"minify": true
+        },
+				{
+					"input": "test/js/main.ts",
+					"output": {
+						"file": "docs/js/main.js",
+						"format": "iife"
+					},
+					"globals": {
+						"rxjs": "rxjs",
+						"rxjs/operators": "rxjs.operators",
+						"rxcomp": "rxcomp"
+					},
+					"external": [
+            "rxjs",
+            "rxjs/operators",
+            "rxcomp"
+          ],
+					"minify": true
+        }
+      ],
+			"bundle": []
+		},
+		"dist": {
+			"compile": [
+				{
+					"input": "esdoc/css/esdoc.scss",
+					"output": "esdoc/css/esdoc.css",
+					"minify": true
+        },
+        {
+					"input": "src/rxcomp-form.ts",
+					"output": [
+						{
+							"file": "dist/cjs/",
+							"format": "cjs"
+            },
+						{
+							"file": "dist/esm/",
+							"format": "esm"
+            },
+						{
+							"file": "dist/iife/rxcomp.js",
+							"format": "iife",
+							"minify": true
+            }
+          ],
+					"globals": {
+						"rxjs": "rxjs",
+            "rxjs/operators": "rxjs.operators",
+            "rxcomp": "rxcomp"
+					},
+					"name": "rxcomp-form",
+					"external": [
+            "rxjs",
+            "rxjs/operators",
+            "rxcomp"
+          ]
+        }
+      ],
+			"docs": [
+				{
+					"input": "src/rxcomp-form.js",
+					"output": "docs/api"
+        }
+      ]
+		}
+	},
+	"server": {
+		"src": "./docs",
+		"path": "/rxcomp-form/",
+		"host": "localhost",
+		"port": 40997,
+		"log": false
+	},
+	"tfs": false
+}

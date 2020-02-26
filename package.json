@@ -3,7 +3,14 @@
 	"name": "rxcomp-form",
 	"description": "Reactive FormModule for RxComp component library",
 	"version": "1.0.0-beta.3",
-	"main": "dist/rxcomp-form.js",
+	"browser": "dist/iife/rxcomp-form.js",
+	"main": "dist/cjs/rxcomp-form.js",
+	"types": "dist/cjs/rxcomp-form.d.ts",
+	"es2015": "dist/esm/rxcomp-form.js",
+	"files": [
+		"dist/",
+		"src/"
+	],
 	"license": "MIT",
 	"keywords": [
 		"rxcomp",
@@ -25,68 +32,13 @@
 		"start": "gulp",
 		"build": "gulp build --target dist"
 	},
-	"browserslist": {
-		"development": [
-			"last 1 version"
-		],
-		"production": [
-			"last 2 version",
-			"ie 11"
-		]
-	},
 	"dependencies": {
 		"rxjs": "~6.5.4",
 		"rxcomp": "~1.0.0-beta.5"
 	},
 	"devDependencies": {
-		"@babel/core": "~7.6.4",
-		"@babel/plugin-proposal-class-properties": "~7.5.5",
-		"@babel/plugin-proposal-object-rest-spread": "~7.6.2",
-		"@babel/plugin-transform-flow-strip-types": "~7.6.3",
-		"@babel/plugin-transform-modules-systemjs": "~7.5.0",
-		"@babel/preset-env": "~7.6.3",
-		"@babel/preset-typescript": "~7.6.0",
-		"babel-plugin-syntax-dynamic-import": "~6.18.0",
-		"babelify": "~10.0.0",
-		"browserify": "~16.5.0",
-		"esdoc": "~1.1.0",
-		"esdoc-accessor-plugin": "~1.0.0",
-		"esdoc-brand-plugin": "~1.0.1",
-		"esdoc-coverage-plugin": "~1.1.0",
-		"esdoc-external-ecmascript-plugin": "~1.0.0",
-		"esdoc-inject-assets-plugin": "~1.0.0",
-		"esdoc-integrate-manual-plugin": "~1.0.0",
-		"esdoc-lint-plugin": "~1.0.2",
-		"esdoc-publish-html-plugin": "~1.1.2",
-		"esdoc-standard-plugin": "~1.0.0",
-		"esdoc-type-inference-plugin": "~1.0.2",
-		"esdoc-undocumented-identifier-plugin": "~1.0.0",
-		"esdoc-unexported-identifier-plugin": "~1.0.0",
-		"eslint": "~6.5.1",
-		"gulp": "~4.0.2",
-		"gulp-autoprefixer": "~7.0.1",
-		"gulp-babel": "~8.0.0-beta.2",
-		"gulp-better-rollup": "~4.0.1",
-		"gulp-concat": "~2.6.1",
-		"gulp-concat-util": "~0.5.5",
-		"gulp-cssmin": "~0.2.0",
-		"gulp-filter": "~6.0.0",
-		"gulp-html2js": "~0.4.2",
-		"gulp-if": "~3.0.0",
-		"gulp-plumber": "~1.2.1",
-		"gulp-rename": "~1.4.0",
-		"gulp-sass": "~4.0.2",
-		"gulp-terser": "~1.2.0",
-		"gulp-webserver": "~0.9.1",
-		"rollup": "~1.26.3",
-		"rollup-plugin-babel": "~4.3.3",
-		"rollup-plugin-banner": "~0.2.1",
-		"rollup-plugin-license": "~0.12.1",
-		"tfs": "~1.6.0",
-		"through2": "~3.0.1",
-		"tsify": "~4.0.1",
-		"tslint": "~5.20.0",
-		"typescript": "~3.6.4",
-		"yargs": "~14.2.0"
+    "@types/node": "~13.7.6",
+    "gulpfile-config": "~1.0.0-alpha.4",
+    "typescript": "~3.8.2"
 	}
 }
