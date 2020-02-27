@@ -1,9 +1,9 @@
-import { getContext } from 'rxcomp';
+import { getContext, IFactoryMeta } from 'rxcomp';
 import FormAbstractCollectionDirective from './form-abstract-collection.directive';
 import FormAbstractDirective from './form-abstract.directive';
 
 /**
- * @desc FormSelectDirective.
+ * FormSelectDirective.
  * @example
  * <select formControlName="country">
  * 	<option value="">select</option>
@@ -19,28 +19,28 @@ import FormAbstractDirective from './form-abstract.directive';
  */
 export default class FormSelectDirective extends FormAbstractDirective {
 
-	writeValue(value: any) {
-		const node = getContext(this).node as HTMLInputElement;
-		node.value = value == null ? '' : value;
-	}
+    writeValue(value: any) {
+        const node = getContext(this).node as HTMLInputElement;
+        node.value = value == null ? '' : value;
+    }
 
-	setDisabledState(disabled: boolean) {
-		const node = getContext(this).node as HTMLInputElement;
-		node.disabled = disabled;
-	}
+    setDisabledState(disabled: boolean) {
+        const node = getContext(this).node as HTMLInputElement;
+        node.disabled = disabled;
+    }
 
-	onChange(event: Event) {
-		const node = getContext(this).node as HTMLInputElement;
-		this.control.value = node.value === '' ? null : node.value;
-	}
+    onChange(event: Event) {
+        const node = getContext(this).node as HTMLInputElement;
+        this.control.value = node.value === '' ? null : node.value;
+    }
 
-	onBlur(event: Event) {
-		this.control.touched = true;
-	}
+    onBlur(event: Event) {
+        this.control.touched = true;
+    }
 
-	static meta = {
-		selector: 'select[formControl],select[formControlName]',
-		inputs: ['formControl', 'formControlName'],
-		hosts: { host: FormAbstractCollectionDirective },
-	};
+    static meta: IFactoryMeta = {
+        selector: 'select[formControl],select[formControlName]',
+        inputs: ['formControl', 'formControlName'],
+        hosts: { host: FormAbstractCollectionDirective },
+    };
 }

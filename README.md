@@ -197,3 +197,15 @@ ___
 
 ## Release Notes
 Changelog [here](https://github.com/actarian/rxcomp-form/blob/master/CHANGELOG.md).
+
+<!-- 
+Docs Schema
+"$schema": "http://json.schemastore.org/typedoc",
+"toc": [
+	"FormAbstract",
+	"FormControl",
+	"FormAbstractCollection",
+	"FormGroup",
+	"FormArray"
+],
+-->

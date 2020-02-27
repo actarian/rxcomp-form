@@ -1,28 +1,30 @@
-import { Directive } from 'rxcomp';
+import { Directive, IFactoryMeta } from 'rxcomp';
 import { FormValidator } from '../../rxcomp-form';
 import FormAbstractDirective from '../directives/form-abstract.directive';
 import { RequiredTrueValidator } from './validators';
 
 /**
- * @desc FormRequiredTrueDirective attribute for injecting RequiredTrueValidator.
+ * FormRequiredTrueDirective attribute for injecting RequiredTrueValidator.
  * @example
  * <input type="checkbox" formControlName="privacy" requiredTrue />
  */
 export default class FormRequiredTrueDirective extends Directive {
 
-	validator: FormValidator;
-	host: FormAbstractDirective;
+    validator?: FormValidator;
+    host?: FormAbstractDirective;
 
-	onInit() {
-		// console.log('FormRequiredTrueDirective', this.host.control);
-		const validator = this.validator = RequiredTrueValidator();
-		this.host.control.addValidators(validator);
-	}
+    onInit() {
+        // console.log('FormRequiredTrueDirective', this.host.control);
+        this.validator = RequiredTrueValidator();
+        if (this.host) {
+            this.host.control.addValidators(this.validator);
+        }
+    }
 
-	static meta = {
-		selector: '[requiredTrue][formControl],[requiredTrue][formControlName]',
-		inputs: ['requiredTrue'],
-		hosts: { host: FormAbstractDirective },
-	};
+    static meta: IFactoryMeta = {
+        selector: '[requiredTrue][formControl],[requiredTrue][formControlName]',
+        inputs: ['requiredTrue'],
+        hosts: { host: FormAbstractDirective },
+    };
 
 }

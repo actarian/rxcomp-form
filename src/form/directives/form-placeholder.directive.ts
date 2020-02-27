@@ -1,22 +1,22 @@
-import { Directive, getContext } from 'rxcomp';
+import { Directive, Factory, getContext, IFactoryMeta } from 'rxcomp';
 
 /**
- * @desc FormPlaceholderDirective.
+ * FormPlaceholderDirective.
  * @example
  * <input type="text" [placeholder]="'item-' + index" />
  */
 export default class FormPlaceholderDirective extends Directive {
 
-	placeholder: string;
+    placeholder?: string;
 
-	onChanges(changes) {
-		const node = getContext(this).node as HTMLInputElement;
-		node.placeholder = this.placeholder;
-	}
+    onChanges(changes: Factory | Window) {
+        const node = getContext(this).node as HTMLInputElement;
+        node.setAttribute('placeholder', this.placeholder || '');
+    }
 
-	static meta = {
-		selector: 'input[placeholder],textarea[placeholder]',
-		inputs: ['placeholder'],
-	};
+    static meta: IFactoryMeta = {
+        selector: 'input[placeholder],textarea[placeholder]',
+        inputs: ['placeholder'],
+    };
 
 }

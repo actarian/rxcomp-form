@@ -1,66 +1,65 @@
-import { BehaviorSubject, combineLatest, isObservable, merge, Observable, of } from "rxjs";
+import { BehaviorSubject, combineLatest, isObservable, merge, Observable, of, ReplaySubject } from "rxjs";
 import { auditTime, distinctUntilChanged, map, shareReplay, skip, switchAll, switchMap, tap } from 'rxjs/operators';
 import FormStatus from './models/form-status';
 import FormValidator from "./validators/form-validator";
 
 /**
- * @desc Abstract class representing a form control.
- * @abstract
- * @access public
+ * Abstract class representing a form control.
  */
 export default abstract class FormAbstract {
 
 	public errors: any;
 
 	name?: string;
-	value_: any;
-	submitted_: boolean;
-	touched_: boolean;
-	dirty_: boolean;
-	status: FormStatus;
+	value_: any = undefined;
+	submitted_: boolean = false;
+	touched_: boolean = false;
+	dirty_: boolean = false;
+	status?: FormStatus;
 
 	validators: FormValidator[];
-	value$: Observable<any>;
-	status$: Observable<any>;
-	changes$: Observable<any>;
 
-	protected valueSubject: BehaviorSubject<any>;
-	protected statusSubject: BehaviorSubject<FormAbstract>;
-	protected validatorsSubject: BehaviorSubject<any>;
+	protected valueSubject: BehaviorSubject<any> = new BehaviorSubject(null);
+	protected statusSubject: BehaviorSubject<null> = new BehaviorSubject(null);
+	protected validatorsSubject: ReplaySubject<Observable<any[]>> = new ReplaySubject<Observable<any[]>>().pipe(
+		switchAll()
+	) as ReplaySubject<Observable<any[]>>;
+	public value$: Observable<any> = this.valueSubject.pipe(
+		distinctUntilChanged(),
+		skip(1),
+		tap(() => {
+			this.submitted_ = false;
+			this.dirty_ = true;
+			this.statusSubject.next(null);
+		}),
+		shareReplay(1)
+	);
+	public status$: Observable<{ [key: string]: any }> = merge(this.statusSubject, this.validatorsSubject).pipe(
+		// auditTime(1),
+		switchMap(() => this.validate$(this.value)),
+		shareReplay(1)
+	);
+	public changes$: Observable<any> = merge(this.value$, this.status$).pipe(
+		map(() => this.value),
+		auditTime(1),
+		shareReplay(1)
+	);
 
 	/**
 	 * Create a FormAbstract.
-	 * @param {FormValidator|FormValidator[]} validators - A list of validators.
+	 * @param validators a list of validators.
 	 */
 	constructor(validators?: (FormValidator | FormValidator[])) {
 		this.validators = validators ? (Array.isArray(validators) ? validators : [validators]) : [];
 	}
 
 	/**
-	 * @protected initialize subjects
-	 * @return {void}
+	 * initialize subjects
 	 */
 	protected initSubjects_(): void {
-		/**
-		 * @protected
-		 */
-		this.valueSubject = new BehaviorSubject(null);
-		/**
-		 * @protected
-		 */
-		this.statusSubject = new BehaviorSubject(this);
-		/**
-		 * @protected
-		 */
-		this.validatorsSubject = new BehaviorSubject(undefined).pipe(
-			switchAll()
-		) as BehaviorSubject<Observable<any>>;
 		this.switchValidators_();
 	}
 
-	/**
-	 * @private
-	 */
 	private switchValidators_(): void {
 		const validatorParams: Observable<any>[] = this.validators.map(x => x.params$);
 		let validatorParams$: Observable<any> = validatorParams.length ? combineLatest(validatorParams) : of(validatorParams);
@@ -68,41 +67,13 @@ export default abstract class FormAbstract {
 	}
 
 	/**
-	 * @protected initialize observables
-	 * @return {void}
+	 * initialize observables
 	 */
-	protected initObservables_(): void {
-		this.value$ = this.valueSubject.pipe(
-			distinctUntilChanged(),
-			skip(1),
-			tap(() => {
-				/**
-				 * @private
-				 */
-				this.submitted_ = false;
-				/**
-				 * @private
-				 */
-				this.dirty_ = true;
-				this.statusSubject.next(this);
-			}),
-			shareReplay(1)
-		);
-		this.status$ = merge(this.statusSubject, this.validatorsSubject).pipe(
-			// auditTime(1),
-			switchMap(() => this.validate$(this.value)),
-			shareReplay(1)
-		);
-		this.changes$ = merge(this.value$, this.status$).pipe(
-			map(() => this.value),
-			auditTime(1),
-			shareReplay(1)
-		);
-	}
+	protected initObservables_(): void { }
 
 	/**
-	 * @param {null | string} value - the inner control value
-	 * @return {Observable<errors>} an object with key, value errors
+	 * @param value the inner control value
+	 * @return an object with key, value errors
 	 */
 	validate$(value: any): Observable<{ [key: string]: any }> {
 		if (this.status === FormStatus.Disabled || this.status === FormStatus.Hidden || this.submitted_ || !this.validators.length) {
@@ -126,68 +97,67 @@ export default abstract class FormAbstract {
 	}
 
 	/**
-	 * @return {boolean} the pending status
+	 * @return the pending status
 	 */
 	get pending(): boolean { return this.status === FormStatus.Pending; }
 
 	/**
-	 * @return {boolean} the valid status
+	 * @return the valid status
 	 */
 	get valid(): boolean { return this.status !== FormStatus.Invalid; }
 
 	/**
-	 * @return {boolean} the invalid status
+	 * @return the invalid status
 	 */
 	get invalid(): boolean { return this.status === FormStatus.Invalid; }
 
 	/**
-	 * @return {boolean} the disabled status
+	 * @return the disabled status
 	 */
 	get disabled(): boolean { return this.status === FormStatus.Disabled; }
 
 	/**
-	 * @return {boolean} the enabled status
+	 * @return the enabled status
 	 */
 	get enabled(): boolean { return this.status !== FormStatus.Disabled; }
 
 	/**
-	 * @return {boolean} the hidden status
+	 * @return the hidden status
 	 */
 	get hidden(): boolean { return this.status === FormStatus.Hidden; }
 
 	/**
-	 * @return {boolean} the visible status
+	 * @return the visible status
 	 */
 	get visible(): boolean { return this.status !== FormStatus.Hidden; }
 
 	/**
-	 * @return {boolean} the submitted status
+	 * @return the submitted status
 	 */
 	get submitted(): boolean { return this.submitted_; }
 
 	/**
-	 * @return {boolean} the dirty status
+	 * @return the dirty status
 	 */
 	get dirty(): boolean { return this.dirty_; }
 
 	/**
-	 * @return {boolean} the pristine status
+	 * @return the pristine status
 	 */
 	get pristine(): boolean { return !this.dirty_; }
 
 	/**
-	 * @return {boolean} the touched status
+	 * @return the touched status
 	 */
 	get touched(): boolean { return this.touched_; }
 
 	/**
-	 * @return {boolean} the untouched status
+	 * @return the untouched status
 	 */
 	get untouched(): boolean { return !this.touched_; }
 
 	/**
-	 * @param {boolean} disabled - the disabled state
-	 * @return {void}
+	 * @param disabled the disabled state
 	 */
 	set disabled(disabled: boolean) {
 		if (disabled) {
@@ -197,7 +167,7 @@ export default abstract class FormAbstract {
 				this.dirty_ = false;
 				this.touched_ = false;
 				this.submitted_ = false;
-				this.statusSubject.next(this);
+				this.statusSubject.next(null);
 			}
 		} else {
 			if (this.status === FormStatus.Disabled) {
@@ -206,14 +176,30 @@ export default abstract class FormAbstract {
 				this.dirty_ = false;
 				this.touched_ = false;
 				this.submitted_ = false;
-				this.statusSubject.next(this);
+				this.statusSubject.next(null);
 			}
 		}
 	}
 
+	get flags(): { [key: string]: boolean } {
+		return {
+			untouched: this.untouched,
+			touched: this.touched,
+			pristine: this.pristine,
+			dirty: this.dirty,
+			pending: this.pending,
+			enabled: this.enabled,
+			disabled: this.disabled,
+			hidden: this.hidden,
+			visible: this.visible,
+			valid: this.valid,
+			invalid: this.invalid,
+			submitted: this.submitted
+		}
+	}
+
 	/**
-	 * @param {boolean} hidden - the hidden state
-	 * @return {void}
+	 * @param hidden the hidden state
 	 */
 	set hidden(hidden: boolean) {
 		if (hidden) {
@@ -223,7 +209,7 @@ export default abstract class FormAbstract {
 				this.dirty_ = false;
 				this.touched_ = false;
 				this.submitted_ = false;
-				this.statusSubject.next(this);
+				this.statusSubject.next(null);
 			}
 		} else {
 			if (this.status === FormStatus.Hidden) {
@@ -232,52 +218,42 @@ export default abstract class FormAbstract {
 				this.dirty_ = false;
 				this.touched_ = false;
 				this.submitted_ = false;
-				this.statusSubject.next(this);
+				this.statusSubject.next(null);
 			}
 		}
 	}
 
 	/**
-	 * @param {boolean} submitted - the submitted state
-	 * @return {void}
+	 * @param submitted the submitted state
 	 */
 	set submitted(submitted: boolean) {
 		this.submitted_ = submitted;
-		this.statusSubject.next(this);
+		this.statusSubject.next(null);
 	}
 
 	/**
-	 * @param {boolean} touched - the touched state
-	 * @return {void}
+	 * @param touched the touched state
 	 */
 	set touched(touched: boolean) {
-		/**
-		 * @private
-		 */
 		this.touched_ = touched;
-		this.statusSubject.next(this);
+		this.statusSubject.next(null);
 	}
 
 	/**
-	 * @return {any} inner value of the control
+	 * @return inner value of the control
 	 */
 	get value(): any { return this.value_; }
 
 	/**
-	 * @param {any} value - a value
-	 * @return {void}
+	 * @param value a value
 	 */
 	set value(value: any) {
-		/**
-		 * @private
-		 */
 		this.value_ = value;
 		this.valueSubject.next(value);
 	}
 
 	/**
-	 * @param {null | FormStatus} status - optional FormStatus
-	 * @return {void}
+	 * @param status optional FormStatus
 	 */
 	reset(status?: FormStatus): void {
 		this.status = status || FormStatus.Pending;
@@ -285,34 +261,33 @@ export default abstract class FormAbstract {
 		this.dirty_ = false;
 		this.touched_ = false;
 		this.submitted_ = false;
-		this.statusSubject.next(this);
+		this.statusSubject.next(null);
 	}
 
 	/**
-	 * @param {null | string} value - a value
-	 * @return {void}
+	 * @param value a value
 	 */
 	patch(value: any): void {
 		this.value_ = value;
 		this.dirty_ = true;
 		this.submitted_ = false;
-		this.statusSubject.next(this);
+		this.statusSubject.next(null);
 	}
 
 	/**
 	 * adds one or more FormValidator.
-	 * @param {...FormValidator[]} validators - A list of validators.
+	 * @param validators a list of validators.
 	 */
-	addValidators(...validators: any[]): void {
+	addValidators(...validators: FormValidator[]): void {
 		this.validators.push(...validators);
 		this.switchValidators_();
 	}
 
 	/**
 	 * replace one or more FormValidator.
-	 * @param {...FormValidator[]} validators - A list of validators.
+	 * @param validators a list of validators.
 	 */
-	replaceValidators(...validators: any[]): void {
+	replaceValidators(...validators: FormValidator[]): void {
 		this.validators = validators;
 		this.switchValidators_();
 	}

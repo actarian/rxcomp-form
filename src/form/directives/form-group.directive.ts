@@ -1,8 +1,9 @@
+import { IFactoryMeta } from 'rxcomp';
 import FormGroup from '../form-group';
 import FormAbstractCollectionDirective from './form-abstract-collection.directive';
 
 /**
- * @desc FormGroupDirective.
+ * FormGroupDirective.
  * @example
  * <form [formGroup]="form" (submit)="onSubmit()" role="form" novalidate autocomplete="off">
  * 	...
@@ -10,27 +11,27 @@ import FormAbstractCollectionDirective from './form-abstract-collection.directiv
  */
 export default class FormGroupDirective extends FormAbstractCollectionDirective {
 
-	formGroupName: string;
-	formGroup: FormGroup;
-	host: FormAbstractCollectionDirective;
+    formGroupName?: string;
+    formGroup?: FormGroup;
+    host?: FormAbstractCollectionDirective;
 
-	get control() {
-		// console.log('FormGroupDirective', (this.formGroupName ? `formGroupName ${this.formGroupName}` : `formGroup ${this.formGroup}`));
-		if (this.formGroup) {
-			return this.formGroup;
-		} else {
-			if (!this.host) {
-				throw ('missing form collection');
-			}
-			// !!! check instanceof ?
-			return this.host.control.get(this.formGroupName) as FormGroup;
-		}
-	}
+    get control() {
+        // console.log('FormGroupDirective', (this.formGroupName ? `formGroupName ${this.formGroupName}` : `formGroup ${this.formGroup}`));
+        if (this.formGroup) {
+            return this.formGroup;
+        } else {
+            if (!this.host) {
+                throw ('missing form collection');
+            }
+            // !!! check instanceof ?
+            return this.host.control.get(this.formGroupName) as FormGroup;
+        }
+    }
 
-	static meta = {
-		selector: '[formGroup],[formGroupName]',
-		inputs: ['formGroup', 'formGroupName'],
-		hosts: { host: FormAbstractCollectionDirective },
-	};
+    static meta: IFactoryMeta = {
+        selector: '[formGroup],[formGroupName]',
+        inputs: ['formGroup', 'formGroupName'],
+        hosts: { host: FormAbstractCollectionDirective },
+    };
 
 }

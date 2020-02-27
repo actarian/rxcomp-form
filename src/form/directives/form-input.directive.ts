@@ -1,9 +1,9 @@
-import { getContext } from 'rxcomp';
+import { getContext, IFactoryMeta } from 'rxcomp';
 import FormAbstractCollectionDirective from './form-abstract-collection.directive';
 import FormAbstractDirective from './form-abstract.directive';
 
 /**
- * @desc FormInputDirective to handle input text FormControl value.
+ * FormInputDirective to handle input text FormControl value.
  * @example
  * <input type="text" formControlName="firstName" />
  * @example
@@ -11,24 +11,24 @@ import FormAbstractDirective from './form-abstract.directive';
  */
 export default class FormInputDirective extends FormAbstractDirective {
 
-	writeValue(value) {
-		const node = getContext(this).node as HTMLInputElement;
-		node.value = value == null ? '' : value;
-	}
+    writeValue(value: any): void {
+        const node = getContext(this).node as HTMLInputElement;
+        node.value = value == null ? '' : value;
+    }
 
-	onChange(event) {
-		const node = getContext(this).node as HTMLInputElement;
-		this.control.value = node.value === '' ? null : node.value;
-	}
+    onChange(event: Event): void {
+        const node = getContext(this).node as HTMLInputElement;
+        this.control.value = node.value === '' ? null : node.value;
+    }
 
-	onBlur(event) {
-		this.control.touched = true;
-	}
+    onBlur(event: FocusEvent): void {
+        this.control.touched = true;
+    }
 
-	static meta = {
-		selector: 'input[type=text][formControl],input[type=text][formControlName],input[type=email][formControl],input[type=email][formControlName],input[type=password][formControl],input[type=password][formControlName],textarea[formControl],textarea[formControlName]',
-		inputs: ['formControl', 'formControlName'],
-		hosts: { host: FormAbstractCollectionDirective },
-	};
+    static meta: IFactoryMeta = {
+        selector: 'input[type=text][formControl],input[type=text][formControlName],input[type=email][formControl],input[type=email][formControlName],input[type=password][formControl],input[type=password][formControlName],textarea[formControl],textarea[formControlName]',
+        inputs: ['formControl', 'formControlName'],
+        hosts: { host: FormAbstractCollectionDirective },
+    };
 
 }

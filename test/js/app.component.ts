@@ -1,9 +1,9 @@
-import { Component } from 'rxcomp';
+import { Component, IFactoryMeta } from 'rxcomp';
 import { FormArray, FormGroup, RequiredValidator } from '../../src/rxcomp-form';
 
 export default class AppComponent extends Component {
 
-	form: FormGroup;
+	form: FormGroup = new FormGroup();
 
 	onInit() {
 		const form = new FormGroup({
@@ -19,8 +19,10 @@ export default class AppComponent extends Component {
 		});
 
 		form.changes$.subscribe((changes) => {
-			console.log('AppComponent.form.changes$', changes, form.valid, form);
-			this.pushChanges();
+			// console.log('AppComponent.form.changes$', changes, form.valid, form);
+			if (this.pushChanges) {
+				this.pushChanges();
+			}
 		});
 
 		this.form = form;
@@ -40,13 +42,13 @@ export default class AppComponent extends Component {
 
 	onSubmit(): void {
 		if (this.form.valid) {
-			console.log('AppComponent.onSubmit', this.form.value);
+			// console.log('AppComponent.onSubmit', this.form.value);
 			this.form.submitted = true;
 			// this.form.reset();
 		}
 	}
 
-	static meta = {
+	static meta: IFactoryMeta = {
 		selector: '[app-component]',
 	};
 

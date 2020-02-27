@@ -1,8 +1,8 @@
-import { Component } from 'rxcomp';
+import { Component, IFactoryMeta } from 'rxcomp';
 
 export default class ErrorsComponent extends Component {
 
-	static meta = {
+	static meta: IFactoryMeta = {
 		selector: 'errors-component',
 		inputs: ['control'],
 		template: /* html */ `

@@ -29,26 +29,6 @@
     subClass.__proto__ = superClass;
   }
 
-  function _assertThisInitialized(self) {
-    if (self === void 0) {
-      throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-    }
-
-    return self;
-  }
-
-  var FormStatus;
-
-  (function (FormStatus) {
-    FormStatus["Pending"] = "pending";
-    FormStatus["Valid"] = "valid";
-    FormStatus["Invalid"] = "invalid";
-    FormStatus["Disabled"] = "disabled";
-    FormStatus["Hidden"] = "hidden";
-  })(FormStatus || (FormStatus = {}));
-  var FormStatus$1 = FormStatus;
-  var FormAttributes = ['untouched', 'touched', 'pristine', 'dirty', 'pending', 'enabled', 'disabled', 'hidden', 'visible', 'valid', 'invalid', 'submitted'];
-
   var FormAbstractCollectionDirective = function (_Directive) {
     _inheritsLoose(FormAbstractCollectionDirective, _Directive);
 
@@ -62,13 +42,9 @@
       var _getContext = rxcomp.getContext(this),
           node = _getContext.node;
 
-      var control = this.control;
-      FormAttributes.forEach(function (attribute) {
-        if (control[attribute]) {
-          node.classList.add(attribute);
-        } else {
-          node.classList.remove(attribute);
-        }
+      var flags = this.control.flags;
+      Object.keys(flags).forEach(function (key) {
+        flags[key] ? node.classList.add(key) : node.classList.remove(key);
       });
     };
 
@@ -82,7 +58,7 @@
     return FormAbstractCollectionDirective;
   }(rxcomp.Directive);
   FormAbstractCollectionDirective.meta = {
-    selector: null,
+    selector: '',
     hosts: {
       host: FormAbstractCollectionDirective
     }
@@ -146,12 +122,9 @@
       }
 
       var control = this.control;
-      FormAttributes.forEach(function (x) {
-        if (control[x]) {
-          node.classList.add(x);
-        } else {
-          node.classList.remove(x);
-        }
+      var flags = control.flags;
+      Object.keys(flags).forEach(function (key) {
+        flags[key] ? node.classList.add(key) : node.classList.remove(key);
       });
       this.writeValue(control.value);
     };
@@ -193,7 +166,7 @@
     return FormAbstractDirective;
   }(rxcomp.Directive);
   FormAbstractDirective.meta = {
-    selector: null,
+    selector: '',
     inputs: ['formControl', 'formControlName', 'value'],
     hosts: {
       host: FormAbstractCollectionDirective
@@ -259,13 +232,9 @@
       var _getContext = rxcomp.getContext(this),
           node = _getContext.node;
 
-      var control = this.control;
-      FormAttributes.forEach(function (x) {
-        if (control[x]) {
-          node.classList.add(x);
-        } else {
-          node.classList.remove(x);
-        }
+      var flags = this.control.flags;
+      Object.keys(flags).forEach(function (key) {
+        flags[key] ? node.classList.add(key) : node.classList.remove(key);
       });
     };
 
@@ -370,7 +339,7 @@
 
     _proto.onChanges = function onChanges(changes) {
       var node = rxcomp.getContext(this).node;
-      node.placeholder = this.placeholder;
+      node.setAttribute('placeholder', this.placeholder || '');
     };
 
     return FormPlaceholderDirective;
@@ -484,7 +453,8 @@
           parentInstance = _getContext.parentInstance;
 
       var event = this.event = selector.replace(/\[|\]|\(|\)/g, '');
-      var event$ = this.event$ = rxjs.fromEvent(node, event).pipe(operators.tap(function (event) {
+      var form = node;
+      var event$ = this.event$ = rxjs.fromEvent(form, 'submit').pipe(operators.tap(function (event) {
         event.preventDefault();
       }), operators.shareReplay(1));
       var expression = node.getAttribute("(" + event + ")");
@@ -507,14 +477,14 @@
 
   var FormValidator = function () {
     function FormValidator(validator, params) {
-      this.validator = validator.bind(this);
+      this.validator = validator;
       this.params$ = new rxjs.BehaviorSubject(params);
     }
 
     var _proto = FormValidator.prototype;
 
     _proto.validate = function validate(value) {
-      return this.validator(value);
+      return this.validator(value, this.params);
     };
 
     _createClass(FormValidator, [{
@@ -540,22 +510,22 @@
   }();
 
   function RequiredValidator() {
-    return new FormValidator(function (value) {
+    return new FormValidator(function (value, params) {
       return value == null || value.length === 0 ? {
         required: true
       } : null;
     });
   }
   function RequiredTrueValidator() {
-    return new FormValidator(function (value) {
+    return new FormValidator(function (value, params) {
       return value === true ? null : {
         required: true
       };
     });
   }
   function MinValidator(min) {
-    return new FormValidator(function (value) {
-      var min = this.params.min;
+    return new FormValidator(function (value, params) {
+      var min = params.min;
 
       if (!value || !min) {
         return null;
@@ -573,8 +543,8 @@
     });
   }
   function MaxValidator(max) {
-    return new FormValidator(function (value) {
-      var max = this.params.max;
+    return new FormValidator(function (value, params) {
+      var max = params.max;
 
       if (!value || !max) {
         return null;
@@ -592,8 +562,8 @@
     });
   }
   function MinLengthValidator(minlength) {
-    return new FormValidator(function (value) {
-      var minlength = this.params.minlength;
+    return new FormValidator(function (value, params) {
+      var minlength = params.minlength;
 
       if (!value || !minlength) {
         return null;
@@ -611,8 +581,8 @@
     });
   }
   function MaxLengthValidator(maxlength) {
-    return new FormValidator(function (value) {
-      var maxlength = this.params.maxlength;
+    return new FormValidator(function (value, params) {
+      var maxlength = params.maxlength;
 
       if (!value || !maxlength) {
         return null;
@@ -630,8 +600,8 @@
     });
   }
   function PatternValidator(pattern) {
-    return new FormValidator(function (value) {
-      var pattern = this.params.pattern;
+    return new FormValidator(function (value, params) {
+      var pattern = params.pattern;
 
       if (!value || !pattern) {
         return null;
@@ -650,7 +620,7 @@
   }
   function EmailValidator() {
     var regex = /^(?=.{1,254}$)(?=.{1,64}@)[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+)*@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
-    return new FormValidator(function (value) {
+    return new FormValidator(function (value, params) {
       if (!value) {
         return null;
       }
@@ -672,7 +642,7 @@
       regex = new RegExp(pattern);
     }
 
-    return regex;
+    return regex || new RegExp('');
   }
 
   var FormEmailDirective = function (_Directive) {
@@ -686,7 +656,10 @@
 
     _proto.onInit = function onInit() {
       var validator = this.validator = EmailValidator();
-      this.host.control.addValidators(validator);
+
+      if (this.host) {
+        this.host.control.addValidators(validator);
+      }
     };
 
     return FormEmailDirective;
@@ -703,20 +676,29 @@
     _inheritsLoose(FormMaxLengthDirective, _Directive);
 
     function FormMaxLengthDirective() {
-      return _Directive.apply(this, arguments) || this;
+      var _this;
+
+      _this = _Directive.apply(this, arguments) || this;
+      _this.maxlength = Number.POSITIVE_INFINITY;
+      return _this;
     }
 
     var _proto = FormMaxLengthDirective.prototype;
 
     _proto.onInit = function onInit() {
-      var validator = this.validator = MaxLengthValidator(this.maxlength);
-      this.host.control.addValidators(this.validator);
+      this.validator = MaxLengthValidator(this.maxlength);
+
+      if (this.host) {
+        this.host.control.addValidators(this.validator);
+      }
     };
 
     _proto.onChanges = function onChanges(changes) {
-      this.validator.params = {
-        maxlength: this.maxlength
-      };
+      if (this.validator) {
+        this.validator.params = {
+          maxlength: this.maxlength
+        };
+      }
     };
 
     return FormMaxLengthDirective;
@@ -733,20 +715,29 @@
     _inheritsLoose(FormMaxDirective, _Directive);
 
     function FormMaxDirective() {
-      return _Directive.apply(this, arguments) || this;
+      var _this;
+
+      _this = _Directive.apply(this, arguments) || this;
+      _this.max = Number.POSITIVE_INFINITY;
+      return _this;
     }
 
     var _proto = FormMaxDirective.prototype;
 
     _proto.onInit = function onInit() {
-      var validator = this.validator = MaxValidator(this.max);
-      this.host.control.addValidators(this.validator);
+      this.validator = MaxValidator(this.max);
+
+      if (this.host) {
+        this.host.control.addValidators(this.validator);
+      }
     };
 
     _proto.onChanges = function onChanges(changes) {
-      this.validator.params = {
-        max: this.max
-      };
+      if (this.validator) {
+        this.validator.params = {
+          max: this.max
+        };
+      }
     };
 
     return FormMaxDirective;
@@ -763,20 +754,29 @@
     _inheritsLoose(FormMinLengthDirective, _Directive);
 
     function FormMinLengthDirective() {
-      return _Directive.apply(this, arguments) || this;
+      var _this;
+
+      _this = _Directive.apply(this, arguments) || this;
+      _this.minlength = Number.NEGATIVE_INFINITY;
+      return _this;
     }
 
     var _proto = FormMinLengthDirective.prototype;
 
     _proto.onInit = function onInit() {
-      var validator = this.validator = MinLengthValidator(this.minlength);
-      this.host.control.addValidators(this.validator);
+      this.validator = MinLengthValidator(this.minlength);
+
+      if (this.host) {
+        this.host.control.addValidators(this.validator);
+      }
     };
 
     _proto.onChanges = function onChanges(changes) {
-      this.validator.params = {
-        minlength: this.minlength
-      };
+      if (this.validator) {
+        this.validator.params = {
+          minlength: this.minlength
+        };
+      }
     };
 
     return FormMinLengthDirective;
@@ -793,20 +793,29 @@
     _inheritsLoose(FormMinDirective, _Directive);
 
     function FormMinDirective() {
-      return _Directive.apply(this, arguments) || this;
+      var _this;
+
+      _this = _Directive.apply(this, arguments) || this;
+      _this.min = Number.NEGATIVE_INFINITY;
+      return _this;
     }
 
     var _proto = FormMinDirective.prototype;
 
     _proto.onInit = function onInit() {
-      var validator = this.validator = MinValidator(this.min);
-      this.host.control.addValidators(this.validator);
+      this.validator = MinValidator(this.min);
+
+      if (this.host) {
+        this.host.control.addValidators(this.validator);
+      }
     };
 
     _proto.onChanges = function onChanges(changes) {
-      this.validator.params = {
-        min: this.min
-      };
+      if (this.validator) {
+        this.validator.params = {
+          min: this.min
+        };
+      }
     };
 
     return FormMinDirective;
@@ -829,14 +838,21 @@
     var _proto = FormPatternDirective.prototype;
 
     _proto.onInit = function onInit() {
-      var validator = this.validator = PatternValidator(this.pattern);
-      this.host.control.addValidators(this.validator);
+      if (this.pattern) {
+        this.validator = PatternValidator(this.pattern);
+
+        if (this.host) {
+          this.host.control.addValidators(this.validator);
+        }
+      }
     };
 
     _proto.onChanges = function onChanges(changes) {
-      this.validator.params = {
-        pattern: this.pattern
-      };
+      if (this.validator) {
+        this.validator.params = {
+          pattern: this.pattern
+        };
+      }
     };
 
     return FormPatternDirective;
@@ -859,8 +875,11 @@
     var _proto = FormRequiredTrueDirective.prototype;
 
     _proto.onInit = function onInit() {
-      var validator = this.validator = RequiredTrueValidator();
-      this.host.control.addValidators(validator);
+      this.validator = RequiredTrueValidator();
+
+      if (this.host) {
+        this.host.control.addValidators(this.validator);
+      }
     };
 
     return FormRequiredTrueDirective;
@@ -883,8 +902,11 @@
     var _proto = FormRequiredDirective.prototype;
 
     _proto.onInit = function onInit() {
-      var validator = this.validator = RequiredValidator();
-      this.host.control.addValidators(validator);
+      this.validator = RequiredValidator();
+
+      if (this.host) {
+        this.host.control.addValidators(this.validator);
+      }
     };
 
     return FormRequiredDirective;
@@ -914,17 +936,46 @@
     exports: [].concat(factories, pipes)
   };
 
+  var FormStatus;
+
+  (function (FormStatus) {
+    FormStatus["Pending"] = "pending";
+    FormStatus["Valid"] = "valid";
+    FormStatus["Invalid"] = "invalid";
+    FormStatus["Disabled"] = "disabled";
+    FormStatus["Hidden"] = "hidden";
+  })(FormStatus || (FormStatus = {}));
+  var FormStatus$1 = FormStatus;
+
   var FormAbstract = function () {
     function FormAbstract(validators) {
+      var _this = this;
+
+      this.value_ = undefined;
+      this.submitted_ = false;
+      this.touched_ = false;
+      this.dirty_ = false;
+      this.valueSubject = new rxjs.BehaviorSubject(null);
+      this.statusSubject = new rxjs.BehaviorSubject(null);
+      this.validatorsSubject = new rxjs.ReplaySubject().pipe(operators.switchAll());
+      this.value$ = this.valueSubject.pipe(operators.distinctUntilChanged(), operators.skip(1), operators.tap(function () {
+        _this.submitted_ = false;
+        _this.dirty_ = true;
+
+        _this.statusSubject.next(null);
+      }), operators.shareReplay(1));
+      this.status$ = rxjs.merge(this.statusSubject, this.validatorsSubject).pipe(operators.switchMap(function () {
+        return _this.validate$(_this.value);
+      }), operators.shareReplay(1));
+      this.changes$ = rxjs.merge(this.value$, this.status$).pipe(operators.map(function () {
+        return _this.value;
+      }), operators.auditTime(1), operators.shareReplay(1));
       this.validators = validators ? Array.isArray(validators) ? validators : [validators] : [];
     }
 
     var _proto = FormAbstract.prototype;
 
     _proto.initSubjects_ = function initSubjects_() {
-      this.valueSubject = new rxjs.BehaviorSubject(null);
-      this.statusSubject = new rxjs.BehaviorSubject(this);
-      this.validatorsSubject = new rxjs.BehaviorSubject(undefined).pipe(operators.switchAll());
       this.switchValidators_();
     };
 
@@ -936,22 +987,7 @@
       this.validatorsSubject.next(validatorParams$);
     };
 
-    _proto.initObservables_ = function initObservables_() {
-      var _this = this;
-
-      this.value$ = this.valueSubject.pipe(operators.distinctUntilChanged(), operators.skip(1), operators.tap(function () {
-        _this.submitted_ = false;
-        _this.dirty_ = true;
-
-        _this.statusSubject.next(_this);
-      }), operators.shareReplay(1));
-      this.status$ = rxjs.merge(this.statusSubject, this.validatorsSubject).pipe(operators.switchMap(function () {
-        return _this.validate$(_this.value);
-      }), operators.shareReplay(1));
-      this.changes$ = rxjs.merge(this.value$, this.status$).pipe(operators.map(function () {
-        return _this.value;
-      }), operators.auditTime(1), operators.shareReplay(1));
-    };
+    _proto.initObservables_ = function initObservables_() {};
 
     _proto.validate$ = function validate$(value) {
       var _this2 = this;
@@ -982,14 +1018,14 @@
       this.dirty_ = false;
       this.touched_ = false;
       this.submitted_ = false;
-      this.statusSubject.next(this);
+      this.statusSubject.next(null);
     };
 
     _proto.patch = function patch(value) {
       this.value_ = value;
       this.dirty_ = true;
       this.submitted_ = false;
-      this.statusSubject.next(this);
+      this.statusSubject.next(null);
     };
 
     _proto.addValidators = function addValidators() {
@@ -1041,7 +1077,7 @@
             this.dirty_ = false;
             this.touched_ = false;
             this.submitted_ = false;
-            this.statusSubject.next(this);
+            this.statusSubject.next(null);
           }
         } else {
           if (this.status === FormStatus$1.Disabled) {
@@ -1049,7 +1085,7 @@
             this.dirty_ = false;
             this.touched_ = false;
             this.submitted_ = false;
-            this.statusSubject.next(this);
+            this.statusSubject.next(null);
           }
         }
       }
@@ -1070,7 +1106,7 @@
             this.dirty_ = false;
             this.touched_ = false;
             this.submitted_ = false;
-            this.statusSubject.next(this);
+            this.statusSubject.next(null);
           }
         } else {
           if (this.status === FormStatus$1.Hidden) {
@@ -1078,7 +1114,7 @@
             this.dirty_ = false;
             this.touched_ = false;
             this.submitted_ = false;
-            this.statusSubject.next(this);
+            this.statusSubject.next(null);
           }
         }
       }
@@ -1094,7 +1130,7 @@
       },
       set: function set(submitted) {
         this.submitted_ = submitted;
-        this.statusSubject.next(this);
+        this.statusSubject.next(null);
       }
     }, {
       key: "dirty",
@@ -1113,12 +1149,30 @@
       },
       set: function set(touched) {
         this.touched_ = touched;
-        this.statusSubject.next(this);
+        this.statusSubject.next(null);
       }
     }, {
       key: "untouched",
       get: function get() {
         return !this.touched_;
+      }
+    }, {
+      key: "flags",
+      get: function get() {
+        return {
+          untouched: this.untouched,
+          touched: this.touched,
+          pristine: this.pristine,
+          dirty: this.dirty,
+          pending: this.pending,
+          enabled: this.enabled,
+          disabled: this.disabled,
+          hidden: this.hidden,
+          visible: this.visible,
+          valid: this.valid,
+          invalid: this.invalid,
+          submitted: this.submitted
+        };
       }
     }, {
       key: "value",
@@ -1153,7 +1207,7 @@
 
       _this.initObservables_();
 
-      _this.statusSubject.next(_assertThisInitialized(_this));
+      _this.statusSubject.next(null);
 
       return _this;
     }
@@ -1168,6 +1222,7 @@
       var _this;
 
       _this = _FormAbstract.call(this, validators) || this;
+      _this.changesChildren = new rxjs.BehaviorSubject(undefined);
       _this.controls = controls;
 
       _this.initControls_();
@@ -1198,7 +1253,7 @@
     };
 
     _proto.initSubjects_ = function initSubjects_() {
-      this.changesChildren = new rxjs.BehaviorSubject(undefined).pipe(operators.switchAll());
+      this.changesChildren = this.changesChildren.pipe(operators.switchAll());
       this.switchSubjects_();
     };
 
@@ -1553,13 +1608,17 @@
     _inheritsLoose(AppComponent, _Component);
 
     function AppComponent() {
-      return _Component.apply(this, arguments) || this;
+      var _this;
+
+      _this = _Component.apply(this, arguments) || this;
+      _this.form = new FormGroup();
+      return _this;
     }
 
     var _proto = AppComponent.prototype;
 
     _proto.onInit = function onInit() {
-      var _this = this;
+      var _this2 = this;
 
       var form = new FormGroup({
         hidden: 'hiddenValue',
@@ -1573,9 +1632,9 @@
         items: new FormArray([null, null, null], RequiredValidator())
       });
       form.changes$.subscribe(function (changes) {
-        console.log('AppComponent.form.changes$', changes, form.valid, form);
-
-        _this.pushChanges();
+        if (_this2.pushChanges) {
+          _this2.pushChanges();
+        }
       });
       this.form = form;
     };
@@ -1594,7 +1653,6 @@
 
     _proto.onSubmit = function onSubmit() {
       if (this.form.valid) {
-        console.log('AppComponent.onSubmit', this.form.value);
         this.form.submitted = true;
       }
     };

@@ -2,20 +2,18 @@ import FormValidator from './form-validator';
 
 /**
  * a null validator
- * @return {null}
  */
 export function NullValidator() {
-	return new FormValidator(function (value: any) {
+	return new FormValidator(function (value: any, params?: any) {
 		return null;
 	});
 }
 
 /**
  * a required validator
- * @return {null|FormValidationError}
  */
 export function RequiredValidator(): FormValidator {
-	return new FormValidator(function (value: any) {
+	return new FormValidator(function (value: any, params?: any) {
 		// console.log('RequiredValidator', value, (value == null || value.length === 0) ? { required: true } : null);
 		return (value == null || value.length === 0) ? { required: true } : null;
 	});
@@ -24,10 +22,9 @@ export function RequiredValidator(): FormValidator {
 
 /**
  * a required and true validator
- * @return {null|FormValidationError}
  */
 export function RequiredTrueValidator(): FormValidator {
-	return new FormValidator(function (value: any) {
+	return new FormValidator(function (value: any, params?: any) {
 		// console.log('RequiredTrueValidator', value, value === true ? null : { required: true });
 		return value === true ? null : { required: true };
 	});
@@ -35,11 +32,10 @@ export function RequiredTrueValidator(): FormValidator {
 
 /**
  * a min number value validator
- * @return {null|FormValidationError}
  */
 export function MinValidator(min: number): FormValidator {
-	return new FormValidator(function (value: any) {
-		const min = this.params.min;
+	return new FormValidator(function (value: any, params?: any) {
+		const min = params.min;
 		if (!value || !min) {
 			return null;
 		}
@@ -50,11 +46,10 @@ export function MinValidator(min: number): FormValidator {
 
 /**
  * a max number value validator
- * @return {null|FormValidationError}
  */
 export function MaxValidator(max: number): FormValidator {
-	return new FormValidator(function (value: any) {
-		const max = this.params.max;
+	return new FormValidator(function (value: any, params?: any) {
+		const max = params.max;
 		if (!value || !max) {
 			return null;
 		}
@@ -65,11 +60,10 @@ export function MaxValidator(max: number): FormValidator {
 
 /**
  * a min string length validator
- * @return {null|FormValidationError}
  */
 export function MinLengthValidator(minlength: number): FormValidator {
-	return new FormValidator(function (value: any) {
-		const minlength = this.params.minlength;
+	return new FormValidator(function (value: any, params?: any) {
+		const minlength = params.minlength;
 		if (!value || !minlength) {
 			return null;
 		}
@@ -80,11 +74,10 @@ export function MinLengthValidator(minlength: number): FormValidator {
 
 /**
  * a max string length validator
- * @return {null|FormValidationError}
  */
 export function MaxLengthValidator(maxlength: number): FormValidator {
-	return new FormValidator(function (value: any) {
-		const maxlength = this.params.maxlength;
+	return new FormValidator(function (value: any, params?: any) {
+		const maxlength = params.maxlength;
 		if (!value || !maxlength) {
 			return null;
 		}
@@ -95,11 +88,10 @@ export function MaxLengthValidator(maxlength: number): FormValidator {
 
 /**
  * a regex pattern validator
- * @return {null|FormValidationError}
  */
 export function PatternValidator(pattern: string | RegExp): FormValidator {
-	return new FormValidator(function (value: any) {
-		const pattern = this.params.pattern;
+	return new FormValidator(function (value: any, params?: any) {
+		const pattern = params.pattern;
 		if (!value || !pattern) {
 			return null;
 		}
@@ -110,11 +102,10 @@ export function PatternValidator(pattern: string | RegExp): FormValidator {
 
 /**
  * an email pattern validator
- * @return {null|FormValidationError}
  */
 export function EmailValidator(): FormValidator {
 	const regex = /^(?=.{1,254}$)(?=.{1,64}@)[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+)*@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
-	return new FormValidator(function (value: any) {
+	return new FormValidator(function (value: any, params?: any) {
 		if (!value) {
 			return null;
 		}
@@ -131,5 +122,5 @@ function patternToRegEx(pattern: string | RegExp): RegExp {
 		pattern = pattern.charAt(pattern.length - 1) === '$' ? pattern : `${pattern}$`;
 		regex = new RegExp(pattern);
 	}
-	return regex;
+	return regex || new RegExp('');
 }

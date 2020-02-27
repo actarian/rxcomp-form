@@ -2,12 +2,12 @@ import { FormAbstract, FormValidator } from '../rxcomp-form';
 import FormAbstractCollection from './form-abstract-collection';
 
 /**
- * @desc Class representing a FormGroup.
+ * Class representing a FormGroup.
  */
 export default class FormGroup extends FormAbstractCollection {
 
 	/**
-	 * @desc Create a FormControl.
+	 * Create a FormControl.
 	 * @example
 	 * const form = new FormGroup({
 	 * 	firstName: null,
@@ -17,8 +17,8 @@ export default class FormGroup extends FormAbstractCollection {
 	 * form.changes$.subscribe(changes => {
 	 * 	console.log(changes);
 	 * });
-	 * @param {Map<string, any|FormAbstract>} controls - An object containing controls.
-	 * @param {FormValidator[]} validators - A list of validators.
+	 * @param controls an object containing controls.
+	 * @param validators a list of validators.
 	 */
 	constructor(controls: { [key: string]: FormAbstract | any } = {}, validators?: FormValidator | FormValidator[]) {
 		super(controls, validators);
@@ -27,9 +27,7 @@ export default class FormGroup extends FormAbstractCollection {
 }
 
 /**
- * @desc Shortcut for new FormGroup
- * @param {Map<string, any|FormAbstract>} controls
- * @param {FormValidator[]} validators
+ * Shortcut for new FormGroup
  */
 export function formGroup(controls: { [key: string]: FormAbstract | any } = {}, validators?: FormValidator | FormValidator[]) {
 	return new FormGroup(controls, validators);

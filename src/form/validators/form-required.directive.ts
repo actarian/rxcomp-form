@@ -1,28 +1,30 @@
-import { Directive } from 'rxcomp';
+import { Directive, IFactoryMeta } from 'rxcomp';
 import { FormValidator } from '../../rxcomp-form';
 import FormAbstractDirective from '../directives/form-abstract.directive';
 import { RequiredValidator } from './validators';
 
 /**
- * @desc FormRequiredDirective attribute for injecting RequiredValidator.
+ * FormRequiredDirective attribute for injecting RequiredValidator.
  * @example
  * <input type="text" formControlName="firstName" required />
  */
 export default class FormRequiredDirective extends Directive {
 
-	validator: FormValidator;
-	host: FormAbstractDirective;
+    validator?: FormValidator;
+    host?: FormAbstractDirective;
 
-	onInit() {
-		// console.log('FormRequiredDirective', this.host.control);
-		const validator = this.validator = RequiredValidator();
-		this.host.control.addValidators(validator);
-	}
+    onInit() {
+        // console.log('FormRequiredDirective', this.host.control);
+        this.validator = RequiredValidator();
+        if (this.host) {
+            this.host.control.addValidators(this.validator);
+        }
+    }
 
-	static meta = {
-		selector: '[required][formControl],[required][formControlName]',
-		inputs: ['required'],
-		hosts: { host: FormAbstractDirective },
-	};
+    static meta: IFactoryMeta = {
+        selector: '[required][formControl],[required][formControlName]',
+        inputs: ['required'],
+        hosts: { host: FormAbstractDirective },
+    };
 
 }

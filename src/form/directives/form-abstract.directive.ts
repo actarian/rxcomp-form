@@ -1,18 +1,15 @@
-import { Directive, getContext } from 'rxcomp';
+import { Directive, Factory, getContext, IFactoryMeta } from 'rxcomp';
 import { FormAbstract } from '../../rxcomp-form';
-import { FormAttributes } from '../models/form-status';
 import FormAbstractCollectionDirective from './form-abstract-collection.directive';
 
 /**
- * @desc Abstract class representing a FormAbstractDirective.
- * @abstract
- * @access public
+ * Abstract class representing a FormAbstractDirective.
  */
 export default class FormAbstractDirective extends Directive {
 
-	formControlName: string;
-	formControl: FormAbstract;
-	host: FormAbstractCollectionDirective;
+	formControlName?: string;
+	formControl?: FormAbstract;
+	host?: FormAbstractCollectionDirective;
 
 	get control(): FormAbstract {
 		if (this.formControl) {
@@ -36,53 +33,50 @@ export default class FormAbstractDirective extends Directive {
 		// node.addEventListener('focus', this.onFocus);
 	}
 
-	onChanges(changes) {
+	onChanges(changes: Factory | Window) {
 		const node = getContext(this).node as HTMLInputElement;
 		if (this.formControlName) {
 			node.name = this.formControlName;
 		}
-		const control = this.control;
 		/*
 		// remove all invalids then
 		Object.keys(control.errors).forEach(key => {
 			node.classList.add(`invalid-${key}`);
 		});
 		*/
-		FormAttributes.forEach(x => {
-			if (control[x]) {
-				node.classList.add(x);
-			} else {
-				node.classList.remove(x);
-			}
+		const control = this.control;
+		const flags = control.flags;
+		Object.keys(flags).forEach((key: string) => {
+			flags[key] ? node.classList.add(key) : node.classList.remove(key);
 		});
 		this.writeValue(control.value);
 	}
 
-	writeValue(value) {
+	writeValue(value: any) {
 		const node = getContext(this).node as HTMLInputElement;
 		// node.setAttribute('value', value == null ? '' : value);
 		node.value = value == null ? '' : value;
 	}
 
-	onChange(event) {
+	onChange(event: Event) {
 		const node = getContext(this).node as HTMLInputElement;
 		this.control.value = node.value === '' ? null : node.value;
 	}
 
-	onBlur(event) {
+	onBlur(event: FocusEvent) {
 		this.control.touched = true;
 	}
 
 	// onFocus(event) {}
 
-	setDisabledState(disabled) {
+	setDisabledState(disabled: boolean) {
 		const node = getContext(this).node as HTMLInputElement;
 		node.disabled = disabled;
 		// node.setAttribute('disabled', disabled);
 	}
 
-	static meta = {
-		selector: null, // no selection, abstract class
+	static meta: IFactoryMeta = {
+		selector: '', // no selection, abstract class
 		inputs: ['formControl', 'formControlName', 'value'],
 		hosts: { host: FormAbstractCollectionDirective },
 	};

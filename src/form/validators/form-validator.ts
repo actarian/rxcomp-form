@@ -1,7 +1,11 @@
 import { BehaviorSubject } from "rxjs";
 
+export interface IFormValidationError {
+	[key: string]: any
+}
+
 /**
- * @desc FormValidator class representing a form validator.
+ * FormValidator class representing a form validator.
  * @example
  * export function EqualValidator(equal) {
  * 	return new FormValidator(function(value) {
@@ -15,20 +19,13 @@ import { BehaviorSubject } from "rxjs";
  */
 export default class FormValidator {
 
-	validator: (value: any) => any;
+	validator: (value: any, params?: any) => null | IFormValidationError;
 	params$: BehaviorSubject<any>;
-	/**
-	 * params getter
-	 * @return {any} params
-	 */
+
 	get params(): any {
 		return this.params$.getValue();
 	}
 
-	/**
-	 * params setter
-	 * @param {any} params
-	 */
 	set params(params: any) {
 		if (params) {
 			const current = this.params;
@@ -44,20 +41,18 @@ export default class FormValidator {
 
 	/**
 	 * Create a FormValidator.
-	 * @abstract
 	 */
-	constructor(validator: (value: any) => any, params?: any) {
-		this.validator = validator.bind(this);
+	constructor(validator: (value: any, params?: any) => any, params?: any) {
+		this.validator = validator;
 		this.params$ = new BehaviorSubject(params);
 	}
 
 	/**
 	 * validate a value
-	 * @param {any} value - the value to validate
-	 * @return {null|FormValidationError}
+	 * @param value the value to validate
 	 */
 	validate(value: any): any {
-		return this.validator(value);
+		return this.validator(value, this.params);
 	}
 
 }

@@ -1,11 +1,8 @@
-import { Directive, getContext } from 'rxcomp';
+import { Directive, Factory, getContext, IFactoryMeta } from 'rxcomp';
 import FormAbstractCollection from '../form-abstract-collection';
-import { FormAttributes } from '../models/form-status';
 
 /**
- * @desc Abstract class representing a FormAbstractCollectionDirective.
- * @abstract
- * @access public
+ * Abstract class representing a FormAbstractCollectionDirective.
  */
 export default class FormAbstractCollectionDirective extends Directive {
 
@@ -14,20 +11,16 @@ export default class FormAbstractCollectionDirective extends Directive {
 		return {} as FormAbstractCollection;
 	}
 
-	onChanges(changes: any) {
+	onChanges(changes: Factory | Window) {
 		const { node } = getContext(this);
-		const control = this.control;
-		FormAttributes.forEach((attribute: string) => {
-			if (control[attribute]) {
-				node.classList.add(attribute);
-			} else {
-				node.classList.remove(attribute);
-			}
+		const flags = this.control.flags;
+		Object.keys(flags).forEach((key: string) => {
+			flags[key] ? node.classList.add(key) : node.classList.remove(key);
 		});
 	}
 
-	static meta = {
-		selector: null, // no selection, abstract class
+	static meta: IFactoryMeta = {
+		selector: '', // no selection, abstract class
 		hosts: { host: FormAbstractCollectionDirective },
 	};
 

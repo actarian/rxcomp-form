@@ -7,5 +7,3 @@ enum FormStatus {
 };
 
 export default FormStatus;
-
-export const FormAttributes = ['untouched', 'touched', 'pristine', 'dirty', 'pending', 'enabled', 'disabled', 'hidden', 'visible', 'valid', 'invalid', 'submitted'];

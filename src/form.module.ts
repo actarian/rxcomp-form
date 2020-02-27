@@ -1,4 +1,4 @@
-import { Module } from 'rxcomp';
+import { Factory, IModuleMeta, Module, Pipe } from 'rxcomp';
 import FormArrayDirective from './form/directives/form-array.directive';
 import FormCheckboxDirective from './form/directives/form-checkbox.directive';
 import FormFieldComponent from './form/directives/form-field.component';
@@ -17,7 +17,7 @@ import FormPatternDirective from './form/validators/form-pattern.directive';
 import FormRequiredTrueDirective from './form/validators/form-required-true.directive';
 import FormRequiredDirective from './form/validators/form-required.directive';
 
-const factories = [
+const factories: typeof Factory[] = [
 	FormArrayDirective,
 	FormCheckboxDirective,
 	FormFieldComponent,
@@ -37,10 +37,10 @@ const factories = [
 	FormRequiredTrueDirective,
 ];
 
-const pipes = [];
+const pipes: typeof Pipe[] = [];
 
 /**
- * @desc FormModule Class.
+ * FormModule Class.
  * @example
  * export default class AppModule extends Module {}
  *
@@ -58,7 +58,7 @@ const pipes = [];
  */
 export default class FormModule extends Module {
 
-	static meta = {
+	static meta: IModuleMeta = {
 		declarations: [
 			...factories,
 			...pipes,

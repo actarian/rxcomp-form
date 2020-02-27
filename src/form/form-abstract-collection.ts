@@ -6,19 +6,17 @@ import FormStatus from './models/form-status';
 import FormValidator from './validators/form-validator';
 
 /**
- * @desc Abstract class representing a form collection.
- * @abstract
- * @access public
+ * Abstract class representing a form collection.
  */
 export default class FormAbstractCollection extends FormAbstract {
 
 	controls: any;
-	changesChildren: BehaviorSubject<any>;
+	changesChildren: BehaviorSubject<any> = new BehaviorSubject<any>(undefined);
 
 	/**
 	 * Create a FormAbstract.
-	 * @param {Map<string, any|FormAbstract>} controls - An object containing controls.
-	 * @param {FormValidator[]} validators - A list of validators.
+	 * @param controls an object containing controls.
+	 * @param validators a list of validators.
 	 */
 	constructor(controls?: any, validators?: (FormValidator | FormValidator[])) {
 		super(validators);
@@ -28,9 +26,6 @@ export default class FormAbstractCollection extends FormAbstract {
 		this.initObservables_();
 	}
 
-	/**
-	 * @private
-	 */
 	initControl_(controlOrValue: FormAbstract | any, key: any): FormControl {
 		const control: FormControl = controlOrValue instanceof FormAbstract ? controlOrValue : new FormControl(controlOrValue);
 		control.addValidators(...this.validators);
@@ -38,31 +33,22 @@ export default class FormAbstractCollection extends FormAbstract {
 		return control;
 	}
 
-	/**
-	 * @private
-	 */
 	private initControls_(): { [key: string]: FormControl } {
-		this.forEach_((control, key) => {
+		this.forEach_((control: FormAbstract, key: any) => {
 			this.init(control, key);
 		});
 		return this.controls;
 	}
 
-	/**
-	 * @protected
-	 */
 	protected initSubjects_(): void {
-		this.changesChildren = new BehaviorSubject<any>(undefined).pipe(
+		this.changesChildren = this.changesChildren.pipe(
 			switchAll()
 		) as BehaviorSubject<Observable<any>>;
 		this.switchSubjects_();
 	}
 
-	/**
-	 * @protected
-	 */
 	protected switchSubjects_(): void {
-		const changesChildren = this.reduce_((result, control) => {
+		const changesChildren = this.reduce_((result: Observable<any>[], control: FormAbstract) => {
 			result.push(control.changes$);
 			return result;
 		}, []);
@@ -70,9 +56,6 @@ export default class FormAbstractCollection extends FormAbstract {
 		this.changesChildren.next(changesChildren$);
 	}
 
-	/**
-	 * @protected
-	 */
 	protected initObservables_(): void {
 		this.changes$ = this.changesChildren.pipe(
 			map(() => this.value),
@@ -80,7 +63,7 @@ export default class FormAbstractCollection extends FormAbstract {
 		);
 	}
 
-	validate(value): any[] {
+	validate(value: any): any[] {
 		let errors;
 		if (this.status === FormStatus.Disabled || this.status === FormStatus.Hidden) {
 			// this.errors = {};
@@ -89,7 +72,7 @@ export default class FormAbstractCollection extends FormAbstract {
 			// this.errors = Object.assign({}, ...this.validators.map(x => x(value)));
 			// this.status = Object.keys(this.errors).length === 0 ? FormStatus.Valid : FormStatus.Invalid;
 			let errors_ = this.validators.map(x => x.validate(value)).filter(x => x !== null);
-			errors = this.reduce_((result, control) => {
+			errors = this.reduce_((result: any[], control: FormAbstract) => {
 				return result.concat(control.errors);
 			}, errors_);
 			this.status = errors.length === 0 ? FormStatus.Valid : FormStatus.Invalid;
@@ -97,16 +80,10 @@ export default class FormAbstractCollection extends FormAbstract {
 		return errors;
 	}
 
-	/**
-	 * @protected
-	 */
 	protected forEach_(callback: Function): void {
 		Object.keys(this.controls).forEach(key => callback(this.controls[key], key));
 	}
 
-	/**
-	 * @protected
-	 */
 	protected reduce_(callback: Function, result: any): any {
 		this.forEach_((control: FormAbstract, key: any) => {
 			result = callback(result, control, key);
@@ -114,19 +91,13 @@ export default class FormAbstractCollection extends FormAbstract {
 		return result;
 	}
 
-	/**
-	 * @protected
-	 */
-	protected all_(key: any, value: any): boolean {
+	protected all_(key: (keyof FormAbstract), value: any): boolean {
 		return this.reduce_((result: boolean, control: FormAbstract) => {
 			return result && control[key] === value;
 		}, true);
 	}
 
-	/**
-	 * @protected
-	 */
-	protected any_(key: any, value: any): boolean {
+	protected any_(key: (keyof FormAbstract), value: any): boolean {
 		return this.reduce_((result: boolean, control: FormAbstract) => {
 			return result || control[key] === value;
 		}, false);
@@ -223,7 +194,7 @@ export default class FormAbstractCollection extends FormAbstract {
 	}
 
 	remove(control: FormAbstract): void {
-		const key: string = Object.keys(this.controls).find((key: string) => this.controls[key] === control ? key : null);
+		const key = Object.keys(this.controls).find((key: string) => this.controls[key] === control ? key : null);
 		if (key) {
 			this.removeKey(key);
 		}
@@ -239,7 +210,7 @@ export default class FormAbstractCollection extends FormAbstract {
 
 	/**
 	 * adds one or more FormValidator.
-	 * @param {...FormValidator[]} validators - A list of validators.
+	 * @param validators a list of validators.
 	 */
 	addValidators(...validators: FormValidator[]): void {
 		this.forEach_((control: FormAbstract) => control.addValidators(...validators));
@@ -247,7 +218,7 @@ export default class FormAbstractCollection extends FormAbstract {
 
 	/**
 	 * replace one or more FormValidator.
-	 * @param {...FormValidator[]} validators - A list of validators.
+	 * @param validators a list of validators.
 	 */
 	replaceValidators(...validators: FormValidator[]): void {
 		this.forEach_((control: FormAbstract) => control.replaceValidators(...validators));
