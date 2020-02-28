@@ -40,7 +40,7 @@
 	},
 	"devDependencies": {
 		"@types/node": "~13.7.6",
-		"gulpfile-config": "~1.0.0-alpha.4",
+		"gulpfile-config": "~1.0.0-alpha.5",
 		"typedoc": "^0.16.10",
 		"typescript": "~3.8.2"
 	}
