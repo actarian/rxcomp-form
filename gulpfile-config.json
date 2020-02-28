@@ -36,11 +36,6 @@
 		"dist": {
 			"compile": [
 				{
-					"input": "esdoc/css/esdoc.scss",
-					"output": "esdoc/css/esdoc.css",
-					"minify": true
-        },
-        {
 					"input": "src/rxcomp-form.ts",
 					"output": [
 						{
@@ -62,18 +57,12 @@
             "rxjs/operators": "rxjs.operators",
             "rxcomp": "rxcomp"
 					},
-					"name": "rxcomp-form",
+					"name": "rxcomp.form",
 					"external": [
             "rxjs",
             "rxjs/operators",
             "rxcomp"
           ]
-        }
-      ],
-			"docs": [
-				{
-					"input": "src/rxcomp-form.js",
-					"output": "docs/api"
         }
       ]
 		}

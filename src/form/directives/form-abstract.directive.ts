@@ -1,5 +1,5 @@
 import { Directive, Factory, getContext, IFactoryMeta } from 'rxcomp';
-import { FormAbstract } from '../../rxcomp-form';
+import FormAbstract from '../form-abstract';
 import FormAbstractCollectionDirective from './form-abstract-collection.directive';
 
 /**

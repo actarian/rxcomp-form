@@ -30,9 +30,9 @@
 	"homepage": "https://github.com/actarian/rxcomp-form",
 	"scripts": {
 		"start": "gulp",
-    "build": "gulp build --target dist",
-    "docs": "typedoc --options typedoc.json",
-    "docs2": "typedoc --out docs/documentation src/rxcomp-form.ts --mode modules --theme default --includeDeclarations --excludeExternals --excludePrivate --excludeNotExported"
+		"build": "gulp build --target dist",
+		"docs": "typedoc --options typedoc.json",
+		"docs2": "typedoc --out docs/documentation src/rxcomp-form.ts --mode modules --theme default --includeDeclarations --excludeExternals --excludePrivate --excludeNotExported"
 	},
 	"dependencies": {
 		"rxjs": "~6.5.4",

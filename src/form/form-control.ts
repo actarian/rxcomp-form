@@ -1,6 +1,6 @@
-import { FormValidator } from "../rxcomp-form";
 import FormAbstract from "./form-abstract";
 import FormStatus from './models/form-status';
+import FormValidator from "./validators/form-validator";
 
 /**
  * Class representing a FormControl.

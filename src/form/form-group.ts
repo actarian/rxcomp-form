@@ -1,5 +1,6 @@
-import { FormAbstract, FormValidator } from '../rxcomp-form';
+import FormAbstract from './form-abstract';
 import FormAbstractCollection from './form-abstract-collection';
+import FormValidator from './validators/form-validator';
 
 /**
  * Class representing a FormGroup.
