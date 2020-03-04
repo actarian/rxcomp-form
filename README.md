@@ -61,7 +61,7 @@ The global namespace for RxComp is `rxcomp`
 import { CoreModule, Module } from 'rxcomp';
 ```
 
-The global namespace for RxComp FormModule is `rxcomp-form`
+The global namespace for RxComp FormModule is `rxcomp.form`
 
 ```javascript
 import { FormModule } from 'rxcomp-form';
