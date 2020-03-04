@@ -2,14 +2,14 @@
 	"author": "Luca Zampetti <lzampetti@gmail.com>",
 	"name": "rxcomp-form",
 	"description": "Reactive FormModule for RxComp component library",
-	"version": "1.0.0-beta.3",
+	"version": "1.0.0-beta.7",
 	"browser": "dist/iife/rxcomp-form.js",
 	"main": "dist/cjs/rxcomp-form.js",
 	"types": "dist/cjs/rxcomp-form.d.ts",
 	"es2015": "dist/esm/rxcomp-form.js",
 	"files": [
-		"dist/",
-		"src/"
+    "dist/",
+    "!.DS_Store"
 	],
 	"license": "MIT",
 	"keywords": [
@@ -36,11 +36,11 @@
 	},
 	"dependencies": {
 		"rxjs": "~6.5.4",
-		"rxcomp": "~1.0.0-beta.5"
+		"rxcomp": "~1.0.0-beta.7"
 	},
 	"devDependencies": {
 		"@types/node": "~13.7.7",
-		"gulpfile-config": "~1.0.0-alpha.6",
+		"gulpfile-config": "~1.0.0-alpha.7",
 		"typedoc": "~0.16.11",
 		"typescript": "~3.8.3"
 	}

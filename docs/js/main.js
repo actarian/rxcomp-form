@@ -1,5 +1,5 @@
 /**
- * @license rxcomp-form v1.0.0-beta.3
+ * @license rxcomp-form v1.0.0-beta.7
  * (c) 2020 Luca Zampetti <lzampetti@gmail.com>
  * License: MIT
  */
@@ -1608,17 +1608,13 @@
     _inheritsLoose(AppComponent, _Component);
 
     function AppComponent() {
-      var _this;
-
-      _this = _Component.apply(this, arguments) || this;
-      _this.form = new FormGroup();
-      return _this;
+      return _Component.apply(this, arguments) || this;
     }
 
     var _proto = AppComponent.prototype;
 
     _proto.onInit = function onInit() {
-      var _this2 = this;
+      var _this = this;
 
       var form = new FormGroup({
         hidden: 'hiddenValue',
@@ -1632,8 +1628,8 @@
         items: new FormArray([null, null, null], RequiredValidator())
       });
       form.changes$.subscribe(function (changes) {
-        if (_this2.pushChanges) {
-          _this2.pushChanges();
+        if (_this.pushChanges) {
+          _this.pushChanges();
         }
       });
       this.form = form;
@@ -1646,6 +1642,7 @@
         email: 'jhonappleseed@gmail.com',
         country: 'en-US',
         evaluate: 'free',
+        newsletter: false,
         privacy: true,
         items: ['rxcomp', 'rxjs', 'forms']
       });

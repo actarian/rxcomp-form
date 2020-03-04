@@ -10,31 +10,31 @@ import { PatternValidator } from './validators';
  */
 export default class FormPatternDirective extends Directive {
 
-    validator?: FormValidator;
-    host?: FormAbstractDirective;
-    pattern?: string | RegExp;
+	validator?: FormValidator;
+	host?: FormAbstractDirective;
+	pattern?: string | RegExp;
 
-    onInit() {
-        // console.log('FormPatternDirective.onInit', this.pattern);
-        if (this.pattern) {
-            this.validator = PatternValidator(this.pattern);
-            if (this.host) {
-                this.host.control.addValidators(this.validator);
-            }
-        }
-    }
+	onInit() {
+		// console.log('FormPatternDirective.onInit', this.pattern);
+		if (this.pattern) {
+			this.validator = PatternValidator(this.pattern);
+			if (this.host) {
+				this.host.control.addValidators(this.validator);
+			}
+		}
+	}
 
-    onChanges(changes: Factory | Window) {
-        // console.log('FormPatternDirective.onChanges', this.pattern);
-        if (this.validator) {
-            this.validator.params = { pattern: this.pattern };
-        }
-    }
+	onChanges(changes: Factory | Window) {
+		// console.log('FormPatternDirective.onChanges', this.pattern);
+		if (this.validator) {
+			this.validator.params = { pattern: this.pattern };
+		}
+	}
 
-    static meta: IFactoryMeta = {
-        selector: '[pattern][formControl],[pattern][formControlName]',
-        inputs: ['pattern'],
-        hosts: { host: FormAbstractDirective },
-    };
+	static meta: IFactoryMeta = {
+		selector: '[pattern][formControl],[pattern][formControlName]',
+		inputs: ['pattern'],
+		hosts: { host: FormAbstractDirective },
+	};
 
 }

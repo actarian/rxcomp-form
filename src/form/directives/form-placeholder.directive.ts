@@ -7,16 +7,16 @@ import { Directive, Factory, getContext, IFactoryMeta } from 'rxcomp';
  */
 export default class FormPlaceholderDirective extends Directive {
 
-    placeholder?: string;
+	placeholder?: string;
 
-    onChanges(changes: Factory | Window) {
-        const node = getContext(this).node as HTMLInputElement;
-        node.setAttribute('placeholder', this.placeholder || '');
-    }
+	onChanges(changes: Factory | Window) {
+		const node = getContext(this).node as HTMLInputElement;
+		node.setAttribute('placeholder', this.placeholder || '');
+	}
 
-    static meta: IFactoryMeta = {
-        selector: 'input[placeholder],textarea[placeholder]',
-        inputs: ['placeholder'],
-    };
+	static meta: IFactoryMeta = {
+		selector: 'input[placeholder],textarea[placeholder]',
+		inputs: ['placeholder'],
+	};
 
 }

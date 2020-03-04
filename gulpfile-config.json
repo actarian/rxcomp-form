@@ -31,7 +31,11 @@
 					"minify": true
         }
       ],
-			"bundle": []
+			"bundle": [{
+        "input": "../rxcomp/dist/iife/rxcomp.js",
+        "output": "docs/js/rxcomp.js",
+        "minify": false
+      }]
 		},
 		"dist": {
 			"compile": [

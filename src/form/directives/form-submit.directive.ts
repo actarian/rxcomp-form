@@ -11,36 +11,36 @@ import { shareReplay, takeUntil, tap } from 'rxjs/operators';
  */
 export default class FormSubmitDirective extends Directive {
 
-    event?: string;
-    event$?: Observable<Event>;
+	event?: string;
+	event$?: Observable<Event>;
 
-    onInit() {
-        const { module, node, selector, parentInstance } = getContext(this);
-        const event = this.event = selector.replace(/\[|\]|\(|\)/g, '');
-        const form = node as HTMLFormElement;
-        const event$ = this.event$ = fromEvent(form, 'submit').pipe(
-            tap(event => {
-                event.preventDefault();
-            }),
-            shareReplay(1)
-        );
-        const expression = node.getAttribute(`(${event})`);
-        if (expression) {
-            const outputFunction = module.makeFunction(expression, ['$event']);
-            event$.pipe(
-                takeUntil(this.unsubscribe$ as Observable<any>) // !!!
-            ).subscribe(event => {
-                module.resolve(outputFunction, parentInstance, event);
-            });
-        } else {
-            (parentInstance as any)[`${event}$`] = event$; // !!! any
-        }
-        // console.log('parentInstance', parentInstance);
-        // console.log('EventDirective.onInit', 'selector', selector, 'event', event);
-    }
+	onInit() {
+		const { module, node, selector, parentInstance } = getContext(this);
+		const event = this.event = selector.replace(/\[|\]|\(|\)/g, '');
+		const form = node as HTMLFormElement;
+		const event$ = this.event$ = fromEvent(form, 'submit').pipe(
+			tap(event => {
+				event.preventDefault();
+			}),
+			shareReplay(1)
+		);
+		const expression = node.getAttribute(`(${event})`);
+		if (expression) {
+			const outputFunction = module.makeFunction(expression, ['$event']);
+			event$.pipe(
+				takeUntil(this.unsubscribe$ as Observable<any>) // !!!
+			).subscribe(event => {
+				module.resolve(outputFunction, parentInstance, event);
+			});
+		} else {
+			(parentInstance as any)[`${event}$`] = event$; // !!! any
+		}
+		// console.log('parentInstance', parentInstance);
+		// console.log('EventDirective.onInit', 'selector', selector, 'event', event);
+	}
 
-    static meta: IFactoryMeta = {
-        selector: `[(submit)]`,
-    };
+	static meta: IFactoryMeta = {
+		selector: `[(submit)]`,
+	};
 
 }

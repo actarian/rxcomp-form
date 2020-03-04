@@ -91,6 +91,22 @@
 					</li>
 				</ul>
 			</section>
+			<section class="tsd-panel tsd-kind-class">
+				<h3 class="tsd-before-signature">Indexable</h3>
+				<div class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">[</span>key: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">]: </span><span class="tsd-signature-type">any</span></div>
+				<div class="tsd-comment tsd-typography">
+					<div class="lead">
+						<p>FormFieldComponent.</p>
+					</div>
+					<dl class="tsd-comment-tags">
+						<dt>example</dt>
+						<dd><div formFieldName="firstName">
+								<input type="text" [formControl]="control" />
+							</div>
+						</dd>
+					</dl>
+				</div>
+			</section>
 			<section class="tsd-panel-group tsd-index-group">
 				<h2>Index</h2>
 				<section class="tsd-panel tsd-index-panel">
@@ -108,7 +124,6 @@
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="formfieldcomponent.html#formfield" class="tsd-kind-icon">form<wbr>Field</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="formfieldcomponent.html#formfieldname" class="tsd-kind-icon">form<wbr>Field<wbr>Name</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="formfieldcomponent.html#host" class="tsd-kind-icon">host</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="formfieldcomponent.html#pushchanges" class="tsd-kind-icon">push<wbr>Changes</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="formfieldcomponent.html#rxcompid" class="tsd-kind-icon">rxcomp<wbr>Id</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="formfieldcomponent.html#unsubscribe_" class="tsd-kind-icon">unsubscribe$</a></li>
 							</ul>
@@ -122,7 +137,11 @@
 						<section class="tsd-index-section ">
 							<h3>Methods</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="formfieldcomponent.html#onchanges" class="tsd-kind-icon">on<wbr>Changes</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-overwrite"><a href="formfieldcomponent.html#onchanges" class="tsd-kind-icon">on<wbr>Changes</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="formfieldcomponent.html#ondestroy" class="tsd-kind-icon">on<wbr>Destroy</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="formfieldcomponent.html#oninit" class="tsd-kind-icon">on<wbr>Init</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="formfieldcomponent.html#onview" class="tsd-kind-icon">on<wbr>View</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited"><a href="formfieldcomponent.html#pushchanges" class="tsd-kind-icon">push<wbr>Changes</a></li>
 							</ul>
 						</section>
 						<section class="tsd-index-section ">
@@ -147,7 +166,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="formabstractcollectiondirective.html">FormAbstractCollectionDirective</a>.<a href="formabstractcollectiondirective.html#constructor">constructor</a></p>
 								<ul>
-									<li>Defined in node_modules/rxcomp/dist/cjs/core/factory.d.ts:8</li>
+									<li>Defined in node_modules/rxcomp/dist/cjs/core/factory.d.ts:19</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -165,12 +184,12 @@
 				<h2>Properties</h2>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
 					<a name="changes_" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagOptional">Optional</span> changes$</h3>
-					<div class="tsd-signature tsd-kind-icon">changes$<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">BehaviorSubject</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Factory</span><span class="tsd-signature-symbol">&gt;</span></div>
+					<h3>changes$</h3>
+					<div class="tsd-signature tsd-kind-icon">changes$<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">ReplaySubject</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Factory</span><span class="tsd-signature-symbol">&gt;</span></div>
 					<aside class="tsd-sources">
 						<p>Inherited from <a href="formabstractcollectiondirective.html">FormAbstractCollectionDirective</a>.<a href="formabstractcollectiondirective.html#changes_">changes$</a></p>
 						<ul>
-							<li>Defined in node_modules/rxcomp/dist/cjs/core/factory.d.ts:5</li>
+							<li>Defined in node_modules/rxcomp/dist/cjs/core/factory.d.ts:13</li>
 						</ul>
 					</aside>
 				</section>
@@ -180,7 +199,7 @@
 					<div class="tsd-signature tsd-kind-icon">form<wbr>Field<span class="tsd-signature-symbol">:</span> <a href="formabstract.html" class="tsd-signature-type">FormAbstract</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/actarian/rxcomp-form/blob/757efb3/src/form/directives/form-field.component.ts#L15">src/form/directives/form-field.component.ts:15</a></li>
+							<li>Defined in <a href="https://github.com/actarian/rxcomp-form/blob/4373f5c/src/form/directives/form-field.component.ts#L15">src/form/directives/form-field.component.ts:15</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -190,7 +209,7 @@
 					<div class="tsd-signature tsd-kind-icon">form<wbr>Field<wbr>Name<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/actarian/rxcomp-form/blob/757efb3/src/form/directives/form-field.component.ts#L14">src/form/directives/form-field.component.ts:14</a></li>
+							<li>Defined in <a href="https://github.com/actarian/rxcomp-form/blob/4373f5c/src/form/directives/form-field.component.ts#L14">src/form/directives/form-field.component.ts:14</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -200,40 +219,29 @@
 					<div class="tsd-signature tsd-kind-icon">host<span class="tsd-signature-symbol">:</span> <a href="formabstractcollectiondirective.html" class="tsd-signature-type">FormAbstractCollectionDirective</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/actarian/rxcomp-form/blob/757efb3/src/form/directives/form-field.component.ts#L16">src/form/directives/form-field.component.ts:16</a></li>
-						</ul>
-					</aside>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
-					<a name="pushchanges" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagOptional">Optional</span> push<wbr>Changes</h3>
-					<div class="tsd-signature tsd-kind-icon">push<wbr>Changes<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Function</span></div>
-					<aside class="tsd-sources">
-						<p>Inherited from <a href="formabstractcollectiondirective.html">FormAbstractCollectionDirective</a>.<a href="formabstractcollectiondirective.html#pushchanges">pushChanges</a></p>
-						<ul>
-							<li>Defined in node_modules/rxcomp/dist/cjs/core/factory.d.ts:7</li>
+							<li>Defined in <a href="https://github.com/actarian/rxcomp-form/blob/4373f5c/src/form/directives/form-field.component.ts#L16">src/form/directives/form-field.component.ts:16</a></li>
 						</ul>
 					</aside>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
 					<a name="rxcompid" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagOptional">Optional</span> rxcomp<wbr>Id</h3>
-					<div class="tsd-signature tsd-kind-icon">rxcomp<wbr>Id<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">number</span></div>
+					<h3>rxcomp<wbr>Id</h3>
+					<div class="tsd-signature tsd-kind-icon">rxcomp<wbr>Id<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
 					<aside class="tsd-sources">
 						<p>Inherited from <a href="formabstractcollectiondirective.html">FormAbstractCollectionDirective</a>.<a href="formabstractcollectiondirective.html#rxcompid">rxcompId</a></p>
 						<ul>
-							<li>Defined in node_modules/rxcomp/dist/cjs/core/factory.d.ts:4</li>
+							<li>Defined in node_modules/rxcomp/dist/cjs/core/factory.d.ts:11</li>
 						</ul>
 					</aside>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
 					<a name="unsubscribe_" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagOptional">Optional</span> unsubscribe$</h3>
+					<h3>unsubscribe$</h3>
 					<div class="tsd-signature tsd-kind-icon">unsubscribe$<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Subject</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></div>
 					<aside class="tsd-sources">
 						<p>Inherited from <a href="formabstractcollectiondirective.html">FormAbstractCollectionDirective</a>.<a href="formabstractcollectiondirective.html#unsubscribe_">unsubscribe$</a></p>
 						<ul>
-							<li>Defined in node_modules/rxcomp/dist/cjs/core/factory.d.ts:6</li>
+							<li>Defined in node_modules/rxcomp/dist/cjs/core/factory.d.ts:12</li>
 						</ul>
 					</aside>
 				</section>
@@ -250,7 +258,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/actarian/rxcomp-form/blob/757efb3/src/form/directives/form-field.component.ts#L18">src/form/directives/form-field.component.ts:18</a></li>
+									<li>Defined in <a href="https://github.com/actarian/rxcomp-form/blob/4373f5c/src/form/directives/form-field.component.ts#L18">src/form/directives/form-field.component.ts:18</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <a href="formabstract.html" class="tsd-signature-type">FormAbstract</a></h4>
@@ -260,17 +268,18 @@
 			</section>
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Methods</h2>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-overwrite">
 					<a name="onchanges" class="tsd-anchor"></a>
 					<h3>on<wbr>Changes</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-overwrite">
 						<li class="tsd-signature tsd-kind-icon">on<wbr>Changes<span class="tsd-signature-symbol">(</span>changes<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Factory</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">Window</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
+								<p>Overrides <a href="formsubmitdirective.html">FormSubmitDirective</a>.<a href="formsubmitdirective.html#onchanges">onChanges</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/actarian/rxcomp-form/blob/757efb3/src/form/directives/form-field.component.ts#L30">src/form/directives/form-field.component.ts:30</a></li>
+									<li>Defined in <a href="https://github.com/actarian/rxcomp-form/blob/4373f5c/src/form/directives/form-field.component.ts#L30">src/form/directives/form-field.component.ts:30</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -279,6 +288,79 @@
 									<h5>changes: <span class="tsd-signature-type">Factory</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">Window</span></h5>
 								</li>
 							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+					<a name="ondestroy" class="tsd-anchor"></a>
+					<h3>on<wbr>Destroy</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+						<li class="tsd-signature tsd-kind-icon">on<wbr>Destroy<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<p>Inherited from <a href="formabstractcollectiondirective.html">FormAbstractCollectionDirective</a>.<a href="formabstractcollectiondirective.html#ondestroy">onDestroy</a></p>
+								<ul>
+									<li>Defined in node_modules/rxcomp/dist/cjs/core/factory.d.ts:17</li>
+								</ul>
+							</aside>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+					<a name="oninit" class="tsd-anchor"></a>
+					<h3>on<wbr>Init</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+						<li class="tsd-signature tsd-kind-icon">on<wbr>Init<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<p>Inherited from <a href="formabstractcollectiondirective.html">FormAbstractCollectionDirective</a>.<a href="formabstractcollectiondirective.html#oninit">onInit</a></p>
+								<ul>
+									<li>Defined in node_modules/rxcomp/dist/cjs/core/factory.d.ts:14</li>
+								</ul>
+							</aside>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+					<a name="onview" class="tsd-anchor"></a>
+					<h3>on<wbr>View</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+						<li class="tsd-signature tsd-kind-icon">on<wbr>View<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<p>Inherited from <a href="formabstractcollectiondirective.html">FormAbstractCollectionDirective</a>.<a href="formabstractcollectiondirective.html#onview">onView</a></p>
+								<ul>
+									<li>Defined in node_modules/rxcomp/dist/cjs/core/factory.d.ts:16</li>
+								</ul>
+							</aside>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited">
+					<a name="pushchanges" class="tsd-anchor"></a>
+					<h3>push<wbr>Changes</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited">
+						<li class="tsd-signature tsd-kind-icon">push<wbr>Changes<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<p>Inherited from <a href="formfieldcomponent.html">FormFieldComponent</a>.<a href="formfieldcomponent.html#pushchanges">pushChanges</a></p>
+								<p>Overrides <a href="formabstractcollectiondirective.html">FormAbstractCollectionDirective</a>.<a href="formabstractcollectiondirective.html#pushchanges">pushChanges</a></p>
+								<ul>
+									<li>Defined in node_modules/rxcomp/dist/cjs/core/component.d.ts:3</li>
+								</ul>
+							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
 						</li>
 					</ul>
@@ -293,7 +375,7 @@
 					<aside class="tsd-sources">
 						<p>Overrides Factory.meta</p>
 						<ul>
-							<li>Defined in <a href="https://github.com/actarian/rxcomp-form/blob/757efb3/src/form/directives/form-field.component.ts#L38">src/form/directives/form-field.component.ts:38</a></li>
+							<li>Defined in <a href="https://github.com/actarian/rxcomp-form/blob/4373f5c/src/form/directives/form-field.component.ts#L38">src/form/directives/form-field.component.ts:38</a></li>
 						</ul>
 					</aside>
 					<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-object-literal">
@@ -302,7 +384,7 @@
 						<div class="tsd-signature tsd-kind-icon">inputs<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol"> = [&#x27;formField&#x27;, &#x27;formFieldName&#x27;]</span></div>
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/actarian/rxcomp-form/blob/757efb3/src/form/directives/form-field.component.ts#L40">src/form/directives/form-field.component.ts:40</a></li>
+								<li>Defined in <a href="https://github.com/actarian/rxcomp-form/blob/4373f5c/src/form/directives/form-field.component.ts#L40">src/form/directives/form-field.component.ts:40</a></li>
 							</ul>
 						</aside>
 					</section>
@@ -312,7 +394,7 @@
 						<div class="tsd-signature tsd-kind-icon">selector<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> = &quot;[formField],[formFieldName]&quot;</span></div>
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/actarian/rxcomp-form/blob/757efb3/src/form/directives/form-field.component.ts#L39">src/form/directives/form-field.component.ts:39</a></li>
+								<li>Defined in <a href="https://github.com/actarian/rxcomp-form/blob/4373f5c/src/form/directives/form-field.component.ts#L39">src/form/directives/form-field.component.ts:39</a></li>
 							</ul>
 						</aside>
 					</section>
@@ -322,7 +404,7 @@
 						<div class="tsd-signature tsd-kind-icon">hosts<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">object</span></div>
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/actarian/rxcomp-form/blob/757efb3/src/form/directives/form-field.component.ts#L41">src/form/directives/form-field.component.ts:41</a></li>
+								<li>Defined in <a href="https://github.com/actarian/rxcomp-form/blob/4373f5c/src/form/directives/form-field.component.ts#L41">src/form/directives/form-field.component.ts:41</a></li>
 							</ul>
 						</aside>
 						<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-object-literal">
@@ -331,7 +413,7 @@
 							<div class="tsd-signature tsd-kind-icon">host<span class="tsd-signature-symbol">:</span> <a href="formabstractcollectiondirective.html" class="tsd-signature-type">FormAbstractCollectionDirective</a><span class="tsd-signature-symbol"> = FormAbstractCollectionDirective</span></div>
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/actarian/rxcomp-form/blob/757efb3/src/form/directives/form-field.component.ts#L41">src/form/directives/form-field.component.ts:41</a></li>
+									<li>Defined in <a href="https://github.com/actarian/rxcomp-form/blob/4373f5c/src/form/directives/form-field.component.ts#L41">src/form/directives/form-field.component.ts:41</a></li>
 								</ul>
 							</aside>
 						</section>
@@ -370,9 +452,6 @@
 								<a href="formfieldcomponent.html#host" class="tsd-kind-icon">host</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
-								<a href="formfieldcomponent.html#pushchanges" class="tsd-kind-icon">push<wbr>Changes</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
 								<a href="formfieldcomponent.html#rxcompid" class="tsd-kind-icon">rxcomp<wbr>Id</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
@@ -381,8 +460,20 @@
 							<li class=" tsd-kind-get-signature tsd-parent-kind-class">
 								<a href="formfieldcomponent.html#control" class="tsd-kind-icon">control</a>
 							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class">
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-overwrite">
 								<a href="formfieldcomponent.html#onchanges" class="tsd-kind-icon">on<wbr>Changes</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+								<a href="formfieldcomponent.html#ondestroy" class="tsd-kind-icon">on<wbr>Destroy</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+								<a href="formfieldcomponent.html#oninit" class="tsd-kind-icon">on<wbr>Init</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+								<a href="formfieldcomponent.html#onview" class="tsd-kind-icon">on<wbr>View</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited">
+								<a href="formfieldcomponent.html#pushchanges" class="tsd-kind-icon">push<wbr>Changes</a>
 							</li>
 							<li class=" tsd-kind-object-literal tsd-parent-kind-class tsd-is-overwrite tsd-is-static">
 								<a href="formfieldcomponent.html#meta" class="tsd-kind-icon">meta</a>

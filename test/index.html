@@ -39,7 +39,7 @@
 			</div>
 			<errors-component [control]="form.get('evaluate')"></errors-component>
 			<div class="group--form group--checkbox" formFieldName="newsletter">
-				<label><input type="checkbox" class="control--checkbox" [formControl]="control" [value]="true" /><span>checkbox required</span></label>
+				<label><input type="checkbox" class="control--checkbox" [formControl]="control" [value]="true" required /><span>checkbox required</span></label>
 			</div>
 			<errors-component [control]="form.get('newsletter')"></errors-component>
 			<div class="group--form group--checkbox" formFieldName="privacy">

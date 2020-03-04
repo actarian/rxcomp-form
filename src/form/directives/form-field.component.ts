@@ -11,34 +11,34 @@ import FormAbstractCollectionDirective from './form-abstract-collection.directiv
  */
 export default class FormFieldComponent extends Component {
 
-    formFieldName?: string;
-    formField?: FormAbstract;
-    host?: FormAbstractCollectionDirective;
+	formFieldName?: string;
+	formField?: FormAbstract;
+	host?: FormAbstractCollectionDirective;
 
-    get control(): FormAbstract {
-        // console.log('FormFieldComponent', (this.formFieldName ? `formFieldName ${this.formFieldName}` : `formField ${this.formField}`));
-        if (this.formField) {
-            return this.formField;
-        } else {
-            if (!this.host) {
-                throw ('missing form collection');
-            }
-            return this.host.control.get(this.formFieldName);
-        }
-    }
+	get control(): FormAbstract {
+		// console.log('FormFieldComponent', (this.formFieldName ? `formFieldName ${this.formFieldName}` : `formField ${this.formField}`));
+		if (this.formField) {
+			return this.formField;
+		} else {
+			if (!this.host) {
+				throw ('missing form collection');
+			}
+			return this.host.control.get(this.formFieldName);
+		}
+	}
 
-    onChanges(changes: Factory | Window) {
-        const { node } = getContext(this);
-        const flags = this.control.flags;
-        Object.keys(flags).forEach((key: string) => {
-            flags[key] ? node.classList.add(key) : node.classList.remove(key);
-        });
-    }
+	onChanges(changes: Factory | Window) {
+		const { node } = getContext(this);
+		const flags = this.control.flags;
+		Object.keys(flags).forEach((key: string) => {
+			flags[key] ? node.classList.add(key) : node.classList.remove(key);
+		});
+	}
 
-    static meta: IFactoryMeta = {
-        selector: '[formField],[formFieldName]',
-        inputs: ['formField', 'formFieldName'],
-        hosts: { host: FormAbstractCollectionDirective },
-    };
+	static meta: IFactoryMeta = {
+		selector: '[formField],[formFieldName]',
+		inputs: ['formField', 'formFieldName'],
+		hosts: { host: FormAbstractCollectionDirective },
+	};
 
 }

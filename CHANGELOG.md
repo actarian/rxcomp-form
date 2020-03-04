@@ -3,7 +3,7 @@ All notable changes to the "rxcomp-form" library will be documented in this file
 
 ---
 
-## [1.0.0-beta.4] - 2020-03-01
+## [1.0.0-beta.7] - 2020-03-01
 ### Refactoring
 - Typescript version
 

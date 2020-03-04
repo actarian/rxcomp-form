@@ -10,21 +10,21 @@ import { RequiredValidator } from './validators';
  */
 export default class FormRequiredDirective extends Directive {
 
-    validator?: FormValidator;
-    host?: FormAbstractDirective;
+	validator?: FormValidator;
+	host?: FormAbstractDirective;
 
-    onInit() {
-        // console.log('FormRequiredDirective', this.host.control);
-        this.validator = RequiredValidator();
-        if (this.host) {
-            this.host.control.addValidators(this.validator);
-        }
-    }
+	onInit() {
+		// console.log('FormRequiredDirective', this.host.control);
+		this.validator = RequiredValidator();
+		if (this.host) {
+			this.host.control.addValidators(this.validator);
+		}
+	}
 
-    static meta: IFactoryMeta = {
-        selector: '[required][formControl],[required][formControlName]',
-        inputs: ['required'],
-        hosts: { host: FormAbstractDirective },
-    };
+	static meta: IFactoryMeta = {
+		selector: '[required][formControl],[required][formControlName]',
+		inputs: ['required'],
+		hosts: { host: FormAbstractDirective },
+	};
 
 }

@@ -3,7 +3,7 @@ import { FormArray, FormGroup, RequiredValidator } from '../../src/rxcomp-form';
 
 export default class AppComponent extends Component {
 
-	form: FormGroup = new FormGroup();
+	form?: FormGroup;
 
 	onInit() {
 		const form = new FormGroup({
@@ -29,21 +29,22 @@ export default class AppComponent extends Component {
 	}
 
 	test(): void {
-		this.form.patch({
+		this.form!.patch({
 			firstName: 'Jhon',
 			lastName: 'Appleseed',
 			email: 'jhonappleseed@gmail.com',
 			country: 'en-US',
 			evaluate: 'free',
+			newsletter: false,
 			privacy: true,
 			items: ['rxcomp', 'rxjs', 'forms']
 		});
 	}
 
 	onSubmit(): void {
-		if (this.form.valid) {
+		if (this.form!.valid) {
 			// console.log('AppComponent.onSubmit', this.form.value);
-			this.form.submitted = true;
+			this.form!.submitted = true;
 			// this.form.reset();
 		}
 	}

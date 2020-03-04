@@ -10,29 +10,29 @@ import { MinValidator } from './validators';
  */
 export default class FormMinDirective extends Directive {
 
-    validator?: FormValidator;
-    host?: FormAbstractDirective;
-    min: number = Number.NEGATIVE_INFINITY;
+	validator?: FormValidator;
+	host?: FormAbstractDirective;
+	min: number = Number.NEGATIVE_INFINITY;
 
-    onInit() {
-        // console.log('FormMinDirective.onInit', this.min);
-        this.validator = MinValidator(this.min);
-        if (this.host) {
-            this.host.control.addValidators(this.validator);
-        }
-    }
+	onInit() {
+		// console.log('FormMinDirective.onInit', this.min);
+		this.validator = MinValidator(this.min);
+		if (this.host) {
+			this.host.control.addValidators(this.validator);
+		}
+	}
 
-    onChanges(changes: Factory | Window) {
-        // console.log('FormMinDirective.onChanges', this.min);
-        if (this.validator) {
-            this.validator.params = { min: this.min };
-        }
-    }
+	onChanges(changes: Factory | Window) {
+		// console.log('FormMinDirective.onChanges', this.min);
+		if (this.validator) {
+			this.validator.params = { min: this.min };
+		}
+	}
 
-    static meta: IFactoryMeta = {
-        selector: '[min][formControl],[min][formControlName]',
-        inputs: ['min'],
-        hosts: { host: FormAbstractDirective },
-    };
+	static meta: IFactoryMeta = {
+		selector: '[min][formControl],[min][formControlName]',
+		inputs: ['min'],
+		hosts: { host: FormAbstractDirective },
+	};
 
 }

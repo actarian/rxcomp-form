@@ -1,5 +1,5 @@
 /**
- * @license rxcomp-form v1.0.0-beta.3
+ * @license rxcomp-form v1.0.0-beta.7
  * (c) 2020 Luca Zampetti <lzampetti@gmail.com>
  * License: MIT
  */

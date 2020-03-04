@@ -10,29 +10,29 @@ import { MinLengthValidator } from './validators';
  */
 export default class FormMinLengthDirective extends Directive {
 
-    validator?: FormValidator;
-    host?: FormAbstractDirective;
-    minlength: number = Number.NEGATIVE_INFINITY;
+	validator?: FormValidator;
+	host?: FormAbstractDirective;
+	minlength: number = Number.NEGATIVE_INFINITY;
 
-    onInit() {
-        // console.log('FormMinLengthDirective.onInit', this.minlength);
-        this.validator = MinLengthValidator(this.minlength);
-        if (this.host) {
-            this.host.control.addValidators(this.validator);
-        }
-    }
+	onInit() {
+		// console.log('FormMinLengthDirective.onInit', this.minlength);
+		this.validator = MinLengthValidator(this.minlength);
+		if (this.host) {
+			this.host.control.addValidators(this.validator);
+		}
+	}
 
-    onChanges(changes: Factory | Window) {
-        // console.log('FormMinLengthDirective.onChanges', this.minlength);
-        if (this.validator) {
-            this.validator.params = { minlength: this.minlength };
-        }
-    }
+	onChanges(changes: Factory | Window) {
+		// console.log('FormMinLengthDirective.onChanges', this.minlength);
+		if (this.validator) {
+			this.validator.params = { minlength: this.minlength };
+		}
+	}
 
-    static meta: IFactoryMeta = {
-        selector: '[minlength][formControl],[minlength][formControlName]',
-        inputs: ['minlength'],
-        hosts: { host: FormAbstractDirective },
-    };
+	static meta: IFactoryMeta = {
+		selector: '[minlength][formControl],[minlength][formControlName]',
+		inputs: ['minlength'],
+		hosts: { host: FormAbstractDirective },
+	};
 
 }
