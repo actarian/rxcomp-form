@@ -2,7 +2,7 @@
 	"author": "Luca Zampetti <lzampetti@gmail.com>",
 	"name": "rxcomp-form",
 	"description": "Reactive FormModule for RxComp component library",
-	"version": "1.0.0-beta.7",
+	"version": "1.0.0-beta.8",
 	"browser": "dist/iife/rxcomp-form.js",
 	"main": "dist/cjs/rxcomp-form.js",
 	"types": "dist/cjs/rxcomp-form.d.ts",

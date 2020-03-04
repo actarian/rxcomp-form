@@ -51,7 +51,7 @@
 							"format": "esm"
             },
 						{
-							"file": "dist/iife/rxcomp.js",
+							"file": "dist/iife/rxcomp-form.js",
 							"format": "iife",
 							"minify": true
             }
