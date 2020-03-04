@@ -39,9 +39,9 @@
 		"rxcomp": "~1.0.0-beta.5"
 	},
 	"devDependencies": {
-		"@types/node": "~13.7.6",
-		"gulpfile-config": "~1.0.0-alpha.5",
-		"typedoc": "^0.16.10",
-		"typescript": "~3.8.2"
+		"@types/node": "~13.7.7",
+		"gulpfile-config": "~1.0.0-alpha.6",
+		"typedoc": "~0.16.11",
+		"typescript": "~3.8.3"
 	}
 }
