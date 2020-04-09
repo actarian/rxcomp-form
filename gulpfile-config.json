@@ -23,11 +23,6 @@
 						"rxjs/operators": "rxjs.operators",
 						"rxcomp": "rxcomp"
 					},
-					"external": [
-            "rxjs",
-            "rxjs/operators",
-            "rxcomp"
-          ],
 					"minify": true
         }
       ],
@@ -50,6 +45,11 @@
 							"file": "dist/esm/",
 							"format": "esm"
             },
+            {
+              "file": "dist/umd/rxcomp-form.js",
+              "format": "umd",
+							"minify": true
+            },
 						{
 							"file": "dist/iife/rxcomp-form.js",
 							"format": "iife",
@@ -61,12 +61,7 @@
             "rxjs/operators": "rxjs.operators",
             "rxcomp": "rxcomp"
 					},
-					"name": "rxcomp.form",
-					"external": [
-            "rxjs",
-            "rxjs/operators",
-            "rxcomp"
-          ]
+					"name": "rxcomp.form"
         }
       ]
 		}

@@ -3,13 +3,13 @@
 	"name": "rxcomp-form",
 	"description": "Reactive FormModule for RxComp component library",
 	"version": "1.0.0-beta.8",
-	"browser": "dist/iife/rxcomp-form.js",
+	"browser": "dist/umd/rxcomp-form.js",
 	"main": "dist/cjs/rxcomp-form.js",
 	"types": "dist/cjs/rxcomp-form.d.ts",
 	"es2015": "dist/esm/rxcomp-form.js",
 	"files": [
-    "dist/",
-    "!.DS_Store"
+		"dist/",
+		"!.DS_Store"
 	],
 	"license": "MIT",
 	"keywords": [
@@ -36,7 +36,7 @@
 	},
 	"dependencies": {
 		"rxjs": "~6.5.4",
-		"rxcomp": "~1.0.0-beta.7",
+		"rxcomp": "~1.0.0-beta.8",
 		"tslib": "~1.11.1"
 	},
 	"devDependencies": {
