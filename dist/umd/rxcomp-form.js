@@ -1,5 +1,5 @@
 /**
- * @license rxcomp-form v1.0.0-beta.8
+ * @license rxcomp-form v1.0.0-beta.9
  * (c) 2020 Luca Zampetti <lzampetti@gmail.com>
  * License: MIT
  */
@@ -128,13 +128,25 @@
     var _proto = FormAbstractDirective.prototype;
 
     _proto.onInit = function onInit() {
-      var node = rxcomp.getContext(this).node;
-      this.onChange = this.onChange.bind(this);
-      this.onBlur = this.onBlur.bind(this); // this.onFocus = this.onFocus.bind(this);
+      var _this = this;
 
-      node.addEventListener('input', this.onChange);
-      node.addEventListener('change', this.onChange);
-      node.addEventListener('blur', this.onBlur); // node.addEventListener('focus', this.onFocus);
+      var node = rxcomp.getContext(this).node; // this.onChange = this.onChange.bind(this);
+      // this.onBlur = this.onBlur.bind(this);
+      // this.onFocus = this.onFocus.bind(this);
+      // node.addEventListener('input', this.onChange);
+      // node.addEventListener('change', this.onChange);
+      // node.addEventListener('blur', this.onBlur);
+      // node.addEventListener('focus', this.onFocus);
+
+      rxjs.fromEvent(node, 'input').pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (event) {
+        return _this.onChange(event);
+      });
+      rxjs.fromEvent(node, 'change').pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (event) {
+        return _this.onChange(event);
+      });
+      rxjs.fromEvent(node, 'blur').pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (event) {
+        return _this.onBlur(event);
+      }); // fromEvent<FocusEvent>(node, 'focus').pipe(takeUntil(this.unsubscribe$)).subscribe(event => this.onFocus(event));
     };
 
     _proto.onChanges = function onChanges(changes) {
@@ -277,15 +289,25 @@
     var _proto = FormCheckboxDirective.prototype;
 
     _proto.onInit = function onInit() {
+      var _this = this;
+
       var node = rxcomp.getContext(this).node; // log(node.getAttributeNode('formControl').value);
       // log('name', node.name);
+      // this.onChange = this.onChange.bind(this);
+      // this.onBlur = this.onBlur.bind(this);
+      // this.onFocus = this.onFocus.bind(this);
+      // node.addEventListener('input', this.onChange);
+      // node.addEventListener('change', this.onChange);
+      // node.addEventListener('blur', this.onBlur);
+      // node.addEventListener('focus', this.onFocus);
+      // fromEvent<Event>(node, 'input').pipe(takeUntil(this.unsubscribe$)).subscribe(event => this.onChange(event));
 
-      this.onChange = this.onChange.bind(this);
-      this.onBlur = this.onBlur.bind(this); // this.onFocus = this.onFocus.bind(this);
-
-      node.addEventListener('input', this.onChange); // node.addEventListener('change', this.onChange);
-
-      node.addEventListener('blur', this.onBlur); // node.addEventListener('focus', this.onFocus);
+      rxjs.fromEvent(node, 'change').pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (event) {
+        return _this.onChange(event);
+      });
+      rxjs.fromEvent(node, 'blur').pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (event) {
+        return _this.onBlur(event);
+      }); // fromEvent<FocusEvent>(node, 'focus').pipe(takeUntil(this.unsubscribe$)).subscribe(event => this.onFocus(event));
     };
 
     _proto.writeValue = function writeValue(value) {
@@ -520,15 +542,25 @@
     var _proto = FormRadioDirective.prototype;
 
     _proto.onInit = function onInit() {
+      var _this = this;
+
       var node = rxcomp.getContext(this).node; // log(node.getAttributeNode('formControl').value);
       // log('name', node.name);
+      // this.onChange = this.onChange.bind(this);
+      // this.onBlur = this.onBlur.bind(this);
+      // this.onFocus = this.onFocus.bind(this);
+      // node.addEventListener('input', this.onChange);
+      // node.addEventListener('change', this.onChange);
+      // node.addEventListener('blur', this.onBlur);
+      // node.addEventListener('focus', this.onFocus);
+      // fromEvent<Event>(node, 'input').pipe(takeUntil(this.unsubscribe$)).subscribe(event => this.onChange(event));
 
-      this.onChange = this.onChange.bind(this);
-      this.onBlur = this.onBlur.bind(this); // this.onFocus = this.onFocus.bind(this);
-
-      node.addEventListener('input', this.onChange); // node.addEventListener('change', this.onChange);
-
-      node.addEventListener('blur', this.onBlur); // node.addEventListener('focus', this.onFocus);
+      rxjs.fromEvent(node, 'change').pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (event) {
+        return _this.onChange(event);
+      });
+      rxjs.fromEvent(node, 'blur').pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (event) {
+        return _this.onBlur(event);
+      }); // fromEvent<FocusEvent>(node, 'focus').pipe(takeUntil(this.unsubscribe$)).subscribe(event => this.onFocus(event));
     };
 
     _proto.writeValue = function writeValue(value) {
@@ -2206,4 +2238,3 @@
   Object.defineProperty(exports, '__esModule', { value: true });
 
 })));
-//# sourceMappingURL=rxcomp-form.js.map

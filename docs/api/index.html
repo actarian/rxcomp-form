@@ -4,7 +4,7 @@
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<title>RxCompForm</title>
-	<meta name="description" content="">
+	<meta name="description" content="Documentation for RxCompForm">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="assets/css/main.css">
 </head>
@@ -13,7 +13,7 @@
 	<div class="tsd-page-toolbar">
 		<div class="container">
 			<div class="table-wrap">
-				<div class="table-cell" id="tsd-search" data-index="assets/js/search.js" data-base=".">
+				<div class="table-cell" id="tsd-search" data-index="assets/js/search.json" data-base=".">
 					<div class="field">
 						<label for="tsd-search-field" class="tsd-widget search no-caption">Search</label>
 						<input id="tsd-search-field" type="text" />
@@ -67,7 +67,7 @@
 				</a>
 				<p><a href="https://github.com/actarian/rxcomp-form"><img src="https://img.shields.io/github/license/actarian/rxcomp-form.svg" alt="Licence"></a></p>
 				<p><a href="https://github.com/actarian/rxcomp-form">RxComp FormModule</a> is a Reactive Form Module for RxComp library</p>
-				<p><a href="https://github.com/actarian/rxcomp">RxComp</a> is a reactive component library built on top of <a href="https://github.com/ReactiveX/rxjs">RxJs</a> that mimics the <a href="https://angular.io/">Angular</a> declarative syntax. </p>
+				<p><a href="https://github.com/actarian/rxcomp">RxComp</a> is a reactive component library built on top of <a href="https://github.com/ReactiveX/rxjs">RxJs</a> that mimics the <a href="https://angular.io/">Angular</a> declarative syntax.</p>
 				<p>If you like Angular declarative syntax but you just want go Vanilla, RxComp library come in useful.</p>
 				<table>
 					<thead>
@@ -102,24 +102,26 @@
 						</tr>
 				</tbody></table>
 				<blockquote>
-					<p><a href="https://actarian.github.io/rxcomp-form/">RxComp Form Demo</a><br><a href="https://actarian.github.io/rxcomp-form/api/">RxComp Form Api</a><br><a href="https://codepen.io/actarian/pen/vYEXXPe?editors=0010">RxComp Form Codepen</a>  </p>
+					<p><a href="https://actarian.github.io/rxcomp-form/">RxComp Form Demo</a>
+						<a href="https://actarian.github.io/rxcomp-form/api/">RxComp Form Api</a>
+					<a href="https://codepen.io/actarian/pen/vYEXXPe?editors=0010">RxComp Form Codepen</a></p>
 				</blockquote>
 				<hr>
 				<a href="#what-is-included" id="what-is-included" style="color: inherit; text-decoration: none;">
 					<h3>What is included</h3>
 				</a>
 				<ul>
-					<li><p>Models  </p>
+					<li><p>Models</p>
 					</li>
-					<li><p><code>FormControl</code>, <code>FormGroup</code>, <code>FormArray</code>*  </p>
+					<li><p><code>FormControl</code>, <code>FormGroup</code>, <code>FormArray</code>*</p>
 					</li>
-					<li><p>Directives  </p>
+					<li><p>Directives</p>
 					</li>
-					<li><p><code>FormInput</code>, <code>FormTextarea</code>, <code>FormSelect</code>, <code>FormCheckbox</code>, <code>FormRadio</code>, <code>FormSubmit</code>*  </p>
+					<li><p><code>FormInput</code>, <code>FormTextarea</code>, <code>FormSelect</code>, <code>FormCheckbox</code>, <code>FormRadio</code>, <code>FormSubmit</code>*</p>
 					</li>
-					<li><p>Validators  </p>
+					<li><p>Validators</p>
 					</li>
-					<li><p><code>EmailValidator</code>, <code>MaxLengthValidator</code>, <code>MaxValidator</code>, <code>MinLengthValidator</code>, <code>MinValidator</code>, <code>NullValidator</code>, <code>PatternValidator</code>, <code>RequiredTrueValidator</code>, <code>RequiredValidator</code>* </p>
+					<li><p><code>EmailValidator</code>, <code>MaxLengthValidator</code>, <code>MaxValidator</code>, <code>MinLengthValidator</code>, <code>MinValidator</code>, <code>NullValidator</code>, <code>PatternValidator</code>, <code>RequiredTrueValidator</code>, <code>RequiredValidator</code>*</p>
 					</li>
 				</ul>
 				<hr>
@@ -129,15 +131,16 @@
 				<a href="#es6-via-npm" id="es6-via-npm" style="color: inherit; text-decoration: none;">
 					<h3>ES6 via npm</h3>
 				</a>
-				<p>This library depend on <a href="https://github.com/actarian/rxcomp">RxComp</a> and <a href="https://github.com/ReactiveX/rxjs">RxJs</a><br>install via npm or include via script   </p>
+				<p>This library depend on <a href="https://github.com/actarian/rxcomp">RxComp</a> and <a href="https://github.com/ReactiveX/rxjs">RxJs</a>
+				install via npm or include via script</p>
 				<pre><code>npm <span class="hljs-keyword">install</span> rxjs rxcomp rxcomp-<span class="hljs-keyword">form</span> <span class="hljs-comment">--save</span></code></pre><hr>
 				<a href="#cdn" id="cdn" style="color: inherit; text-decoration: none;">
 					<h3>CDN</h3>
 				</a>
 				<p>For CDN, you can use unpkg</p>
 				<pre><code class="language-html"><span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">src</span>=<span class="hljs-string">"https://unpkg.com/@reactivex/rxjs@6.5.4/dist/global/rxjs.umd.min.js"</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
-<span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">src</span>=<span class="hljs-string">"https://unpkg.com/rxcomp@1.0.0-beta.7/dist/iife/rxcomp.min.js"</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>  
-<span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">src</span>=<span class="hljs-string">"https://unpkg.com/rxcomp-form@1.0.0-beta.8/dist/iife/rxcomp-form.min.js"</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span></code></pre>
+<span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">src</span>=<span class="hljs-string">"https://unpkg.com/rxcomp@1.0.0-beta.9/dist/umd/rxcomp.min.js"</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">src</span>=<span class="hljs-string">"https://unpkg.com/rxcomp-form@1.0.0-beta.9/dist/umd/rxcomp-form.min.js"</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span></code></pre>
 				<p>The global namespace for RxComp is <code>rxcomp</code></p>
 				<pre><code class="language-javascript"><span class="hljs-keyword">import</span> { CoreModule, Module } <span class="hljs-keyword">from</span> <span class="hljs-string">'rxcomp'</span>;</code></pre>
 				<p>The global namespace for RxComp FormModule is <code>rxcomp.form</code></p>
@@ -245,7 +248,7 @@ AppComponent.meta = {
 				<p><em>Thank you for taking the time to provide feedback and review. This feedback is appreciated and very helpful 🌈</em></p>
 				<p><a href="https://gitHub.com/actarian/rxcomp/network/"><img src="https://img.shields.io/github/forks/actarian/rxcomp.svg?style=social&label=Fork&maxAge=2592000" alt="GitHub forks"></a>  <a href="https://GitHub.com/actarian/rxcomp/stargazers/"><img src="https://img.shields.io/github/stars/actarian/rxcomp.svg?style=social&label=Star&maxAge=2592000" alt="GitHub stars"></a>  <a href="https://github.com/actarian?tab=followers"><img src="https://img.shields.io/github/followers/actarian.svg?style=social&label=Follow&maxAge=2592000" alt="GitHub followers"></a></p>
 				<ul>
-					<li><a href="https://github.com/actarian/rxcomp">Github Project Page</a>  </li>
+					<li><a href="https://github.com/actarian/rxcomp">Github Project Page</a></li>
 				</ul>
 				<p><em>If you find it helpful, feel free to contribute in keeping this library up to date via <a href="https://www.paypal.me/circledev/5">PayPal</a></em></p>
 				<p><a href="https://www.paypal.me/circledev/5"><img src="https://www.paypalobjects.com/webstatic/en_US/i/buttons/PP_logo_h_100x26.png" alt="PayPal"></a></p>
@@ -254,7 +257,7 @@ AppComponent.meta = {
 					<h2>Contact</h2>
 				</a>
 				<ul>
-					<li>Luca Zampetti <a href="mailto:&#x6c;&#x7a;&#97;&#x6d;&#112;&#101;&#x74;&#116;&#x69;&#64;&#103;&#x6d;&#x61;&#x69;&#x6c;&#46;&#x63;&#x6f;&#109;">&#x6c;&#x7a;&#97;&#x6d;&#112;&#101;&#x74;&#116;&#x69;&#64;&#103;&#x6d;&#x61;&#x69;&#x6c;&#46;&#x63;&#x6f;&#109;</a></li>
+					<li>Luca Zampetti <a href="mailto:&#x6c;&#x7a;&#x61;&#x6d;&#112;&#101;&#x74;&#116;&#105;&#64;&#x67;&#109;&#x61;&#105;&#x6c;&#x2e;&#x63;&#x6f;&#109;">&#x6c;&#x7a;&#x61;&#x6d;&#112;&#101;&#x74;&#116;&#105;&#64;&#x67;&#109;&#x61;&#105;&#x6c;&#x2e;&#x63;&#x6f;&#109;</a></li>
 					<li>Follow <a href="https://twitter.com/actarian">@actarian</a> on Twitter</li>
 				</ul>
 				<p><a href="https://twitter.com/actarian"><img src="https://img.shields.io/twitter/follow/actarian.svg?style=social&label=Follow%20@actarian" alt="Twitter Follow"></a></p>
@@ -413,37 +416,10 @@ Docs Schema
 		<h2>Legend</h2>
 		<div class="tsd-legend-group">
 			<ul class="tsd-legend">
-				<li class="tsd-kind-module"><span class="tsd-kind-icon">Module</span></li>
-				<li class="tsd-kind-object-literal"><span class="tsd-kind-icon">Object literal</span></li>
-				<li class="tsd-kind-variable"><span class="tsd-kind-icon">Variable</span></li>
-				<li class="tsd-kind-function"><span class="tsd-kind-icon">Function</span></li>
-				<li class="tsd-kind-function tsd-has-type-parameter"><span class="tsd-kind-icon">Function with type parameter</span></li>
-				<li class="tsd-kind-index-signature"><span class="tsd-kind-icon">Index signature</span></li>
-				<li class="tsd-kind-type-alias"><span class="tsd-kind-icon">Type alias</span></li>
-				<li class="tsd-kind-type-alias tsd-has-type-parameter"><span class="tsd-kind-icon">Type alias with type parameter</span></li>
-			</ul>
-			<ul class="tsd-legend">
-				<li class="tsd-kind-enum"><span class="tsd-kind-icon">Enumeration</span></li>
-				<li class="tsd-kind-enum-member"><span class="tsd-kind-icon">Enumeration member</span></li>
-				<li class="tsd-kind-property tsd-parent-kind-enum"><span class="tsd-kind-icon">Property</span></li>
-				<li class="tsd-kind-method tsd-parent-kind-enum"><span class="tsd-kind-icon">Method</span></li>
-			</ul>
-			<ul class="tsd-legend">
-				<li class="tsd-kind-interface"><span class="tsd-kind-icon">Interface</span></li>
-				<li class="tsd-kind-interface tsd-has-type-parameter"><span class="tsd-kind-icon">Interface with type parameter</span></li>
-				<li class="tsd-kind-constructor tsd-parent-kind-interface"><span class="tsd-kind-icon">Constructor</span></li>
-				<li class="tsd-kind-property tsd-parent-kind-interface"><span class="tsd-kind-icon">Property</span></li>
-				<li class="tsd-kind-method tsd-parent-kind-interface"><span class="tsd-kind-icon">Method</span></li>
-				<li class="tsd-kind-index-signature tsd-parent-kind-interface"><span class="tsd-kind-icon">Index signature</span></li>
-			</ul>
-			<ul class="tsd-legend">
-				<li class="tsd-kind-class"><span class="tsd-kind-icon">Class</span></li>
-				<li class="tsd-kind-class tsd-has-type-parameter"><span class="tsd-kind-icon">Class with type parameter</span></li>
 				<li class="tsd-kind-constructor tsd-parent-kind-class"><span class="tsd-kind-icon">Constructor</span></li>
 				<li class="tsd-kind-property tsd-parent-kind-class"><span class="tsd-kind-icon">Property</span></li>
 				<li class="tsd-kind-method tsd-parent-kind-class"><span class="tsd-kind-icon">Method</span></li>
 				<li class="tsd-kind-accessor tsd-parent-kind-class"><span class="tsd-kind-icon">Accessor</span></li>
-				<li class="tsd-kind-index-signature tsd-parent-kind-class"><span class="tsd-kind-icon">Index signature</span></li>
 			</ul>
 			<ul class="tsd-legend">
 				<li class="tsd-kind-constructor tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited constructor</span></li>
@@ -454,16 +430,6 @@ Docs Schema
 			<ul class="tsd-legend">
 				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-protected"><span class="tsd-kind-icon">Protected property</span></li>
 				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-protected"><span class="tsd-kind-icon">Protected method</span></li>
-				<li class="tsd-kind-accessor tsd-parent-kind-class tsd-is-protected"><span class="tsd-kind-icon">Protected accessor</span></li>
-			</ul>
-			<ul class="tsd-legend">
-				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private property</span></li>
-				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private method</span></li>
-				<li class="tsd-kind-accessor tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private accessor</span></li>
-			</ul>
-			<ul class="tsd-legend">
-				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><span class="tsd-kind-icon">Static property</span></li>
-				<li class="tsd-kind-call-signature tsd-parent-kind-class tsd-is-static"><span class="tsd-kind-icon">Static method</span></li>
 			</ul>
 		</div>
 	</div>

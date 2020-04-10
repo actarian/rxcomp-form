@@ -1,4 +1,6 @@
 import { getContext, IFactoryMeta } from 'rxcomp';
+import { fromEvent } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 import FormAbstractCollectionDirective from './form-abstract-collection.directive';
 import FormAbstractDirective from './form-abstract.directive';
 
@@ -17,13 +19,17 @@ export default class FormCheckboxDirective extends FormAbstractDirective {
 		const node = getContext(this).node as HTMLInputElement;
 		// log(node.getAttributeNode('formControl').value);
 		// log('name', node.name);
-		this.onChange = this.onChange.bind(this);
-		this.onBlur = this.onBlur.bind(this);
+		// this.onChange = this.onChange.bind(this);
+		// this.onBlur = this.onBlur.bind(this);
 		// this.onFocus = this.onFocus.bind(this);
-		node.addEventListener('input', this.onChange);
+		// node.addEventListener('input', this.onChange);
 		// node.addEventListener('change', this.onChange);
-		node.addEventListener('blur', this.onBlur);
+		// node.addEventListener('blur', this.onBlur);
 		// node.addEventListener('focus', this.onFocus);
+		// fromEvent<Event>(node, 'input').pipe(takeUntil(this.unsubscribe$)).subscribe(event => this.onChange(event));
+		fromEvent<Event>(node, 'change').pipe(takeUntil(this.unsubscribe$)).subscribe(event => this.onChange(event));
+		fromEvent<FocusEvent>(node, 'blur').pipe(takeUntil(this.unsubscribe$)).subscribe(event => this.onBlur(event));
+		// fromEvent<FocusEvent>(node, 'focus').pipe(takeUntil(this.unsubscribe$)).subscribe(event => this.onFocus(event));
 	}
 
 	writeValue(value: any) {

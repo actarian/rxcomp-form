@@ -2,6 +2,8 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 var tslib_1 = require("tslib");
 var rxcomp_1 = require("rxcomp");
+var rxjs_1 = require("rxjs");
+var operators_1 = require("rxjs/operators");
 var form_abstract_collection_directive_1 = tslib_1.__importDefault(require("./form-abstract-collection.directive"));
 var form_abstract_directive_1 = tslib_1.__importDefault(require("./form-abstract.directive"));
 /**
@@ -17,16 +19,21 @@ var FormCheckboxDirective = /** @class */ (function (_super) {
         return _super !== null && _super.apply(this, arguments) || this;
     }
     FormCheckboxDirective.prototype.onInit = function () {
+        var _this = this;
         var node = rxcomp_1.getContext(this).node;
         // log(node.getAttributeNode('formControl').value);
         // log('name', node.name);
-        this.onChange = this.onChange.bind(this);
-        this.onBlur = this.onBlur.bind(this);
+        // this.onChange = this.onChange.bind(this);
+        // this.onBlur = this.onBlur.bind(this);
         // this.onFocus = this.onFocus.bind(this);
-        node.addEventListener('input', this.onChange);
+        // node.addEventListener('input', this.onChange);
         // node.addEventListener('change', this.onChange);
-        node.addEventListener('blur', this.onBlur);
+        // node.addEventListener('blur', this.onBlur);
         // node.addEventListener('focus', this.onFocus);
+        // fromEvent<Event>(node, 'input').pipe(takeUntil(this.unsubscribe$)).subscribe(event => this.onChange(event));
+        rxjs_1.fromEvent(node, 'change').pipe(operators_1.takeUntil(this.unsubscribe$)).subscribe(function (event) { return _this.onChange(event); });
+        rxjs_1.fromEvent(node, 'blur').pipe(operators_1.takeUntil(this.unsubscribe$)).subscribe(function (event) { return _this.onBlur(event); });
+        // fromEvent<FocusEvent>(node, 'focus').pipe(takeUntil(this.unsubscribe$)).subscribe(event => this.onFocus(event));
     };
     FormCheckboxDirective.prototype.writeValue = function (value) {
         var node = rxcomp_1.getContext(this).node;

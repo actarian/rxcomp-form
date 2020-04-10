@@ -1,4 +1,6 @@
 import { Directive, Factory, getContext, IFactoryMeta } from 'rxcomp';
+import { fromEvent } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 import FormAbstract from '../form-abstract';
 import FormAbstractCollectionDirective from './form-abstract-collection.directive';
 
@@ -24,13 +26,17 @@ export default class FormAbstractDirective extends Directive {
 
 	onInit() {
 		const node = getContext(this).node as HTMLInputElement;
-		this.onChange = this.onChange.bind(this);
-		this.onBlur = this.onBlur.bind(this);
+		// this.onChange = this.onChange.bind(this);
+		// this.onBlur = this.onBlur.bind(this);
 		// this.onFocus = this.onFocus.bind(this);
-		node.addEventListener('input', this.onChange);
-		node.addEventListener('change', this.onChange);
-		node.addEventListener('blur', this.onBlur);
+		// node.addEventListener('input', this.onChange);
+		// node.addEventListener('change', this.onChange);
+		// node.addEventListener('blur', this.onBlur);
 		// node.addEventListener('focus', this.onFocus);
+		fromEvent<Event>(node, 'input').pipe(takeUntil(this.unsubscribe$)).subscribe(event => this.onChange(event));
+		fromEvent<Event>(node, 'change').pipe(takeUntil(this.unsubscribe$)).subscribe(event => this.onChange(event));
+		fromEvent<FocusEvent>(node, 'blur').pipe(takeUntil(this.unsubscribe$)).subscribe(event => this.onBlur(event));
+		// fromEvent<FocusEvent>(node, 'focus').pipe(takeUntil(this.unsubscribe$)).subscribe(event => this.onFocus(event));
 	}
 
 	onChanges(changes: Factory | Window) {

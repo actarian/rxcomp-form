@@ -1,48 +1,48 @@
 {
-	"author": "Luca Zampetti <lzampetti@gmail.com>",
-	"name": "rxcomp-form",
-	"description": "Reactive FormModule for RxComp component library",
-	"version": "1.0.0-beta.8",
-	"browser": "dist/umd/rxcomp-form.js",
-	"main": "dist/cjs/rxcomp-form.js",
-	"types": "dist/cjs/rxcomp-form.d.ts",
-	"es2015": "dist/esm/rxcomp-form.js",
-	"files": [
-		"dist/",
-		"!.DS_Store"
-	],
-	"license": "MIT",
-	"keywords": [
-		"rxcomp",
-		"framework",
-		"form",
-		"rxjs",
-		"es6",
-		"es2015"
-	],
-	"repository": {
-		"type": "git",
-		"url": "git://github.com/actarian/rxcomp-form.git"
-	},
-	"bugs": {
-		"url": "https://github.com/actarian/rxcomp-form/issues"
-	},
-	"homepage": "https://github.com/actarian/rxcomp-form",
-	"scripts": {
-		"start": "gulp",
-		"build": "gulp build --target dist",
-		"docs": "typedoc --options typedoc.json",
-		"docs2": "typedoc --out docs/documentation src/rxcomp-form.ts --mode modules --theme default --includeDeclarations --excludeExternals --excludePrivate --excludeNotExported"
-	},
-	"dependencies": {
-		"rxjs": "~6.5.4",
-		"rxcomp": "~1.0.0-beta.8",
-		"tslib": "~1.11.1"
-	},
-	"devDependencies": {
-		"@types/node": "~13.7.7",
-		"gulpfile-config": "~1.0.0-alpha.7",
-		"typedoc": "~0.16.11",
-		"typescript": "~3.8.3"
-	}
+  "author": "Luca Zampetti <lzampetti@gmail.com>",
+  "name": "rxcomp-form",
+  "description": "Reactive FormModule for RxComp component library",
+  "version": "1.0.0-beta.9",
+  "browser": "dist/umd/rxcomp-form.js",
+  "main": "dist/cjs/rxcomp-form.js",
+  "types": "dist/cjs/rxcomp-form.d.ts",
+  "es2015": "dist/esm/rxcomp-form.js",
+  "files": [
+    "dist/",
+    "!.DS_Store"
+  ],
+  "license": "MIT",
+  "keywords": [
+    "rxcomp",
+    "framework",
+    "form",
+    "rxjs",
+    "es6",
+    "es2015"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/actarian/rxcomp-form.git"
+  },
+  "bugs": {
+    "url": "https://github.com/actarian/rxcomp-form/issues"
+  },
+  "homepage": "https://github.com/actarian/rxcomp-form",
+  "scripts": {
+    "start": "gulp",
+    "build": "gulp build --target dist",
+    "docs": "typedoc --options typedoc.json",
+    "docs2": "typedoc --out docs/documentation src/rxcomp-form.ts --mode modules --theme default --includeDeclarations --excludeExternals --excludePrivate --excludeNotExported"
+  },
+  "dependencies": {
+    "rxjs": "~6.5.4",
+    "rxcomp": "~1.0.0-beta.9",
+    "tslib": "~1.11.1"
+  },
+  "devDependencies": {
+    "@types/node": "~13.11.1",
+    "gulpfile-config": "~1.0.0-alpha.9",
+    "typedoc": "~0.17.4",
+    "typescript": "~3.8.3"
+  }
 }

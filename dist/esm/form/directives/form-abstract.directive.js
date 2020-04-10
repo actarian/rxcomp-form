@@ -1,4 +1,6 @@
 import { Directive, getContext } from 'rxcomp';
+import { fromEvent } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 import FormAbstractCollectionDirective from './form-abstract-collection.directive';
 /**
  * Abstract class representing a FormAbstractDirective.
@@ -17,13 +19,17 @@ export default class FormAbstractDirective extends Directive {
     }
     onInit() {
         const node = getContext(this).node;
-        this.onChange = this.onChange.bind(this);
-        this.onBlur = this.onBlur.bind(this);
+        // this.onChange = this.onChange.bind(this);
+        // this.onBlur = this.onBlur.bind(this);
         // this.onFocus = this.onFocus.bind(this);
-        node.addEventListener('input', this.onChange);
-        node.addEventListener('change', this.onChange);
-        node.addEventListener('blur', this.onBlur);
+        // node.addEventListener('input', this.onChange);
+        // node.addEventListener('change', this.onChange);
+        // node.addEventListener('blur', this.onBlur);
         // node.addEventListener('focus', this.onFocus);
+        fromEvent(node, 'input').pipe(takeUntil(this.unsubscribe$)).subscribe(event => this.onChange(event));
+        fromEvent(node, 'change').pipe(takeUntil(this.unsubscribe$)).subscribe(event => this.onChange(event));
+        fromEvent(node, 'blur').pipe(takeUntil(this.unsubscribe$)).subscribe(event => this.onBlur(event));
+        // fromEvent<FocusEvent>(node, 'focus').pipe(takeUntil(this.unsubscribe$)).subscribe(event => this.onFocus(event));
     }
     onChanges(changes) {
         const node = getContext(this).node;
