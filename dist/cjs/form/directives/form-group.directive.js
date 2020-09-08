@@ -28,7 +28,7 @@ var FormGroupDirective = /** @class */ (function (_super) {
                 return this.host.control.get(this.formGroupName);
             }
         },
-        enumerable: true,
+        enumerable: false,
         configurable: true
     });
     FormGroupDirective.meta = {

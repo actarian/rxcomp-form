@@ -5,7 +5,13 @@ import FormValidator from "./validators/form-validator";
  * Abstract class representing a form control.
  */
 export default abstract class FormAbstract {
-    errors: any;
+    private errors_;
+    get errors(): {
+        [key: string]: any;
+    };
+    set errors(errors: {
+        [key: string]: any;
+    });
     name?: string;
     value_: any;
     submitted_: boolean;

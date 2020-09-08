@@ -956,21 +956,21 @@ var FormStatus$1 = FormStatus;var FormAbstract = function () {
     var _this2 = this;
 
     if (this.status === FormStatus$1.Disabled || this.status === FormStatus$1.Hidden || this.submitted_ || !this.validators.length) {
-      this.errors = {};
+      this.errors_ = {};
 
       if (this.status === FormStatus$1.Invalid) {
         this.status = FormStatus$1.Valid;
       }
 
-      return rxjs.of(this.errors);
+      return rxjs.of(this.errors_);
     } else {
       return rxjs.combineLatest(this.validators.map(function (x) {
         var result$ = x.validate(value);
         return rxjs.isObservable(result$) ? result$ : rxjs.of(result$);
       })).pipe(operators.map(function (results) {
-        _this2.errors = Object.assign.apply(Object, [{}].concat(results));
-        _this2.status = Object.keys(_this2.errors).length === 0 ? FormStatus$1.Valid : FormStatus$1.Invalid;
-        return _this2.errors;
+        _this2.errors_ = Object.assign.apply(Object, [{}].concat(results));
+        _this2.status = Object.keys(_this2.errors_).length === 0 ? FormStatus$1.Valid : FormStatus$1.Invalid;
+        return _this2.errors_;
       }));
     }
   };
@@ -1014,6 +1014,14 @@ var FormStatus$1 = FormStatus;var FormAbstract = function () {
   };
 
   _createClass(FormAbstract, [{
+    key: "errors",
+    get: function get() {
+      return this.errors_;
+    },
+    set: function set(errors) {
+      this.errors_ = errors;
+    }
+  }, {
     key: "pending",
     get: function get() {
       return this.status === FormStatus$1.Pending;
@@ -1461,7 +1469,8 @@ var FormStatus$1 = FormStatus;var FormAbstract = function () {
       return this.reduce_(function (result, control) {
         return Object.assign(result, control.errors);
       }, {});
-    }
+    },
+    set: function set(errors) {}
   }]);
 
   return FormAbstractCollection;

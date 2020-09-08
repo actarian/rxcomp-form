@@ -8,7 +8,13 @@ import FormValidator from "./validators/form-validator";
  */
 export default abstract class FormAbstract {
 
-	public errors: any;
+	private errors_: any;
+	get errors(): { [key: string]: any } {
+		return this.errors_;
+	}
+	set errors(errors: { [key: string]: any }) {
+		this.errors_ = errors;
+	}
 
 	name?: string;
 	value_: any = undefined;
@@ -77,20 +83,20 @@ export default abstract class FormAbstract {
 	 */
 	validate$(value: any): Observable<{ [key: string]: any }> {
 		if (this.status === FormStatus.Disabled || this.status === FormStatus.Hidden || this.submitted_ || !this.validators.length) {
-			this.errors = {};
+			this.errors_ = {};
 			if (this.status === FormStatus.Invalid) {
 				this.status = FormStatus.Valid;
 			}
-			return of(this.errors);
+			return of(this.errors_);
 		} else {
 			return combineLatest(this.validators.map(x => {
 				let result$ = x.validate(value);
 				return isObservable(result$) ? result$ : of(result$);
 			})).pipe(
 				map(results => {
-					this.errors = Object.assign({}, ...results);
-					this.status = Object.keys(this.errors).length === 0 ? FormStatus.Valid : FormStatus.Invalid;
-					return this.errors;
+					this.errors_ = Object.assign({}, ...results);
+					this.status = Object.keys(this.errors_).length === 0 ? FormStatus.Valid : FormStatus.Invalid;
+					return this.errors_;
 				})
 			);
 		}

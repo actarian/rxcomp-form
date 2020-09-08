@@ -27,7 +27,7 @@ var FormAbstractCollection = /** @class */ (function (_super) {
     }
     FormAbstractCollection.prototype.initControl_ = function (controlOrValue, key) {
         var control = controlOrValue instanceof form_abstract_1.default ? controlOrValue : new form_control_1.default(controlOrValue);
-        control.addValidators.apply(control, this.validators);
+        control.addValidators.apply(control, tslib_1.__spread(this.validators));
         control.name = key;
         return control;
     };
@@ -93,17 +93,17 @@ var FormAbstractCollection = /** @class */ (function (_super) {
     };
     Object.defineProperty(FormAbstractCollection.prototype, "valid", {
         get: function () { return this.all_('valid', true); },
-        enumerable: true,
+        enumerable: false,
         configurable: true
     });
     Object.defineProperty(FormAbstractCollection.prototype, "invalid", {
         get: function () { return this.any_('invalid', true); },
-        enumerable: true,
+        enumerable: false,
         configurable: true
     });
     Object.defineProperty(FormAbstractCollection.prototype, "pending", {
         get: function () { return this.any_('pending', true); },
-        enumerable: true,
+        enumerable: false,
         configurable: true
     });
     Object.defineProperty(FormAbstractCollection.prototype, "disabled", {
@@ -113,12 +113,12 @@ var FormAbstractCollection = /** @class */ (function (_super) {
                 control.disabled = disabled;
             });
         },
-        enumerable: true,
+        enumerable: false,
         configurable: true
     });
     Object.defineProperty(FormAbstractCollection.prototype, "enabled", {
         get: function () { return this.any_('enabled', true); },
-        enumerable: true,
+        enumerable: false,
         configurable: true
     });
     Object.defineProperty(FormAbstractCollection.prototype, "hidden", {
@@ -128,12 +128,12 @@ var FormAbstractCollection = /** @class */ (function (_super) {
                 control.hidden = hidden;
             });
         },
-        enumerable: true,
+        enumerable: false,
         configurable: true
     });
     Object.defineProperty(FormAbstractCollection.prototype, "visible", {
         get: function () { return this.any_('visible', true); },
-        enumerable: true,
+        enumerable: false,
         configurable: true
     });
     Object.defineProperty(FormAbstractCollection.prototype, "submitted", {
@@ -143,17 +143,17 @@ var FormAbstractCollection = /** @class */ (function (_super) {
                 control.submitted = submitted;
             });
         },
-        enumerable: true,
+        enumerable: false,
         configurable: true
     });
     Object.defineProperty(FormAbstractCollection.prototype, "dirty", {
         get: function () { return this.any_('dirty', true); },
-        enumerable: true,
+        enumerable: false,
         configurable: true
     });
     Object.defineProperty(FormAbstractCollection.prototype, "pristine", {
         get: function () { return this.all_('pristine', true); },
-        enumerable: true,
+        enumerable: false,
         configurable: true
     });
     Object.defineProperty(FormAbstractCollection.prototype, "touched", {
@@ -163,12 +163,12 @@ var FormAbstractCollection = /** @class */ (function (_super) {
                 control.touched = touched;
             });
         },
-        enumerable: true,
+        enumerable: false,
         configurable: true
     });
     Object.defineProperty(FormAbstractCollection.prototype, "untouched", {
         get: function () { return this.any_('untouched', true); },
-        enumerable: true,
+        enumerable: false,
         configurable: true
     });
     Object.defineProperty(FormAbstractCollection.prototype, "value", {
@@ -183,7 +183,7 @@ var FormAbstractCollection = /** @class */ (function (_super) {
                 control.value = value[key];
             });
         },
-        enumerable: true,
+        enumerable: false,
         configurable: true
     });
     Object.defineProperty(FormAbstractCollection.prototype, "errors", {
@@ -192,7 +192,8 @@ var FormAbstractCollection = /** @class */ (function (_super) {
                 return Object.assign(result, control.errors);
             }, {});
         },
-        enumerable: true,
+        set: function (errors) { },
+        enumerable: false,
         configurable: true
     });
     FormAbstractCollection.prototype.reset = function () {
@@ -246,7 +247,7 @@ var FormAbstractCollection = /** @class */ (function (_super) {
         for (var _i = 0; _i < arguments.length; _i++) {
             validators[_i] = arguments[_i];
         }
-        this.forEach_(function (control) { return control.addValidators.apply(control, validators); });
+        this.forEach_(function (control) { return control.addValidators.apply(control, tslib_1.__spread(validators)); });
     };
     /**
      * replace one or more FormValidator.
@@ -257,7 +258,7 @@ var FormAbstractCollection = /** @class */ (function (_super) {
         for (var _i = 0; _i < arguments.length; _i++) {
             validators[_i] = arguments[_i];
         }
-        this.forEach_(function (control) { return control.replaceValidators.apply(control, validators); });
+        this.forEach_(function (control) { return control.replaceValidators.apply(control, tslib_1.__spread(validators)); });
     };
     /**
      * remove all FormValidator.

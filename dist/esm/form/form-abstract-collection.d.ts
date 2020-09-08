@@ -49,6 +49,9 @@ export default class FormAbstractCollection extends FormAbstract {
     get errors(): {
         [key: string]: any;
     };
+    set errors(errors: {
+        [key: string]: any;
+    });
     reset(): void;
     patch(value: {
         [key: string]: any;

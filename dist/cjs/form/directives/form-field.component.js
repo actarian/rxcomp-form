@@ -28,7 +28,7 @@ var FormFieldComponent = /** @class */ (function (_super) {
                 return this.host.control.get(this.formFieldName);
             }
         },
-        enumerable: true,
+        enumerable: false,
         configurable: true
     });
     FormFieldComponent.prototype.onChanges = function (changes) {

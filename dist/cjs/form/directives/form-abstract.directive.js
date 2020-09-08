@@ -25,7 +25,7 @@ var FormAbstractDirective = /** @class */ (function (_super) {
                 return this.host.control.get(this.formControlName);
             }
         },
-        enumerable: true,
+        enumerable: false,
         configurable: true
     });
     FormAbstractDirective.prototype.onInit = function () {

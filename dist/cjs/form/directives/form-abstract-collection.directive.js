@@ -15,7 +15,7 @@ var FormAbstractCollectionDirective = /** @class */ (function (_super) {
             // !!! return null?
             return {};
         },
-        enumerable: true,
+        enumerable: false,
         configurable: true
     });
     FormAbstractCollectionDirective.prototype.onChanges = function (changes) {

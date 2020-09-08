@@ -62,8 +62,8 @@ var FormModule = /** @class */ (function (_super) {
         return _super !== null && _super.apply(this, arguments) || this;
     }
     FormModule.meta = {
-        declarations: tslib_1.__spreadArrays(factories, pipes),
-        exports: tslib_1.__spreadArrays(factories, pipes)
+        declarations: tslib_1.__spread(factories, pipes),
+        exports: tslib_1.__spread(factories, pipes)
     };
     return FormModule;
 }(rxcomp_1.Module));

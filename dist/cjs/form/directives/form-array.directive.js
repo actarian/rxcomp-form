@@ -28,7 +28,7 @@ var FormArrayDirective = /** @class */ (function (_super) {
                 return this.host.control.get(this.formArrayName);
             }
         },
-        enumerable: true,
+        enumerable: false,
         configurable: true
     });
     FormArrayDirective.meta = {

@@ -1,5 +1,5 @@
 import { Component, IFactoryMeta } from 'rxcomp';
-import { FormArray, FormGroup, RequiredValidator } from '../../src/rxcomp-form';
+import { FormArray, FormGroup, RequiredValidator } from '../../../src/rxcomp-form';
 
 export default class AppComponent extends Component {
 
@@ -17,14 +17,12 @@ export default class AppComponent extends Component {
 			privacy: null,
 			items: new FormArray([null, null, null], RequiredValidator()),
 		});
-
 		form.changes$.subscribe((changes) => {
 			// console.log('AppComponent.form.changes$', changes, form.valid, form);
 			if (this.pushChanges) {
 				this.pushChanges();
 			}
 		});
-
 		this.form = form;
 	}
 
@@ -52,5 +50,4 @@ export default class AppComponent extends Component {
 	static meta: IFactoryMeta = {
 		selector: '[app-component]',
 	};
-
 }

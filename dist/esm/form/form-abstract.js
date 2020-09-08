@@ -28,6 +28,12 @@ export default class FormAbstract {
         this.changes$ = merge(this.value$, this.status$).pipe(map(() => this.value), auditTime(1), shareReplay(1));
         this.validators = validators ? (Array.isArray(validators) ? validators : [validators]) : [];
     }
+    get errors() {
+        return this.errors_;
+    }
+    set errors(errors) {
+        this.errors_ = errors;
+    }
     /**
      * initialize subjects
      */
@@ -49,20 +55,20 @@ export default class FormAbstract {
      */
     validate$(value) {
         if (this.status === FormStatus.Disabled || this.status === FormStatus.Hidden || this.submitted_ || !this.validators.length) {
-            this.errors = {};
+            this.errors_ = {};
             if (this.status === FormStatus.Invalid) {
                 this.status = FormStatus.Valid;
             }
-            return of(this.errors);
+            return of(this.errors_);
         }
         else {
             return combineLatest(this.validators.map(x => {
                 let result$ = x.validate(value);
                 return isObservable(result$) ? result$ : of(result$);
             })).pipe(map(results => {
-                this.errors = Object.assign({}, ...results);
-                this.status = Object.keys(this.errors).length === 0 ? FormStatus.Valid : FormStatus.Invalid;
-                return this.errors;
+                this.errors_ = Object.assign({}, ...results);
+                this.status = Object.keys(this.errors_).length === 0 ? FormStatus.Valid : FormStatus.Invalid;
+                return this.errors_;
             }));
         }
     }

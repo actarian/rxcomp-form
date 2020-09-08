@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.formArray = void 0;
 var tslib_1 = require("tslib");
 var form_abstract_collection_1 = tslib_1.__importDefault(require("./form-abstract-collection"));
 /**
@@ -32,14 +33,14 @@ var FormArray = /** @class */ (function (_super) {
                 return result;
             }, []); // init as array
         },
-        enumerable: true,
+        enumerable: false,
         configurable: true
     });
     Object.defineProperty(FormArray.prototype, "length", {
         get: function () {
             return this.controls.length;
         },
-        enumerable: true,
+        enumerable: false,
         configurable: true
     });
     FormArray.prototype.init = function (control, key) {

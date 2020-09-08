@@ -3,17 +3,17 @@
     "browser": {
       "compile": [
         {
-          "input": "test/*.html",
+          "input": "web/client/*.html",
           "output": "docs/",
           "minify": false
         },
         {
-          "input": "test/css/main.scss",
+          "input": "web/client/css/main.scss",
           "output": "docs/css/main.css",
           "minify": true
         },
         {
-          "input": "test/js/main.ts",
+          "input": "web/client/js/main.ts",
           "output": {
             "file": "docs/js/main.js",
             "format": "iife"
@@ -28,9 +28,12 @@
       ],
       "bundle": [
         {
-          "input": "../rxcomp/dist/iife/rxcomp.js",
-          "output": "docs/js/rxcomp.js",
-          "minify": false
+          "input": [
+            "node_modules/rxjs/bundles/rxjs.umd.js",
+            "node_modules/rxcomp/dist/umd/rxcomp.js"
+          ],
+          "output": "docs/js/vendors.js",
+          "minify": true
         }
       ]
     },

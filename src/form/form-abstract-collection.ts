@@ -158,6 +158,7 @@ export default class FormAbstractCollection extends FormAbstract {
 			return Object.assign(result, control.errors);
 		}, {});
 	}
+	set errors(errors: { [key: string]: any }) { }
 
 	reset(): void {
 		this.forEach_((control: FormAbstract) => control.reset());

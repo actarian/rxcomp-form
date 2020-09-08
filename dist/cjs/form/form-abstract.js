@@ -32,6 +32,16 @@ var FormAbstract = /** @class */ (function () {
         this.changes$ = rxjs_1.merge(this.value$, this.status$).pipe(operators_1.map(function () { return _this.value; }), operators_1.auditTime(1), operators_1.shareReplay(1));
         this.validators = validators ? (Array.isArray(validators) ? validators : [validators]) : [];
     }
+    Object.defineProperty(FormAbstract.prototype, "errors", {
+        get: function () {
+            return this.errors_;
+        },
+        set: function (errors) {
+            this.errors_ = errors;
+        },
+        enumerable: false,
+        configurable: true
+    });
     /**
      * initialize subjects
      */
@@ -54,20 +64,20 @@ var FormAbstract = /** @class */ (function () {
     FormAbstract.prototype.validate$ = function (value) {
         var _this = this;
         if (this.status === form_status_1.default.Disabled || this.status === form_status_1.default.Hidden || this.submitted_ || !this.validators.length) {
-            this.errors = {};
+            this.errors_ = {};
             if (this.status === form_status_1.default.Invalid) {
                 this.status = form_status_1.default.Valid;
             }
-            return rxjs_1.of(this.errors);
+            return rxjs_1.of(this.errors_);
         }
         else {
             return rxjs_1.combineLatest(this.validators.map(function (x) {
                 var result$ = x.validate(value);
                 return rxjs_1.isObservable(result$) ? result$ : rxjs_1.of(result$);
             })).pipe(operators_1.map(function (results) {
-                _this.errors = Object.assign.apply(Object, tslib_1.__spreadArrays([{}], results));
-                _this.status = Object.keys(_this.errors).length === 0 ? form_status_1.default.Valid : form_status_1.default.Invalid;
-                return _this.errors;
+                _this.errors_ = Object.assign.apply(Object, tslib_1.__spread([{}], results));
+                _this.status = Object.keys(_this.errors_).length === 0 ? form_status_1.default.Valid : form_status_1.default.Invalid;
+                return _this.errors_;
             }));
         }
     };
@@ -76,7 +86,7 @@ var FormAbstract = /** @class */ (function () {
          * @return the pending status
          */
         get: function () { return this.status === form_status_1.default.Pending; },
-        enumerable: true,
+        enumerable: false,
         configurable: true
     });
     Object.defineProperty(FormAbstract.prototype, "valid", {
@@ -84,7 +94,7 @@ var FormAbstract = /** @class */ (function () {
          * @return the valid status
          */
         get: function () { return this.status !== form_status_1.default.Invalid; },
-        enumerable: true,
+        enumerable: false,
         configurable: true
     });
     Object.defineProperty(FormAbstract.prototype, "invalid", {
@@ -92,7 +102,7 @@ var FormAbstract = /** @class */ (function () {
          * @return the invalid status
          */
         get: function () { return this.status === form_status_1.default.Invalid; },
-        enumerable: true,
+        enumerable: false,
         configurable: true
     });
     Object.defineProperty(FormAbstract.prototype, "disabled", {
@@ -125,7 +135,7 @@ var FormAbstract = /** @class */ (function () {
                 }
             }
         },
-        enumerable: true,
+        enumerable: false,
         configurable: true
     });
     Object.defineProperty(FormAbstract.prototype, "enabled", {
@@ -133,7 +143,7 @@ var FormAbstract = /** @class */ (function () {
          * @return the enabled status
          */
         get: function () { return this.status !== form_status_1.default.Disabled; },
-        enumerable: true,
+        enumerable: false,
         configurable: true
     });
     Object.defineProperty(FormAbstract.prototype, "hidden", {
@@ -166,7 +176,7 @@ var FormAbstract = /** @class */ (function () {
                 }
             }
         },
-        enumerable: true,
+        enumerable: false,
         configurable: true
     });
     Object.defineProperty(FormAbstract.prototype, "visible", {
@@ -174,7 +184,7 @@ var FormAbstract = /** @class */ (function () {
          * @return the visible status
          */
         get: function () { return this.status !== form_status_1.default.Hidden; },
-        enumerable: true,
+        enumerable: false,
         configurable: true
     });
     Object.defineProperty(FormAbstract.prototype, "submitted", {
@@ -189,7 +199,7 @@ var FormAbstract = /** @class */ (function () {
             this.submitted_ = submitted;
             this.statusSubject.next(null);
         },
-        enumerable: true,
+        enumerable: false,
         configurable: true
     });
     Object.defineProperty(FormAbstract.prototype, "dirty", {
@@ -197,7 +207,7 @@ var FormAbstract = /** @class */ (function () {
          * @return the dirty status
          */
         get: function () { return this.dirty_; },
-        enumerable: true,
+        enumerable: false,
         configurable: true
     });
     Object.defineProperty(FormAbstract.prototype, "pristine", {
@@ -205,7 +215,7 @@ var FormAbstract = /** @class */ (function () {
          * @return the pristine status
          */
         get: function () { return !this.dirty_; },
-        enumerable: true,
+        enumerable: false,
         configurable: true
     });
     Object.defineProperty(FormAbstract.prototype, "touched", {
@@ -220,7 +230,7 @@ var FormAbstract = /** @class */ (function () {
             this.touched_ = touched;
             this.statusSubject.next(null);
         },
-        enumerable: true,
+        enumerable: false,
         configurable: true
     });
     Object.defineProperty(FormAbstract.prototype, "untouched", {
@@ -228,7 +238,7 @@ var FormAbstract = /** @class */ (function () {
          * @return the untouched status
          */
         get: function () { return !this.touched_; },
-        enumerable: true,
+        enumerable: false,
         configurable: true
     });
     Object.defineProperty(FormAbstract.prototype, "flags", {
@@ -248,7 +258,7 @@ var FormAbstract = /** @class */ (function () {
                 submitted: this.submitted
             };
         },
-        enumerable: true,
+        enumerable: false,
         configurable: true
     });
     Object.defineProperty(FormAbstract.prototype, "value", {
@@ -263,7 +273,7 @@ var FormAbstract = /** @class */ (function () {
             this.value_ = value;
             this.valueSubject.next(value);
         },
-        enumerable: true,
+        enumerable: false,
         configurable: true
     });
     /**
@@ -296,7 +306,7 @@ var FormAbstract = /** @class */ (function () {
         for (var _i = 0; _i < arguments.length; _i++) {
             validators[_i] = arguments[_i];
         }
-        (_a = this.validators).push.apply(_a, validators);
+        (_a = this.validators).push.apply(_a, tslib_1.__spread(validators));
         this.switchValidators_();
     };
     /**

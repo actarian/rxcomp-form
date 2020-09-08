@@ -38,7 +38,7 @@ var FormValidator = /** @class */ (function () {
                 }
             }
         },
-        enumerable: true,
+        enumerable: false,
         configurable: true
     });
     /**

@@ -13,31 +13,24 @@
   "toc": [
     "FormStatus",
     "FormAttributes",
-
     "FormModule",
-
     "FormAbstract",
     "FormControl",
-
     "FormAbstractCollection",
     "FormGroup",
     "FormArray",
-
     "FormAbstractDirective",
     "FormCheckboxDirective",
     "FormEmailDirective",
     "FormInputDirective",
     "FormRadioDirective",
     "FormSelectDirective",
-
     "FormAbstractCollectionDirective",
     "FormGroupDirective",
     "FormArrayDirective",
     "FormFieldComponent",
-
     "FormSubmitDirective",
     "FormPlaceholderDirective",
-
     "FormMaxDirective",
     "FormMaxLengthDirective",
     "FormMinDirective",
@@ -45,7 +38,6 @@
     "FormPatternDirective",
     "FormRequiredDirective",
     "FormRequiredTrueDirective",
-
     "FormValidator",
     "EmailValidator",
     "MaxLengthValidator",
@@ -56,7 +48,6 @@
     "PatternValidator",
     "RequiredTrueValidator",
     "RequiredValidator",
-
     "formArray",
     "formControl",
     "formGroup"

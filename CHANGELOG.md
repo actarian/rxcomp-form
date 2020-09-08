@@ -3,6 +3,12 @@ All notable changes to the "rxcomp-form" library will be documented in this file
 
 ---
 
+## [1.0.0-beta.18] - 2020-09-08
+### Updating
+- dependancies
+
+---
+
 ## [1.0.0-beta.9] - 2020-04-10
 ### Fixing
 - IE11 Support
