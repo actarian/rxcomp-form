@@ -9637,7 +9637,7 @@ var Factory = /*#__PURE__*/function () {
 
     var inputs = {};
     (_this$meta$inputs = this.meta.inputs) == null ? void 0 : _this$meta$inputs.forEach(function (key) {
-      var expression = module.getExpression(key, node);
+      var expression = module.resolveAttribute(key, node);
       /*
       let expression: string | null = null;
       if (node.hasAttribute(`[${key}]`)) {
@@ -10160,6 +10160,35 @@ var Context = /*#__PURE__*/function (_Component) {
 ForStructure.meta = {
   selector: '[*for]',
   inputs: ['for']
+};var HrefTargetDirective = /*#__PURE__*/function (_Directive) {
+  _inheritsLoose(HrefTargetDirective, _Directive);
+
+  function HrefTargetDirective() {
+    return _Directive.apply(this, arguments) || this;
+  }
+
+  _createClass(HrefTargetDirective, [{
+    key: "target",
+    set: function set(target) {
+      if (this.target_ !== target) {
+        this.target_ = target;
+
+        var _getContext = getContext(this),
+            node = _getContext.node;
+
+        target ? node.setAttribute('target', target) : node.removeAttribute('target');
+      }
+    },
+    get: function get() {
+      return this.target_;
+    }
+  }]);
+
+  return HrefTargetDirective;
+}(Directive);
+HrefTargetDirective.meta = {
+  selector: '[[target]]',
+  inputs: ['target']
 };var HrefDirective = /*#__PURE__*/function (_Directive) {
   _inheritsLoose(HrefDirective, _Directive);
 
@@ -10774,6 +10803,40 @@ var Module = /*#__PURE__*/function () {
     }
   };
 
+  _proto.resolveAttribute = function resolveAttribute(key, node) {
+    var expression = null;
+
+    if (node.hasAttribute("[" + key + "]")) {
+      expression = node.getAttribute("[" + key + "]"); // console.log('Module.resolveAttribute.expression.1', expression);
+    } else if (node.hasAttribute("*" + key)) {
+      expression = node.getAttribute("*" + key); // console.log('Module.resolveAttribute.expression.2', expression);
+    } else if (node.hasAttribute(key)) {
+      expression = node.getAttribute(key);
+
+      if (expression) {
+        var attribute = expression.replace(/({{)|(}})|(")/g, function (substring, a, b, c) {
+          if (a) {
+            return '"+';
+          }
+
+          if (b) {
+            return '+"';
+          }
+
+          if (c) {
+            return '\"';
+          }
+
+          return '';
+        });
+        expression = "\"" + attribute + "\""; // console.log('Module.resolveAttribute.expression.3', expression);
+      }
+    } // console.log('Module.resolveAttribute.expression', expression);
+
+
+    return expression;
+  };
+
   _proto.resolve = function resolve(expression, parentInstance, payload) {
     // console.log('Module.resolve', expression, parentInstance, payload, getContext);
     return expression.apply(parentInstance, [payload, this]);
@@ -10844,7 +10907,7 @@ var Module = /*#__PURE__*/function () {
       // console.log('Module.makeInput', 'key', key, 'instance', instance);
       const { node } = getContext(instance);
       let input: ExpressionFunction | null = null;
-      const expression: string | null = this.getExpression(key, node);
+      const expression: string | null = this.resolveAttribute(key, node);
       if (expression) {
           instance[key] = typeof instance[key] === 'undefined' ? null : instance[key]; // !!! avoid throError undefined key
           input = this.makeFunction(expression);
@@ -10854,40 +10917,6 @@ var Module = /*#__PURE__*/function () {
   }
   */
   ;
-
-  _proto.getExpression = function getExpression(key, node) {
-    var expression = null;
-
-    if (node.hasAttribute("[" + key + "]")) {
-      expression = node.getAttribute("[" + key + "]"); // console.log('Module.getExpression.expression.1', expression);
-    } else if (node.hasAttribute("*" + key)) {
-      expression = node.getAttribute("*" + key); // console.log('Module.getExpression.expression.2', expression);
-    } else if (node.hasAttribute(key)) {
-      expression = node.getAttribute(key);
-
-      if (expression) {
-        var attribute = expression.replace(/({{)|(}})|(")/g, function (substring, a, b, c) {
-          if (a) {
-            return '"+';
-          }
-
-          if (b) {
-            return '+"';
-          }
-
-          if (c) {
-            return '\"';
-          }
-
-          return '';
-        });
-        expression = "\"" + attribute + "\""; // console.log('Module.getExpression.expression.3', expression);
-      }
-    } // console.log('Module.getExpression.expression', expression);
-
-
-    return expression;
-  };
 
   _proto.makeInputs = function makeInputs(meta, instance, node, factory) {
     var _this2 = this;
@@ -11492,7 +11521,7 @@ SrcDirective.meta = {
 StyleDirective.meta = {
   selector: "[[style]]",
   inputs: ['style']
-};var factories = [ClassDirective, EventDirective, ForStructure, HrefDirective, IfStructure, InnerHtmlDirective, JsonComponent, SrcDirective, StyleDirective];
+};var factories = [ClassDirective, EventDirective, ForStructure, HrefDirective, HrefTargetDirective, IfStructure, InnerHtmlDirective, JsonComponent, SrcDirective, StyleDirective];
 var pipes = [JsonPipe];
 
 var CoreModule = /*#__PURE__*/function (_Module) {
@@ -11691,4 +11720,4 @@ function optionsToKey(v, s) {
   }
 
   return s;
-}exports.Browser=Browser;exports.ClassDirective=ClassDirective;exports.Component=Component;exports.Context=Context;exports.CoreModule=CoreModule;exports.DefaultErrorHandler=DefaultErrorHandler;exports.Directive=Directive;exports.ErrorInterceptorHandler=ErrorInterceptorHandler;exports.ErrorInterceptors=ErrorInterceptors;exports.EventDirective=EventDirective;exports.ExpressionError=ExpressionError;exports.Factory=Factory;exports.ForItem=ForItem;exports.ForStructure=ForStructure;exports.HrefDirective=HrefDirective;exports.IfStructure=IfStructure;exports.InnerHtmlDirective=InnerHtmlDirective;exports.JsonComponent=JsonComponent;exports.JsonPipe=JsonPipe;exports.Module=Module;exports.ModuleError=ModuleError;exports.PLATFORM_BROWSER=PLATFORM_BROWSER;exports.PLATFORM_JS_DOM=PLATFORM_JS_DOM;exports.PLATFORM_NODE=PLATFORM_NODE;exports.PLATFORM_WEB_WORKER=PLATFORM_WEB_WORKER;exports.Pipe=Pipe;exports.Platform=Platform;exports.Serializer=Serializer;exports.SrcDirective=SrcDirective;exports.Structure=Structure;exports.StyleDirective=StyleDirective;exports.TransferService=TransferService;exports.WINDOW=WINDOW;exports.decodeBase64=_decodeBase;exports.decodeJson=_decodeJson;exports.encodeBase64=_encodeBase;exports.encodeJson=_encodeJson;exports.encodeJsonWithOptions=encodeJsonWithOptions;exports.errors$=errors$;exports.getContext=getContext;exports.getContextByNode=getContextByNode;exports.getHost=getHost;exports.getLocationComponents=getLocationComponents;exports.getParsableContextByElement=getParsableContextByElement;exports.isPlatformBrowser=isPlatformBrowser;exports.isPlatformServer=isPlatformServer;exports.isPlatformWorker=isPlatformWorker;exports.nextError$=nextError$;exports.optionsToKey=optionsToKey;Object.defineProperty(exports,'__esModule',{value:true});})));
+}exports.Browser=Browser;exports.ClassDirective=ClassDirective;exports.Component=Component;exports.Context=Context;exports.CoreModule=CoreModule;exports.DefaultErrorHandler=DefaultErrorHandler;exports.Directive=Directive;exports.ErrorInterceptorHandler=ErrorInterceptorHandler;exports.ErrorInterceptors=ErrorInterceptors;exports.EventDirective=EventDirective;exports.ExpressionError=ExpressionError;exports.Factory=Factory;exports.ForItem=ForItem;exports.ForStructure=ForStructure;exports.HrefDirective=HrefDirective;exports.HrefTargetDirective=HrefTargetDirective;exports.IfStructure=IfStructure;exports.InnerHtmlDirective=InnerHtmlDirective;exports.JsonComponent=JsonComponent;exports.JsonPipe=JsonPipe;exports.Module=Module;exports.ModuleError=ModuleError;exports.PLATFORM_BROWSER=PLATFORM_BROWSER;exports.PLATFORM_JS_DOM=PLATFORM_JS_DOM;exports.PLATFORM_NODE=PLATFORM_NODE;exports.PLATFORM_WEB_WORKER=PLATFORM_WEB_WORKER;exports.Pipe=Pipe;exports.Platform=Platform;exports.Serializer=Serializer;exports.SrcDirective=SrcDirective;exports.Structure=Structure;exports.StyleDirective=StyleDirective;exports.TransferService=TransferService;exports.WINDOW=WINDOW;exports.decodeBase64=_decodeBase;exports.decodeJson=_decodeJson;exports.encodeBase64=_encodeBase;exports.encodeJson=_encodeJson;exports.encodeJsonWithOptions=encodeJsonWithOptions;exports.errors$=errors$;exports.getContext=getContext;exports.getContextByNode=getContextByNode;exports.getHost=getHost;exports.getLocationComponents=getLocationComponents;exports.getParsableContextByElement=getParsableContextByElement;exports.isPlatformBrowser=isPlatformBrowser;exports.isPlatformServer=isPlatformServer;exports.isPlatformWorker=isPlatformWorker;exports.nextError$=nextError$;exports.optionsToKey=optionsToKey;Object.defineProperty(exports,'__esModule',{value:true});})));
