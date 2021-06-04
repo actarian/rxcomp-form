@@ -18,7 +18,7 @@ rxjs.min.js          | ![](https://img.badgesize.io/https://unpkg.com/rxjs@6.6.2
 rxjs.min.js          | ![](https://img.badgesize.io/https://unpkg.com/rxjs@6.6.2/bundles/rxjs.umd.min.js.svg)
  
 > [RxComp Form Demo](https://actarian.github.io/rxcomp-form/)  
-> [RxComp Form Api](https://actarian.github.io/rxcomp-form/api/)  
+> [RxComp Form Api](https://actarian.github.io/rxcomp-form/typedoc/)  
 > [RxComp Form Codepen](https://codepen.io/actarian/pen/vYEXXPe?editors=0010)  
 ___
 
