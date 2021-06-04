@@ -1,4 +1,4 @@
-import { Component, IFactoryMeta } from 'rxcomp';
+import { Component, getContext, IFactoryMeta } from 'rxcomp';
 import { FormArray, FormGroup, RequiredValidator } from '../../../src/rxcomp-form';
 
 export default class AppComponent extends Component {
@@ -6,6 +6,8 @@ export default class AppComponent extends Component {
 	form?: FormGroup;
 
 	onInit() {
+		const context = getContext(this);
+		console.log(context);
 		const form = new FormGroup({
 			hidden: 'hiddenValue',
 			firstName: null,

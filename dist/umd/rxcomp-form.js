@@ -1,5 +1,5 @@
 /**
- * @license rxcomp-form v1.0.0-beta.18
+ * @license rxcomp-form v1.0.0
  * (c) 2021 Luca Zampetti <lzampetti@gmail.com>
  * License: MIT
  */
@@ -23,7 +23,17 @@ function _createClass(Constructor, protoProps, staticProps) {
 function _inheritsLoose(subClass, superClass) {
   subClass.prototype = Object.create(superClass.prototype);
   subClass.prototype.constructor = subClass;
-  subClass.__proto__ = superClass;
+
+  _setPrototypeOf(subClass, superClass);
+}
+
+function _setPrototypeOf(o, p) {
+  _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) {
+    o.__proto__ = p;
+    return o;
+  };
+
+  return _setPrototypeOf(o, p);
 }/**
  * Abstract class representing a FormAbstractCollectionDirective.
  */
@@ -1453,11 +1463,11 @@ var FormAbstract = /*#__PURE__*/function () {
      * @return the enabled status
      */
     ,
-
+    set:
     /**
      * @param disabled the disabled state
      */
-    set: function set(disabled) {
+    function set(disabled) {
       if (disabled) {
         if (this.status !== FormStatus$1.Disabled) {
           this.status = FormStatus$1.Disabled; // this.value_ = null;
@@ -1496,11 +1506,11 @@ var FormAbstract = /*#__PURE__*/function () {
      * @return the visible status
      */
     ,
-
+    set:
     /**
      * @param hidden the hidden state
      */
-    set: function set(hidden) {
+    function set(hidden) {
       if (hidden) {
         if (this.status !== FormStatus$1.Hidden) {
           this.status = FormStatus$1.Hidden; // this.value_ = null;

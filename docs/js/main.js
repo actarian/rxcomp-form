@@ -1,5 +1,5 @@
 /**
- * @license rxcomp-form v1.0.0-beta.18
+ * @license rxcomp-form v1.0.0
  * (c) 2021 Luca Zampetti <lzampetti@gmail.com>
  * License: MIT
  */
@@ -23,7 +23,17 @@ function _createClass(Constructor, protoProps, staticProps) {
 function _inheritsLoose(subClass, superClass) {
   subClass.prototype = Object.create(superClass.prototype);
   subClass.prototype.constructor = subClass;
-  subClass.__proto__ = superClass;
+
+  _setPrototypeOf(subClass, superClass);
+}
+
+function _setPrototypeOf(o, p) {
+  _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) {
+    o.__proto__ = p;
+    return o;
+  };
+
+  return _setPrototypeOf(o, p);
 }var FormAbstractCollectionDirective = function (_Directive) {
   _inheritsLoose(FormAbstractCollectionDirective, _Directive);
 
@@ -1578,6 +1588,8 @@ var FormStatus$1 = FormStatus;var FormAbstract = function () {
   _proto.onInit = function onInit() {
     var _this = this;
 
+    var context = rxcomp.getContext(this);
+    console.log(context);
     var form = new FormGroup({
       hidden: 'hiddenValue',
       firstName: null,
